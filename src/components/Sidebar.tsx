@@ -47,9 +47,9 @@ const Sidebar: React.FC<SidebarProps> = ({ currentStep, visitedSteps, onStepChan
                   padding: '3px 0',
                   fontFamily: 'Roboto Condensed, sans-serif',
                   '&.Mui-selected': {
-                    backgroundColor: 'transparent', // Remove the blue background
+                    backgroundColor: 'transparent',
                   },
-                  color: visitedSteps[index][0] ? '#036ca1' : 'gray', // Change text color based on visited state
+                  color: visitedSteps[index][0] ? '#036ca1' : 'gray',
                 }}
               >
                 <ListItemText
