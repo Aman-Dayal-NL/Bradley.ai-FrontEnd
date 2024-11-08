@@ -78,8 +78,7 @@ const App: React.FC = () => {
     <Box sx={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
       <Navbar />
       <Box sx={{ display: 'flex', flexGrow: 1, mt: '64px', width: '100vw' }}>
-        
-        <Box sx={{ width: '277px', flexShrink: 0 }}>
+        <Box sx={{ width: '173px', flexShrink: 0 }}>
           <Sidebar
             currentStep={currentStep}
             steps={steps}
@@ -97,33 +96,46 @@ const App: React.FC = () => {
             currentStep={currentStep}
           />
           
-          <Box sx={{ mt: 4, p: 15, mb: 10, borderRadius: '8px', bgcolor: 'white', boxShadow: 1, color: 'black' }}>
+          <Box sx={{ mt: 4, p: 15, mb: 7, ml: 3, borderRadius: '8px', bgcolor: 'white', boxShadow: 1, color: 'black' }}>
             <StepContent step={currentStep} subStep={currentSubStep} />
           </Box>
-  
-          <Box display="flex" justifyContent="space-between" mb={0}>
-            <Button
-              variant="outlined"
-              onClick={handleBack}
-              disabled={currentStep === 0 && currentSubStep === 0}
-            >
-              Back
-            </Button>
-            <Button
-              variant="outlined"
-              onClick={() => {}}
-            >
-              Save and Continue Later
-            </Button>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleNext}
-            >
-              {currentStep === TOTAL_STEPS - 1 && currentSubStep === steps[currentStep].subSteps - 1 ? 'Finish' : 'Next'}
-            </Button>
-          </Box>
         </Box>
+      </Box>
+  
+      <Box 
+        sx={{ 
+          position: 'absolute', 
+          bottom: 0, 
+          left: '213px',
+          width: 'calc(100% - 261px)', 
+          p: 2, 
+          display: 'flex', 
+          justifyContent: 'space-between'
+        }}
+      >
+        <Button
+          sx={{fontFamily: 'Roboto Condensed, sans-serif'}}
+          variant="outlined"
+          onClick={handleBack}
+          disabled={currentStep === 0 && currentSubStep === 0}
+        >
+          Back
+        </Button>
+        <Button
+          sx={{fontFamily: 'Roboto Condensed, sans-serif'}}
+          variant="outlined"
+          onClick={() => {}}
+        >
+          Save and Continue Later
+        </Button>
+        <Button
+          sx={{fontFamily: 'Roboto Condensed, sans-serif'}}
+          variant="contained"
+          color="primary"
+          onClick={handleNext}
+        >
+          {currentStep === TOTAL_STEPS - 1 && currentSubStep === steps[currentStep].subSteps - 1 ? 'Finish' : 'Next'}
+        </Button>
       </Box>
   
       <Snackbar
@@ -134,9 +146,6 @@ const App: React.FC = () => {
       />
     </Box>
   );
-  
-  
-  
 };
 
 export default App;

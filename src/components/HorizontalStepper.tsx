@@ -1,5 +1,6 @@
 import React from 'react';
 import { Stepper, Step, StepLabel } from '@mui/material';
+import './HorizontalStepper.css';
 
 interface HorizontalStepperProps {
   currentSubStep: number;
@@ -19,9 +20,11 @@ const HorizontalStepper: React.FC<HorizontalStepperProps> = ({ currentSubStep, t
     <Stepper activeStep={currentSubStep} alternativeLabel>
       {subSteps.map((label, index) => (
         <Step key={label} completed={visitedSteps[index]}>
-          <StepLabel onClick={() => visitedSteps[index] && onSubStepChange(index)}>
-            {label}
-          </StepLabel>
+          <StepLabel
+              onClick={() => visitedSteps[index] && onSubStepChange(index)}
+            >
+              <span className="roboto-condensed">{label}</span>
+            </StepLabel>
         </Step>
       ))}
     </Stepper>
