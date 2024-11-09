@@ -1,14 +1,21 @@
 import React from 'react';
 import { Stepper, Step, StepLabel, ListItemButton, ListItemText, Paper, Typography } from '@mui/material';
+import CorporateFareIcon from '@mui/icons-material/CorporateFare';
+import BoltIcon from '@mui/icons-material/Bolt';
+import FlagIcon from '@mui/icons-material/Flag';
+import WarehouseIcon from '@mui/icons-material/Warehouse';
+import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
+import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
+import DoneOutlineIcon from '@mui/icons-material/DoneOutline';
 
 const steps = [
-  'Step 1: Organizational Profile',
-  'Step 2: Energy Profile',
-  'Step 3: Goals & Priorities',
-  'Step 4: Site Assessment',
-  'Step 5: Financial Info',
-  'Data Verification',
-  'Onboarding'
+  { label: 'Organizational Profile', icon: <CorporateFareIcon fontSize='small' /> },
+  { label: 'Energy Profile', icon: <BoltIcon fontSize='small' /> },
+  { label: 'Goals & Priorities', icon: <FlagIcon fontSize='small' /> },
+  { label: 'Site Assessment', icon: <WarehouseIcon fontSize='small' /> },
+  { label: 'Financial Info', icon: <AccountBalanceWalletIcon fontSize='small' /> },
+  { label: 'Data Verification', icon: <AssignmentTurnedInIcon fontSize='small' /> },
+  { label: 'Onboarding', icon: <DoneOutlineIcon fontSize='small' /> },
 ];
 
 interface SidebarProps {
@@ -37,8 +44,8 @@ const Sidebar: React.FC<SidebarProps> = ({ currentStep, visitedSteps, onStepChan
           },
         }}
       >
-        {steps.map((label, index) => (
-          <Step key={label} completed={visitedSteps[index][0]}>
+        {steps.map((step, index) => (
+          <Step key={step.label} completed={visitedSteps[index][0]}>
             <StepLabel>
               <ListItemButton
                 selected={currentStep === index}
@@ -55,8 +62,15 @@ const Sidebar: React.FC<SidebarProps> = ({ currentStep, visitedSteps, onStepChan
                   },
                 }}
               >
+                {React.cloneElement(step.icon, {
+                  sx: { mr: 1, color: visitedSteps[index][0] ? '#036ca1' : 'gray' },
+                })}
                 <ListItemText
-                  primary={<Typography sx={{ fontSize: '0.800rem', fontFamily: 'Roboto Condensed, sans-serif' }}>{label}</Typography>}
+                  primary={
+                    <Typography sx={{ fontSize: '0.800rem', fontFamily: 'Roboto Condensed, sans-serif' }}>
+                      {step.label}
+                    </Typography>
+                  }
                 />
               </ListItemButton>
             </StepLabel>

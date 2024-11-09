@@ -6,11 +6,11 @@ import Sidebar from './components/Sidebar';
 import Navbar from './components/Navbar';
 
 const steps = [
-  { label: 'Step 1: Organizational Profile', subSteps: 2 },
-  { label: 'Step 2: Energy Profile', subSteps: 3 },
-  { label: 'Step 3: Goals & Priorities', subSteps: 3 },
-  { label: 'Step 4: Site Assessment', subSteps: 3 },
-  { label: 'Step 5: Financial Info', subSteps: 3 },
+  { label: 'Organizational Profile', subSteps: 2 },
+  { label: 'Energy Profile', subSteps: 3 },
+  { label: 'Goals & Priorities', subSteps: 3 },
+  { label: 'Site Assessment', subSteps: 3 },
+  { label: 'Financial Info', subSteps: 3 },
   { label: 'Data Verification', subSteps: 1 },
   { label: 'Onboarding', subSteps: 1 },
 ];
