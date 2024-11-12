@@ -33,11 +33,11 @@ const Navbar: React.FC = () => {
 
         
         <IconButton color="inherit">
-          <DarkModeIcon fontSize='large'  />
+          <DarkModeIcon fontSize='medium'  />
         </IconButton>
 
         <IconButton color="inherit">
-          <NotificationsNoneIcon fontSize='large'  />
+          <NotificationsNoneIcon fontSize='medium'  />
         </IconButton>
         
         <IconButton
@@ -45,7 +45,7 @@ const Navbar: React.FC = () => {
           color="inherit"
           sx={{ fontFamily: 'Nunito Sans, sans-serif' }}
         >
-          <PersonIcon fontSize='large' />
+          <PersonIcon fontSize='medium' />
         </IconButton>
 
         <Menu
