@@ -21,9 +21,9 @@ const SubStep2: React.FC = () => {
     variant="outlined"
     size="small"
     sx={{
-      flex: 0.6,
+      flex: 0.3,
       fontFamily: 'Nunito Sans, sans-serif',
-      fontSize: '0.7rem', minWidth:'605px',
+      fontSize: '0.7rem', minWidth:'422px',
       '& .MuiInputBase-root': { height: '24px', padding: '0 6px' },
       '& input': { padding: 0, fontFamily: 'Nunito Sans, sans-serif', fontSize: '0.8rem' }
     }}
@@ -54,7 +54,7 @@ const SubStep2: React.FC = () => {
     size="small"
     select
     sx={{
-      flex: 0.75, fontFamily: 'Nunito Sans, sans-serif',
+      flex: 0.5, fontFamily: 'Nunito Sans, sans-serif',
       fontSize: '0.7rem',
       '& .MuiInputBase-root': { height: '24px', padding: '0 6px' },
       '& input': { padding: 0, fontFamily: 'Nunito Sans, sans-serif', fontSize: '0.8rem' }
@@ -70,7 +70,7 @@ const SubStep2: React.FC = () => {
     size="small"
     select
     sx={{
-      flex: 0.75,
+      flex: 0.5,
       fontSize: '0.7rem', fontFamily: 'Nunito Sans, sans-serif',
       '& .MuiInputBase-root': { height: '24px', padding: '0 6px' },
       '& input': { padding: 0, fontFamily: 'Nunito Sans, sans-serif', fontSize: '0.8rem' }
@@ -86,7 +86,7 @@ const SubStep2: React.FC = () => {
     size="small"
     select
     sx={{
-      flex: 0.75, fontFamily: 'Nunito Sans, sans-serif',
+      flex: 0.5, fontFamily: 'Nunito Sans, sans-serif',
       fontSize: '0.7rem',
       '& .MuiInputBase-root': { height: '24px', padding: '0 6px' },
       '& input': { padding: 0, fontFamily: 'Nunito Sans, sans-serif', fontSize: '0.8rem' }
@@ -102,7 +102,7 @@ const SubStep2: React.FC = () => {
     size="small"
     type="text"
     sx={{
-      flex: 0.75,
+      flex: 0.5,
       fontSize: '0.7rem', fontFamily: 'Nunito Sans, sans-serif',
       '& .MuiInputBase-root': { height: '24px', padding: '0 6px' },
       '& input': { padding: 0, fontFamily: 'Nunito Sans, sans-serif', fontSize: '0.8rem' }
