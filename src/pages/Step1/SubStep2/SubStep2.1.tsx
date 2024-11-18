@@ -7,12 +7,12 @@ const SubStep2: React.FC = () => {
       <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap');
       </style>
-      <Typography variant="h6" sx={{ mb: 1, fontFamily: 'Nunito Sans, sans-serif', fontSize: '0.85rem', fontWeight: 'bold' }}>
+      <Typography variant="h6" sx={{ mb: 1, fontFamily: 'Nunito Sans, sans-serif', fontSize: '0.85rem', fontWeight: 'bold', textAlign: 'center' }}>
         <h2>Organization Details</h2>
       </Typography> 
       <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 0 }}>
         <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 2, p: '10px' }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, justifyContent: 'center' }}>
   <Typography sx={{ fontFamily: 'Nunito Sans, sans-serif', fontSize: '0.75rem', flex: 0.3 }}>
     <b>Organization Name:</b>
   </Typography>
@@ -23,7 +23,7 @@ const SubStep2: React.FC = () => {
     sx={{
       flex: 0.3,
       fontFamily: 'Nunito Sans, sans-serif',
-      fontSize: '0.7rem', minWidth:'422px',
+      fontSize: '0.7rem', minWidth:'414px', pl: '1px', pr: '1px',
       '& .MuiInputBase-root': { height: '24px', padding: '0 6px' },
       '& input': { padding: 0, fontFamily: 'Nunito Sans, sans-serif', fontSize: '0.8rem' }
     }}
@@ -33,10 +33,12 @@ const SubStep2: React.FC = () => {
   <Button
     variant="outlined"
     sx={{
-      flex: 0.1,
+      flex: 0.14,
       fontFamily: 'Nunito Sans, sans-serif',
       fontSize: '0.65rem',
-      padding: '2px 4px',
+      padding: '2px 1px',
+      pr: '15px',
+      pl: '15px',
       alignSelf: 'flex-end',
       textTransform: 'none'
     }}
@@ -46,7 +48,7 @@ const SubStep2: React.FC = () => {
 </Box>
 
 
-<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+<Box sx={{ display: 'flex', alignItems: 'center', gap: 1, justifyContent: 'center' }}>
   <Typography sx={{ fontFamily: 'Nunito Sans, sans-serif', fontSize: '0.75rem', minWidth: '150px', flex: 0.25 }}><b>Organization Type:</b></Typography>
   <TextField
     fullWidth
@@ -62,7 +64,7 @@ const SubStep2: React.FC = () => {
   />
 </Box>
 
-<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+<Box sx={{ display: 'flex', alignItems: 'center', gap: 1, justifyContent: 'center' }}>
   <Typography sx={{ fontFamily: 'Nunito Sans, sans-serif', fontSize: '0.75rem', minWidth: '150px', flex: 0.25 }}><b>Industry Selection:</b></Typography>
   <TextField
     fullWidth
@@ -78,7 +80,7 @@ const SubStep2: React.FC = () => {
   />
 </Box>
 
-<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+<Box sx={{ display: 'flex', alignItems: 'center', gap: 1, justifyContent: 'center' }}>
   <Typography sx={{ fontFamily: 'Nunito Sans, sans-serif', fontSize: '0.75rem', minWidth: '150px', flex: 0.25 }}><b>IRS Category:</b></Typography>
   <TextField
     fullWidth
@@ -94,7 +96,7 @@ const SubStep2: React.FC = () => {
   />
 </Box>
 
-<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+<Box sx={{ display: 'flex', alignItems: 'center', gap: 1, justifyContent: 'center' }}>
   <Typography sx={{ fontFamily: 'Nunito Sans, sans-serif', fontSize: '0.75rem', minWidth: '150px', flex: 0.25 }}><b>Number of Employees at Facility:</b></Typography>
   <TextField
     fullWidth
