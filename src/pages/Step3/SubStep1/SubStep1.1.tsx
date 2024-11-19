@@ -32,22 +32,20 @@ const SubStep1: React.FC = () => {
       </Typography>
       <Box
         sx={{
-          width: '100%',
+          width: 'calc(100% - 320px)', // Ensure proper left/right padding without overflow
+          marginLeft: 'auto', // Center-align the box
+          marginRight: 'auto',
           display: 'flex',
           flexDirection: 'column',
           gap: 2,
-          pt: '10px',
-          pb: '10px',
-          pl: '160px',
-          pr: '160px',
           textAlign: 'justify',
+          lineHeight: 1.5,
         }}
       >
         <Typography
           sx={{
             fontFamily: 'Nunito Sans, sans-serif',
             fontSize: '0.75rem',
-            lineHeight: '1.5',
           }}
         >
           <b>Welcome, [User Name]!</b>
@@ -56,7 +54,6 @@ const SubStep1: React.FC = () => {
           sx={{
             fontFamily: 'Nunito Sans, sans-serif',
             fontSize: '0.75rem',
-            lineHeight: '1.5',
           }}
         >
           <b>Tell Us About Your Goals & Priorities</b>
@@ -65,7 +62,6 @@ const SubStep1: React.FC = () => {
           sx={{
             fontFamily: 'Nunito Sans, sans-serif',
             fontSize: '0.75rem',
-            lineHeight: '1.5',
           }}
         >
           Provide details about the goals you want to achieve through your customized DER System, including your financial requirements. This information will help Bradley create the most accurate and effective DER conceptualization based on your direction.
@@ -74,7 +70,6 @@ const SubStep1: React.FC = () => {
           sx={{
             fontFamily: 'Nunito Sans, sans-serif',
             fontSize: '0.75rem',
-            lineHeight: '1.5',
           }}
         >
           This will take about 10 minutes. The more details you provide, the better Bradley will perform.
@@ -83,7 +78,6 @@ const SubStep1: React.FC = () => {
           sx={{
             fontFamily: 'Nunito Sans, sans-serif',
             fontSize: '0.75rem',
-            lineHeight: '1.5',
           }}
         >
           <b>Here's what we'll cover:</b>
@@ -93,7 +87,6 @@ const SubStep1: React.FC = () => {
           sx={{
             fontFamily: 'Nunito Sans, sans-serif',
             fontSize: '0.75rem',
-            lineHeight: '1.5',
             mb: 2,
           }}
         >
@@ -105,7 +98,6 @@ const SubStep1: React.FC = () => {
           sx={{
             fontFamily: 'Nunito Sans, sans-serif',
             fontSize: '0.75rem',
-            lineHeight: '1.5',
             mb: 2,
           }}
         >
