@@ -13,11 +13,11 @@ interface HorizontalStepperProps {
 const CustomStepConnector = styled(StepConnector)(() => ({
   [`& .MuiStepConnector-line`]: {
     borderColor: 'gray',
-    borderWidth: 1.5,
+    borderWidth: 2.5,
   },
   [`&.Mui-active .MuiStepConnector-line, &.Mui-completed .MuiStepConnector-line`]: {
     borderColor: '#036ca1',
-    borderWidth: 1.5,
+    borderWidth: 2.5,
   },
 }));
 

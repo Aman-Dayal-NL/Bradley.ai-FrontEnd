@@ -139,9 +139,10 @@ const App: React.FC = () => {
                   value={calculateProgress()}
                   sx={{
                     width: 'calc(100% + 16px)',
-                    height: '0.6px',
+                    height: '4px',
                     margin: '0px -16px',
-                    mt: '20px'
+                    mt: '30px',
+                    mb: '10px'
                   }}
                 />
               </Box>
