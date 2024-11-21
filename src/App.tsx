@@ -134,18 +134,23 @@ const App: React.FC = () => {
                 currentStep={currentStep}
               />
               <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'stretch', width: '100%' }}>
-                <LinearProgress
-                  variant="determinate"
-                  value={calculateProgress()}
-                  sx={{
-                    width: 'calc(100% + 16px)',
-                    height: '4px',
-                    margin: '0px -16px',
-                    mt: '30px',
-                    mb: '10px'
-                  }}
-                />
-              </Box>
+  <LinearProgress
+    variant="determinate"
+    value={calculateProgress()}
+    sx={{
+      width: 'calc(100% + 16px)',
+      height: '3.5px',
+      margin: '0px -16px',
+      mt: '30px',
+      mb: '10px',
+      backgroundColor: '#e0e0e0',
+      '& .MuiLinearProgress-bar': {
+        backgroundColor: '#036cc1',
+      },
+    }}
+  />
+</Box>
+
 
               <StepContent step={currentStep} subStep={currentSubStep} furtherSubStep={currentFurtherSubStep} />
               <Box
