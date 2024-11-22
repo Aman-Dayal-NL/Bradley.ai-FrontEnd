@@ -4,7 +4,7 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 const SubStep3: React.FC = () => {
-  const [roofSections, setRoofSections] = useState<number[]>([0]);
+  const [roofSections, setRoofSections] = useState<number[]>([0, 1, 2]);
 
   const handleAddSection = () => {
     setRoofSections([...roofSections, roofSections.length]);
