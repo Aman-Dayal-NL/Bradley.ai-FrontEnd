@@ -118,7 +118,7 @@ const SubStep2: React.FC = () => {
   </FormGroup>
 </Typography>
 
-  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           <Typography sx={{ fontFamily: 'Nunito Sans, sans-serif', fontSize: '0.75rem', minWidth: '150px', flex: 0.5 }}><b>Please Specify Other Financing: </b>(Optional)</Typography>
           <TextField
             variant="outlined" 
