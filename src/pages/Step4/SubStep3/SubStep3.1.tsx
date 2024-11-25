@@ -72,46 +72,40 @@ const SubStep3: React.FC = () => {
     }}
   >
     {roofSections.map((_, index) => (
-      <Box
+      <TextField
         key={index}
+        variant="outlined"
+        size="small"
+        type="number"
+        placeholder={`Sec. ${index + 1} Area`}
         sx={{
-          display: 'flex',
-          alignItems: 'center',
-          flex: `1 1 ${100 / roofSections.length}%`,
-          gap: 1,
+          flex: 1,
+          fontFamily: 'Nunito Sans, sans-serif',
+          fontSize: '0.7rem',
+          '& .MuiInputBase-root': { height: '24px', padding: '0 6px' },
+          '& input': { padding: 0, fontFamily: 'Nunito Sans, sans-serif', fontSize: '0.8rem' },
         }}
-      >
-        <TextField
-          variant="outlined"
-          size="small"
-          type="number"
-          placeholder={`Sec. ${index + 1} Area`}
-          sx={{
-            flex: 1,
-            fontFamily: 'Nunito Sans, sans-serif',
-            fontSize: '0.7rem',
-            '& .MuiInputBase-root': { height: '24px', padding: '0 6px' },
-            '& input': { padding: 0, fontFamily: 'Nunito Sans, sans-serif', fontSize: '0.8rem' },
-          }}
-        />
-        <IconButton
-          onClick={handleAddSection}
-          color="primary"
-          sx={{ p: 0 }}
-        >
-          <AddCircleOutlineIcon fontSize="small" />
-        </IconButton>
-        <IconButton
-          onClick={() => handleRemoveSection(index)}
-          sx={{ p: 0 }}
-          disabled={roofSections.length === 1}
-        >
-          <DeleteIcon fontSize="small" />
-        </IconButton>
-      </Box>
+      />
     ))}
+    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, ml: 1 }}>
+      <IconButton
+        onClick={handleAddSection}
+        color="primary"
+        sx={{ p: 0 }}
+      >
+        <AddCircleOutlineIcon fontSize="small" />
+      </IconButton>
+      <IconButton
+        onClick={() => handleRemoveSection(roofSections.length - 1)}
+        sx={{ p: 0 }}
+        disabled={roofSections.length === 1}
+      >
+        <DeleteIcon fontSize="small" />
+      </IconButton>
+    </Box>
   </Box>
 </Box>
+
 
 
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
