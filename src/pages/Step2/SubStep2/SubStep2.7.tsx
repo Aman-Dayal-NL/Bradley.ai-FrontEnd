@@ -63,9 +63,7 @@ const SubStep2: React.FC = () => {
           gap: 2,
           pt: '10px',
           pb: '10px',
-          pl: '160px',
-          pr: '160px',
-          textAlign: 'justify',
+          textAlign: 'center',
         }}
       >
         <Typography
@@ -84,7 +82,7 @@ const SubStep2: React.FC = () => {
             lineHeight: '1.5',
           }}
         >
-          This requires your authorization. Click the button below to review and electronically sign a Letter of Authorization.
+          This requires your authorization. Click on <b>Next</b> to review and electronically sign a Letter of Authorization or skip.
         </Typography>
       </Box>
     </Box>
