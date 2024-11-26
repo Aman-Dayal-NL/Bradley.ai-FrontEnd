@@ -1,53 +1,102 @@
 import React from 'react';
-import { Box, TextField, Typography } from '@mui/material';
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import { Box, TextField, Typography, Select, MenuItem, FormControlLabel, Radio, RadioGroup, Table, TableBody, TableCell, TableRow } from '@mui/material';
 
-const SubStep3: React.FC = () => { 
+const SubStep3: React.FC = () => {
+
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', fontFamily: 'Nunito Sans, sans-serif', fontSize: '0.75rem', p: 1, pr: 4, pl: 1, pt: 1 }}>
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        fontFamily: 'Nunito Sans, sans-serif',
+        fontSize: '0.75rem',
+        p: 1,
+        pr: 4,
+        pl: 1,
+        pt: 1,
+      }}
+    >
       <style>
-        @import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@200..1000&display=swap');
       </style>
-      <Typography variant="h6" sx={{ mb: 1, fontFamily: 'Nunito Sans, sans-serif', fontSize: '0.85rem', fontWeight: 'bold', textAlign: 'center' }}>
-        <h2>Energy Load Profile, Contd.</h2>
+      <Typography
+        variant="h6"
+        sx={{
+          mb: 1,
+          fontFamily: 'Nunito Sans, sans-serif',
+          fontSize: '0.85rem',
+          fontWeight: 'bold',
+          textAlign: 'center',
+        }}
+      >
+        <h2>LETTER OF AUTHORIZATION - STATUS</h2><br />
+				<h2>Letter of Authorization to receive data from regulated Utility Co.</h2>
       </Typography>
-      
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 0 }}>
-      <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 2, pt: '10px', pb: '10px', pl: '160px', pr: '160px' }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          <Typography sx={{ fontFamily: 'Nunito Sans, sans-serif', fontSize: '0.75rem', minWidth: '150px', flex: 0.25 }}><b>Data Range (Optional):</b></Typography>
-          <TextField
-            variant="outlined" 
-            size="small" 
-            type="date" 
-            sx={{
-              flex: 0.75, fontFamily: 'Nunito Sans, sans-serif',
-              fontSize: '0.7rem',
-              '& .MuiInputBase-root': { height: '24px', padding: '0 6px' },
-              '& input': { padding: 0, fontFamily: 'Nunito Sans, sans-serif', fontSize: '0.8rem' }
-            }}
-          />
-          to 
-          <TextField
-            variant="outlined" 
-            size="small" 
-            type="date" 
-            sx={{
-              flex: 0.75, fontFamily: 'Nunito Sans, sans-serif',
-              fontSize: '0.7rem',
-              '& .MuiInputBase-root': { height: '24px', padding: '0 6px' },
-              '& input': { padding: 0, fontFamily: 'Nunito Sans, sans-serif', fontSize: '0.8rem' }
-            }}
-          />
-        </Box>
-        <Typography sx={{ fontSize: '0.75rem', fontFamily: 'Nunito Sans, sans-serif', mb: 0, textAlign: 'right' }}><b>*</b>Minimum of 12 months of data/24+ months for optimal results. <br /><b>**</b>Minimum 15-minute intervals.</Typography>
 
-      <Box sx={{ display: 'flex', alignItems: 'center', border: '1px dashed grey', borderRadius: 2, p: 2, mb: 0, mt: 1.5, justifyContent: 'center' }}>
-        <CloudUploadIcon fontSize='medium'/>
-        <Typography sx={{ fontSize: '0.8rem', fontFamily: 'Nunito Sans, sans-serif', ml: 1 }}>Drag and drop files here or click to upload (PDF, Excel, CSV)</Typography>
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, pt: '10px', pb: '10px', px: '160px' }}>
+
+			<Table
+          sx={{
+            border: '1px solid #ccc',
+            borderRadius: '8px',
+            overflow: 'hidden',
+          }}
+        >
+          <TableBody>
+            <TableRow>
+              <TableCell
+                sx={{
+                  fontFamily: 'Nunito Sans, sans-serif',
+                  fontSize: '0.75rem',
+                  fontWeight: 'bold',
+                  backgroundColor: '#f9f9f9',
+                  textAlign: 'right',
+                  width: '50%',
+                  borderBottom: '1px solid #ccc',
+                }}
+              >
+                Current Status:
+              </TableCell>
+              <TableCell
+                sx={{
+                  fontFamily: 'Nunito Sans, sans-serif',
+                  fontSize: '0.75rem',
+                  fontWeight: 'bold',
+                  color: '#036CA1',
+                  textAlign: 'left',
+                  borderBottom: '1px solid #ccc',
+                }}
+              >
+                Awaiting Approval
+              </TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell
+                sx={{
+                  fontFamily: 'Nunito Sans, sans-serif',
+                  fontSize: '0.75rem',
+                  fontWeight: 'bold',
+                  backgroundColor: '#f9f9f9',
+                  textAlign: 'right',
+                  width: '50%',
+                }}
+              >
+                Details:
+              </TableCell>
+              <TableCell
+                sx={{
+                  fontFamily: 'Nunito Sans, sans-serif',
+                  fontSize: '0.75rem',
+                  textAlign: 'left',
+                }}
+              >
+                Your Letter of Authorization has been signed and sent. It is now pending a response from your regulated Utility Co. You will be notified via email confirmation once the interval data has been received by Bradley.
+              </TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
       </Box>
-      <Typography sx={{ fontSize: '0.75rem', fontFamily: 'Nunito Sans, sans-serif', mb: 0, textAlign: 'right' }}><b>*</b>Accepted File Formats: .xls, .xlsx, .csv</Typography>
-    </Box></Box></Box>
+    </Box>
   );
 };
 
