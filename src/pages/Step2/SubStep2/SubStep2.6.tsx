@@ -11,7 +11,6 @@ import AddCircleIcon from '@mui/icons-material/AddCircle';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 const SubStep2: React.FC = () => {
-  const [showWasteHeat, setShowWasteHeat] = useState(false);
   const [wasteHeatSources, setWasteHeatSources] = useState([
     { type: '', capacity: '', fuelSource: '', efficiency: '', age: '' , operatingPressure: '', history: '', utilization: '', volume: ''},
   ]);  
