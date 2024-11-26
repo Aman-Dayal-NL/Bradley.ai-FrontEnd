@@ -24,7 +24,7 @@ const SubStep3: React.FC = () => {
           <Typography sx={{ fontFamily: 'Nunito Sans, sans-serif', fontSize: '0.75rem', minWidth: '150px', textAlign: 'justify' }}>
             Please complete this form in its entirety and press the Authorize & Send Request button, This will automatically send the request to your regulated utility. This request only authorizes Bradley to recieve an excel or CVS data file containing your usage profile.
           </Typography>
-          <Typography sx={{ fontFamily: 'Nunito Sans, sans-serif', fontSize: '0.75rem', mt: 3, textAlign: 'justify' }}>
+          <Typography sx={{ fontFamily: 'Nunito Sans, sans-serif', fontSize: '0.75rem', mt: 3, textAlign: 'justify', lineHeight: 1.8 }}>
   On this 
   <TextField
     variant="standard"
