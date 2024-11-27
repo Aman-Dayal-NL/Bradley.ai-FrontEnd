@@ -45,7 +45,7 @@ const SubStep2: React.FC = () => {
                 sx={{ 
                   flex: 1,
                   fontSize: '0.7rem', fontFamily: 'Nunito Sans, sans-serif', 
-                  '& .MuiInputBase-root': { height: '24px', padding: '0 6px' },
+                  '& .MuiInputBase-root': { height: '30px', padding: '0 6px' },
                   '& input': { padding: 0, fontSize: '0.8rem', fontFamily: 'Nunito Sans, sans-serif' }
                 }} 
               />

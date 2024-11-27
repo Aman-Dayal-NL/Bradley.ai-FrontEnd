@@ -67,7 +67,7 @@ const SubStep2: React.FC = () => {
                     '& .MuiInputBase-root': {
                       fontFamily: 'Nunito Sans, sans-serif',
                       fontSize: '0.8rem',
-                      height: '28px',
+                      height: '40px',
                     },
                   }}
                   InputLabelProps={{
@@ -100,7 +100,7 @@ const SubStep2: React.FC = () => {
                     '& .MuiInputBase-root': {
                       fontFamily: 'Nunito Sans, sans-serif',
                       fontSize: '0.8rem',
-                      height: '28px',
+                      height: '40px',
                     },
                   }}
                   InputLabelProps={{
@@ -130,7 +130,7 @@ const SubStep2: React.FC = () => {
                     '& .MuiInputBase-root': {
                       fontFamily: 'Nunito Sans, sans-serif',
                       fontSize: '0.8rem',
-                      height: '28px',
+                      height: '40px',
                     },
                   }}
                   InputLabelProps={{
@@ -166,7 +166,7 @@ const SubStep2: React.FC = () => {
                     '& .MuiInputBase-root': {
                       fontFamily: 'Nunito Sans, sans-serif',
                       fontSize: '0.8rem',
-                      height: '28px',
+                      height: '40px',
                     },
                   }}
                   InputLabelProps={{
@@ -196,7 +196,7 @@ const SubStep2: React.FC = () => {
                     '& .MuiInputBase-root': {
                       fontFamily: 'Nunito Sans, sans-serif',
                       fontSize: '0.8rem',
-                      height: '28px',
+                      height: '40px',
                     },
                   }}
                   InputLabelProps={{
@@ -226,7 +226,7 @@ const SubStep2: React.FC = () => {
                     '& .MuiInputBase-root': {
                       fontFamily: 'Nunito Sans, sans-serif',
                       fontSize: '0.8rem',
-                      height: '28px',
+                      height: '40px',
                     },
                   }}
                   InputLabelProps={{
@@ -257,7 +257,7 @@ const SubStep2: React.FC = () => {
                     '& .MuiInputBase-root': {
                       fontFamily: 'Nunito Sans, sans-serif',
                       fontSize: '0.8rem',
-                      height: '28px',
+                      height: '40px',
                     },
                   }}
                   InputLabelProps={{
@@ -287,7 +287,7 @@ const SubStep2: React.FC = () => {
                     '& .MuiInputBase-root': {
                       fontFamily: 'Nunito Sans, sans-serif',
                       fontSize: '0.8rem',
-                      height: '28px',
+                      height: '40px',
                     },
                   }}
                   InputLabelProps={{
@@ -323,7 +323,7 @@ const SubStep2: React.FC = () => {
                     '& .MuiInputBase-root': {
                       fontFamily: 'Nunito Sans, sans-serif',
                       fontSize: '0.8rem',
-                      height: '28px',
+                      height: '40px',
                     },
                   }}
                   InputLabelProps={{

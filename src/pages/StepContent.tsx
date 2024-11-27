@@ -86,7 +86,7 @@ const stepSubStepMapping: StepSubStepMapping = {
       4: lazy(() => import('./Financial Info/SubStep2/Own/Existing Energy Contracts - IV')),
       5: lazy(() => import('./Financial Info/SubStep2/Own/Other Energy Commitments (Optional)')),
       6: lazy(() => import('./Financial Info/SubStep2/Own/What Are Your Budget & Investment Goals')),
-      7: lazy(() => import('./Financial Info/SubStep2/Own/Financial Preferences2')),
+      7: lazy(() => import('./Financial Info/SubStep2/Own/Financing Preferences')),
     },
     2: {
       0: lazy(() => import('./Financial Info/SubStep2/ThirdParty/You Selected A Third Party Ownership Model')),

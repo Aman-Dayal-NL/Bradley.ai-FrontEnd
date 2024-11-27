@@ -48,8 +48,8 @@ const SubStep2: React.FC = () => {
               flex: 0.498,
               fontFamily: 'Nunito Sans, sans-serif',
               fontSize: '0.7rem', minWidth:'414px', pl: '1px', pr: '1px',
-              height: '24px',
-              '& .MuiInputBase-root': { height: '24px', padding: '0 6px' },
+              height: '40px',
+              '& .MuiInputBase-root': { height: '40px', padding: '0 6px' },
               '& .MuiSelect-select': { padding: '4px 6px', fontSize: '0.7rem' },
             }}
           >
@@ -72,8 +72,8 @@ const SubStep2: React.FC = () => {
               flex: 0.498,
               fontFamily: 'Nunito Sans, sans-serif',
               fontSize: '0.7rem', minWidth:'414px', pl: '1px', pr: '1px',
-              height: '24px',
-              '& .MuiInputBase-root': { height: '24px', padding: '0 6px' },
+              height: '40px',
+              '& .MuiInputBase-root': { height: '40px', padding: '0 6px' },
               '& .MuiSelect-select': { padding: '4px 6px', fontSize: '0.7rem' },
             }}
           >
@@ -94,8 +94,8 @@ const SubStep2: React.FC = () => {
               flex: 0.498,
               fontFamily: 'Nunito Sans, sans-serif',
               fontSize: '0.7rem', minWidth:'414px', pl: '1px', pr: '1px',
-              height: '24px',
-              '& .MuiInputBase-root': { height: '24px', padding: '0 6px' },
+              height: '40px',
+              '& .MuiInputBase-root': { height: '40px', padding: '0 6px' },
               '& .MuiSelect-select': { padding: '4px 6px', fontSize: '0.7rem' },
             }}
           >

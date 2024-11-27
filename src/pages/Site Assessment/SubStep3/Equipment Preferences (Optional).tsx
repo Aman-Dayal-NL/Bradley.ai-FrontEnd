@@ -52,7 +52,7 @@ const SubStep3: React.FC = () => {
               flex: 0.7,
               fontFamily: 'Nunito Sans, sans-serif',
               fontSize: '0.7rem',
-              height: '24px',
+              height: '40px',
               '& .MuiInputBase-root': { padding: '0 6px' },
               '& .MuiSelect-select': { padding: '4px 6px', fontSize: '0.7rem' },
             }}
@@ -92,7 +92,7 @@ const SubStep3: React.FC = () => {
               flex: 0.7,
               fontFamily: 'Nunito Sans, sans-serif',
               fontSize: '0.7rem',
-              height: '24px',
+              height: '40px',
               '& .MuiInputBase-root': { padding: '0 6px' },
               '& .MuiSelect-select': { padding: '4px 6px', fontSize: '0.7rem' },
             }}
@@ -132,7 +132,7 @@ const SubStep3: React.FC = () => {
               flex: 0.7,
               fontFamily: 'Nunito Sans, sans-serif',
               fontSize: '0.7rem',
-              height: '24px',
+              height: '40px',
               '& .MuiInputBase-root': { padding: '0 6px' },
               '& .MuiSelect-select': { padding: '4px 6px', fontSize: '0.7rem' },
             }}
