@@ -177,7 +177,7 @@ const SubStep1: React.FC = () => {
             }}
           />
           <Typography sx={{ fontFamily: 'Nunito Sans, sans-serif', fontSize: '0.75rem' }}>
-            I have read and agreed to the terms of this Letter of Authorization.
+            I have reviewed the information and confirm it is accurate.
           </Typography>
         </Box>
       </Box>
