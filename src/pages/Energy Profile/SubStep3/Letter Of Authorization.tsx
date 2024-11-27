@@ -35,7 +35,7 @@ const SubStep3: React.FC = () => {
       fontFamily: 'Nunito Sans, sans-serif',
       '& .MuiInputBase-root': { padding: 0, marginBottom: '-2px' },
       '& input': { textAlign: 'center', fontSize: '0.8rem', padding: 0 },
-      '& .MuiInputBase-input::placeholder': { fontSize: '0.75rem' },
+      '& .MuiInputBase-input::placeholder': { fontSize: '0.7rem' },
     }}
   />{' '}
   day of{' '}
@@ -48,7 +48,7 @@ const SubStep3: React.FC = () => {
       fontFamily: 'Nunito Sans, sans-serif',
       '& .MuiInputBase-root': { padding: 0, marginBottom: '-2px' },
       '& input': { textAlign: 'center', fontSize: '0.8rem', padding: 0 },
-      '& .MuiInputBase-input::placeholder': { fontSize: '0.75rem' },
+      '& .MuiInputBase-input::placeholder': { fontSize: '0.7rem' },
     }}
   />
   , 2024, the{' '}
@@ -61,7 +61,7 @@ const SubStep3: React.FC = () => {
       fontFamily: 'Nunito Sans, sans-serif',
       '& .MuiInputBase-root': { padding: 0, marginBottom: '-2px' },
       '& input': { textAlign: 'center', fontSize: '0.8rem', padding: 0 },
-      '& .MuiInputBase-input::placeholder': { fontSize: '0.75rem' },
+      '& .MuiInputBase-input::placeholder': { fontSize: '0.7rem' },
     }}
   />
   {' '} (Customer) appoints Bradley.ai as its Agent to obtain any and all usage information Bradley deems necessary to EVALUATE the Customer electricity, gas, or all steam supply at our location in{' '}
@@ -74,7 +74,7 @@ const SubStep3: React.FC = () => {
       fontFamily: 'Nunito Sans, sans-serif',
       '& .MuiInputBase-root': { padding: 0, marginBottom: '-2px' },
       '& input': { textAlign: 'center', fontSize: '0.8rem', padding: 0 },
-      '& .MuiInputBase-input::placeholder': { fontSize: '0.75rem' },
+      '& .MuiInputBase-input::placeholder': { fontSize: '0.7rem' },
     }}
   />
   . Customer Point of Contact is Mr./Mrs.{' '}
@@ -87,7 +87,7 @@ const SubStep3: React.FC = () => {
       fontFamily: 'Nunito Sans, sans-serif',
       '& .MuiInputBase-root': { padding: 0, marginBottom: '-2px' },
       '& input': { textAlign: 'center', fontSize: '0.8rem', padding: 0 },
-      '& .MuiInputBase-input::placeholder': { fontSize: '0.75rem' },
+      '& .MuiInputBase-input::placeholder': { fontSize: '0.7rem' },
     }}
   />
   {' '} listed below with their contact information and the information identifying our accounts.

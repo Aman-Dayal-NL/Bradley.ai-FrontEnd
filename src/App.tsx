@@ -280,6 +280,8 @@ const App: React.FC = () => {
         >
           {currentStep === 1 && currentSubStep === 2 && currentFurtherSubStep === 0
     ? 'Authorize & Send Request'
+    : currentStep === 5 && currentSubStep === 0 && currentFurtherSubStep === 0
+    ? 'Submit'
     : currentStep === TOTAL_STEPS - 1 && currentSubStep === steps[currentStep].subSteps - 1 && currentFurtherSubStep === steps[currentStep].furtherSubSteps[currentSubStep] - 1
     ? 'Finish'
     : 'Next'}
