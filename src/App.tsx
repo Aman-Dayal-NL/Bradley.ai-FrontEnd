@@ -142,9 +142,6 @@ const App: React.FC = () => {
 
         <Box component="main" sx={{ flexGrow: 1, p: 4, bgcolor: '#f5f5f5', overflowX: 'auto', scrollbarWidth: 'none' }}>
           <Box sx={{ mt: 1, pl: 2, pb: 1, pt: 3, mb: 7, ml: 3, borderRadius: '8px', bgcolor: 'white', boxShadow: 1, color: 'black', display: 'flex' }}>
-            {/* <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '10px', mr: 2 }}>
-              <LinearProgress variant="determinate" value={calculateProgress()} sx={{ width: '100px', height: '0.5%', transform: 'rotate(90deg)', transformOrigin: 'top left' }} />
-            </Box> */}
             <Box sx={{ flexGrow: 1 }}>
               <HorizontalStepper
                 currentSubStep={currentSubStep}
