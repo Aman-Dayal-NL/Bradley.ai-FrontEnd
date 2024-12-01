@@ -6,33 +6,16 @@ import Navbar from './components/Navbar';
 import Sidebar from './components/Sidebar';
 import Footer from './components/Footer';
 import { useAppContext } from './AppContext';
-
-export const steps = [
-  { label: 'Organizational Profile', subSteps: 2, furtherSubSteps: [1, 5] },
-  { label: 'Energy Profile', subSteps: 3, furtherSubSteps: [1, 7, 2] },
-  { label: 'Goals & Priorities', subSteps: 3, furtherSubSteps: [1, 2, 2] },
-  { label: 'Site Assessment', subSteps: 3, furtherSubSteps: [1, 6, 6] },
-  { label: 'Financial Info', subSteps: 2, furtherSubSteps: [2, 8, 3] }, 
-  { label: 'Data Verification', subSteps: 1, furtherSubSteps: [1] },
-  { label: 'Onboarding', subSteps: 1, furtherSubSteps: [2] },
-];
-
-export const TOTAL_STEPS = steps.length;
+import { steps, TOTAL_STEPS } from './components/steps';
 
 const App: React.FC = () => {
   const {
-    currentStep,
-    setCurrentStep,
-    currentSubStep,
-    setCurrentSubStep,
-    currentFurtherSubStep,
-    setCurrentFurtherSubStep,
-    visitedSteps,
-    setVisitedSteps,
-    completedSubSteps,
-    setCompletedSubSteps,
-    openSnackbar,
-    setOpenSnackbar
+    currentStep, setCurrentStep,
+    currentSubStep, setCurrentSubStep,
+    currentFurtherSubStep, setCurrentFurtherSubStep,
+    visitedSteps, setVisitedSteps,
+    completedSubSteps, setCompletedSubSteps,
+    openSnackbar, setOpenSnackbar
 } = useAppContext();
 
   const handleStepChange = (step: number) => {

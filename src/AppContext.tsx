@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState } from 'react';
-import { steps, TOTAL_STEPS } from './App';
+import { steps, TOTAL_STEPS } from './components/steps';
 
 interface AppContextProps {
     currentStep: number;
