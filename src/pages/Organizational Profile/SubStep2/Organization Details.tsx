@@ -242,7 +242,7 @@ const SubStep2: React.FC = () => {
             <MenuItem value="Option 10">501(c)(9) – Voluntary Employees' Beneficiary Associations</MenuItem>
             <MenuItem value="Option 11">501(c)(10) – Domestic Fraternal Societies and Associations</MenuItem>
             <MenuItem value="Option 12">501(c)(11) – Teachers’ Retirement Fund Associations</MenuItem>
-            <MenuItem value="Option 13">501(c)(12) – Benevolent Life Insurance Associations, Mutual Ditch or Irrigation Companies, Mutual or Cooperative Telephone Companies</MenuItem>
+            <MenuItem value="Option 13">501(c)(12) – Benevolent Life Insurance Associations, Mutual Ditch or Irrigation Companies, <br />Mutual or Cooperative Telephone Companies</MenuItem>
             <MenuItem value="Option 14">501(c)(13) – Cemetery Companies</MenuItem>
             <MenuItem value="Option 15">501(c)(14) – State-Chartered Credit Unions, Mutual Reserve Funds</MenuItem>
             <MenuItem value="Option 16">501(c)(15) – Mutual Insurance Companies or Associations</MenuItem>
