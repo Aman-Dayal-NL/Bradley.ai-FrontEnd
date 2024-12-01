@@ -27,7 +27,7 @@ export const useAppContext = () => {
 };
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const [currentStep, setCurrentStep] = useState(0);
+  const [currentStep, setCurrentStep] = useState(0);
   const [currentSubStep, setCurrentSubStep] = useState(0);
   const [currentFurtherSubStep, setCurrentFurtherSubStep] = useState(0);
   const [visitedSteps, setVisitedSteps] = useState(
