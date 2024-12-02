@@ -1,4 +1,5 @@
 import React, { Suspense, lazy } from 'react';
+import { CircularProgress } from '@mui/material';
 
 type StepSubStepMapping = {
   [step: number]: {
@@ -122,7 +123,13 @@ const StepContent: React.FC<StepContentProps> = ({ step, subStep, furtherSubStep
   }
 
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense
+      fallback={
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+          <CircularProgress />
+        </div>
+      }
+    >
       <div style={{ fontFamily: 'Nunito Sans, sans-serif', fontSize: '0.800rem' }}>
         <ComponentToRender />
       </div>
