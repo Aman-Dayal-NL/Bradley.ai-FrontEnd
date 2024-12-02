@@ -33,17 +33,23 @@ const Navbar: React.FC = () => {
 
         
         <IconButton color="inherit">
-          <DarkModeIcon fontSize='medium'  />
+          <DarkModeIcon fontSize='medium' sx={{'&:focus': {
+                                  outline: 'none',
+                                },}}  />
         </IconButton>
 
         <IconButton color="inherit">
-          <NotificationsNoneIcon fontSize='medium'  />
+          <NotificationsNoneIcon fontSize='medium'   sx={{'&:focus': {
+                                  outline: 'none',
+                                },}}  />
         </IconButton>
         
         <IconButton
           onClick={handleMenuOpen}
           color="inherit"
-          sx={{ fontFamily: 'Nunito Sans, sans-serif' }}
+          sx={{ fontFamily: 'Nunito Sans, sans-serif', '&:focus': {
+                                  outline: 'none',
+                                }, }}
         >
           <PersonIcon fontSize='medium' />
         </IconButton>
@@ -54,7 +60,9 @@ const Navbar: React.FC = () => {
           onClose={handleMenuClose}
           anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
           transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-          sx={{ '.MuiPaper-root': { fontFamily: 'Nunito Sans, sans-serif', fontSize: '0.700rem', width: '150px', marginTop: '6.5px', marginLeft: '22.5px', borderRadius: '1', boxShadow: '1'}, }}
+          sx={{ '.MuiPaper-root': { fontFamily: 'Nunito Sans, sans-serif', fontSize: '0.700rem', width: '150px', marginTop: '6.5px', marginLeft: '22.5px', borderRadius: '1', boxShadow: '1', '&:focus': {
+                                  outline: 'none',
+                                },}, }}
         >
           <MenuItem onClick={handleLogout} sx={{ fontFamily: 'Nunito Sans, sans-serif', fontSize: '0.700rem' }}>
             Logout

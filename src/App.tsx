@@ -164,7 +164,9 @@ const App: React.FC = () => {
         padding: '2px 10px',
         minWidth: '10px',
         maxHeight: '25px',
-        textTransform: 'none',
+        textTransform: 'none','&:focus': {
+                                  outline: 'none',
+                                },
       }}
       variant="outlined"
       onClick={handleBack}
@@ -184,7 +186,9 @@ const App: React.FC = () => {
             padding: '2px 10px',
             minWidth: '10px',
             maxHeight: '25px',
-            textTransform: 'none',
+            textTransform: 'none','&:focus': {
+                                  outline: 'none',
+                                },
           }}
           variant="outlined"
           onClick={() => {}}
@@ -198,7 +202,9 @@ const App: React.FC = () => {
             padding: '2px 10px',
             minWidth: '10px',
             maxHeight: '25px',
-            textTransform: 'none',
+            textTransform: 'none','&:focus': {
+                                  outline: 'none',
+                                },
           }}
           variant="contained"
           color="primary"
@@ -219,7 +225,9 @@ const App: React.FC = () => {
             minWidth: '10px',
             maxHeight: '25px',
             textTransform: 'none',
-            boxShadow: 'none',
+            boxShadow: 'none','&:focus': {
+                                  outline: 'none',
+                                },
           }}
           variant="contained"
           color="primary"
@@ -243,7 +251,9 @@ const App: React.FC = () => {
               padding: '2px 10px',
               minWidth: '10px',
               maxHeight: '25px',
-              textTransform: 'none',
+              textTransform: 'none','&:focus': {
+                                  outline: 'none',
+                                },
             }}
             variant="outlined"
             onClick={() => {}}
@@ -260,6 +270,9 @@ const App: React.FC = () => {
             maxHeight: '25px',
             textTransform: 'none',
             boxShadow: 'none',
+            '&:focus': {
+                                  outline: 'none',
+                                },
           }}
           variant="contained"
           color="primary"
