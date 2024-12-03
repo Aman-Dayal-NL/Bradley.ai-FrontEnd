@@ -2,26 +2,21 @@ import React, { createContext, useContext, useState } from 'react';
 import { steps, TOTAL_STEPS } from './components/steps';
 
 interface AppContextProps {
-    currentStep: number;
-    setCurrentStep: React.Dispatch<React.SetStateAction<number>>;
-    currentSubStep: number;
-    setCurrentSubStep: React.Dispatch<React.SetStateAction<number>>;
-    currentFurtherSubStep: number;
-    setCurrentFurtherSubStep: React.Dispatch<React.SetStateAction<number>>;
-    visitedSteps: boolean[][];
-    setVisitedSteps: React.Dispatch<React.SetStateAction<boolean[][]>>;
-    completedSubSteps: boolean[][];
-    setCompletedSubSteps: React.Dispatch<React.SetStateAction<boolean[][]>>;
+    currentStep: number; setCurrentStep: React.Dispatch<React.SetStateAction<number>>;
+    currentSubStep: number; setCurrentSubStep: React.Dispatch<React.SetStateAction<number>>;
+    currentFurtherSubStep: number; setCurrentFurtherSubStep: React.Dispatch<React.SetStateAction<number>>;
+    visitedSteps: boolean[][]; setVisitedSteps: React.Dispatch<React.SetStateAction<boolean[][]>>;
+    completedSubSteps: boolean[][]; setCompletedSubSteps: React.Dispatch<React.SetStateAction<boolean[][]>>;
 }
 
 const AppContext = createContext<AppContextProps | undefined>(undefined);
 
 export const useAppContext = () => {
-    const context = useContext(AppContext);
-    if (!context) {
-        throw new Error("useAppContext must be used within an AppProvider");
-    }
-		return context;
+  const context = useContext(AppContext);
+  if (!context) {
+      throw new Error("useAppContext must be used within an AppProvider");
+  }
+  return context;
 };
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -41,16 +36,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
     return (
         <AppContext.Provider value={{
-            currentStep,
-            setCurrentStep,
-            currentSubStep,
-            setCurrentSubStep,
-            currentFurtherSubStep,
-            setCurrentFurtherSubStep,
-            visitedSteps,
-            setVisitedSteps,
-            completedSubSteps,
-            setCompletedSubSteps,
+            currentStep, setCurrentStep,
+            currentSubStep, setCurrentSubStep,
+            currentFurtherSubStep, setCurrentFurtherSubStep,
+            visitedSteps, setVisitedSteps,
+            completedSubSteps, setCompletedSubSteps,
         }}>
             {children}
         </AppContext.Provider>
