@@ -17,7 +17,7 @@ const Signup: React.FC = () => {
   const handleSignup = () => {
     if (!email || !password) {
       toast.error('Please fill in all fields', {
-        position: 'top-right',
+        position: 'top-center',
         autoClose: 1000,
         hideProgressBar: true,
         style: { fontSize: '14px', padding: '8px 16px' },
@@ -114,7 +114,7 @@ const Signup: React.FC = () => {
               width: '90%',
             }}
           >
-            <h3>Sign up for Bradley.ai</h3>
+            <h3>Create your account</h3>
           </Typography>
 
           {/* Email Input */}

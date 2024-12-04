@@ -25,7 +25,7 @@ const Login: React.FC = () => {
       navigate('/analyst');
     } else {
       toast.error('Invalid email or password', {
-        position: 'top-right',
+        position: 'top-center',
         autoClose: 1000,
         hideProgressBar: true,
         style: { fontSize: '14px', padding: '8px 16px' }, // Smaller and subtle toast
