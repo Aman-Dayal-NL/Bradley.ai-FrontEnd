@@ -63,7 +63,6 @@ const Login: React.FC = () => {
             width: '40%',
             backgroundColor: '#0e0c22',
             color: 'white',
-            padding: 4,
             margin: '10px',
             display: 'flex',
             flexDirection: 'column',
@@ -71,18 +70,21 @@ const Login: React.FC = () => {
           }}
         >
           <Typography variant="h4" fontWeight="bold" sx={{
-        fontFamily: '"Nunito Sans", sans-serif',}}>
+        fontFamily: '"Nunito Sans", sans-serif',
+        padding: 4,}}>
             Bradley.ai
           </Typography>
           <Typography variant="body1" mt={2} sx={{
-        fontFamily: '"Nunito Sans", sans-serif',}}>
+        fontFamily: '"Nunito Sans", sans-serif',
+        padding: 4,}}>
             <b>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</b>
           </Typography>
 					<Typography variant="body1" sx={{
-        fontFamily: '"Nunito Sans", sans-serif',}}>
+        fontFamily: '"Nunito Sans", sans-serif',
+        padding: 4,}}>
             <b>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</b>
           </Typography>
-          <img src="/dummy-path.jpg" alt="Welcome" style={{ width: '100%', 
+          <img src="src\Auth\cube1-dd27c2c5.webp" alt="Welcome" style={{ width: '100%', 
         fontFamily: '"Nunito Sans", sans-serif', }} />
         </Box>
 
