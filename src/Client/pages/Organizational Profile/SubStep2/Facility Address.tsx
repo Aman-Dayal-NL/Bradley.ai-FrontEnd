@@ -3,25 +3,31 @@ import { Box, Typography, TextField, Button } from '@mui/material';
 import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
-import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
-import markerIcon from 'leaflet/dist/images/marker-icon.png';
-import markerShadow from 'leaflet/dist/images/marker-shadow.png';
+import { FaMapMarkerAlt } from 'react-icons/fa';
+import { renderToStaticMarkup } from 'react-dom/server';
 
-// No need to delete _getIconUrl as it does not exist on L.Icon.Default
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: markerIcon2x,
-  iconUrl: markerIcon,
-  shadowUrl: markerShadow,
-});
+const createCustomIcon = (IconComponent: React.ElementType) => {
+  const iconMarkup = renderToStaticMarkup(
+    <IconComponent style={{ fontSize: '30px', color: '#e74c3c' }} />
+  );
+  return L.divIcon({
+    html: iconMarkup,
+    className: 'custom-icon',
+    iconSize: [30, 30],
+    iconAnchor: [15, 30],
+  });
+};
 
 const MapMarker = ({ position, setPosition }: { position: L.LatLng | null, setPosition: React.Dispatch<React.SetStateAction<L.LatLng | null>> }) => {
+  const customIcon = createCustomIcon(FaMapMarkerAlt);
+
   useMapEvents({
     click(e) {
       setPosition(e.latlng);
     },
   });
 
-  return position ? <Marker position={position} /> : null;
+  return position ? <Marker position={position} icon={customIcon} /> : null;
 };
 
 const SubStep2 = () => {
@@ -54,7 +60,13 @@ const SubStep2 = () => {
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', fontFamily: 'Nunito Sans, sans-serif', fontSize: '0.75rem', p: 1, pr: 4, pl: 1, pt: 1 }}>
       <style>
-        @import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap');
+        {`
+          @import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap');
+          .leaflet-div-icon {
+            background: transparent;
+            border: none;
+          }
+        `}
       </style>
       <Typography variant="h6" sx={{ mb: 1, fontFamily: 'Nunito Sans, sans-serif', fontSize: '0.85rem', fontWeight: 'bold', textAlign: 'center' }}>
         <h2>Facility Address</h2>

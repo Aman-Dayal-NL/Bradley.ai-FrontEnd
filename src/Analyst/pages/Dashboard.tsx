@@ -76,7 +76,7 @@ const Dashboard: React.FC = () => {
   const [view, setView] = useState<'table' | 'card'>('table');
   const [search, setSearch] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(5);
+  const [pageSize] = useState(5);
 
   const handleViewChange = (_: React.MouseEvent<HTMLElement>, newView: 'table' | 'card') => {
     if (newView) setView(newView);
@@ -87,7 +87,7 @@ const Dashboard: React.FC = () => {
     customer.email.toLowerCase().includes(search.toLowerCase())
   );
 
-  const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
+  const handlePageChange = (_: React.ChangeEvent<unknown>, value: number) => {
     setCurrentPage(value);
   };
 
