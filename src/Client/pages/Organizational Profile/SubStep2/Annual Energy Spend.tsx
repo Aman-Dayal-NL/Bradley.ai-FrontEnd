@@ -1,5 +1,5 @@
 import React, { useState } from 'react'; 
-import { Box, TextField, Typography, Tooltip } from '@mui/material'; 
+import { Box, TextField, Typography, Tooltip, InputAdornment } from '@mui/material'; 
 
 const SubStep2: React.FC = () => { 
   const [electricity, setElectricity] = useState("");
@@ -14,9 +14,9 @@ const SubStep2: React.FC = () => {
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
     let inputValue = value.replace(/[^0-9.]/g, "");
-    if (inputValue) {
-      inputValue = `$${inputValue}`;
-    }
+    // if (inputValue) {
+    //   inputValue = `$${inputValue}`;
+    // }
     switch (name) {
       case 'electricity':
         setElectricity(inputValue);
@@ -67,6 +67,9 @@ const SubStep2: React.FC = () => {
     type="text"
     value={electricity}
     onChange={handleChange}
+    InputProps={{
+      startAdornment: <InputAdornment position="start">$</InputAdornment>,
+    }}
     sx={{
       flex: 0.5,
       fontSize: '0.7rem', fontFamily: 'Nunito Sans, sans-serif',
@@ -87,6 +90,9 @@ const SubStep2: React.FC = () => {
     type="text"
     value={naturalGas}
     onChange={handleChange}
+    InputProps={{
+          startAdornment: <InputAdornment position="start">$</InputAdornment>,
+        }}
     sx={{
       flex: 0.5,
       fontSize: '0.7rem', fontFamily: 'Nunito Sans, sans-serif',
@@ -107,6 +113,9 @@ const SubStep2: React.FC = () => {
     type="text"
     value={water}
     onChange={handleChange}
+    InputProps={{
+          startAdornment: <InputAdornment position="start">$</InputAdornment>,
+        }}
     sx={{
       flex: 0.5,
       fontSize: '0.7rem', fontFamily: 'Nunito Sans, sans-serif',
@@ -128,13 +137,16 @@ const SubStep2: React.FC = () => {
     type="text"
     value={oil}
     onChange={handleChange}
+    InputProps={{
+          startAdornment: <InputAdornment position="start">$</InputAdornment>,
+        }}
     sx={{
       flex: 0.5,
       fontSize: '0.7rem', fontFamily: 'Nunito Sans, sans-serif',
       '& .MuiInputBase-root': { height: '40px', padding: '0 6px' },
       '& input': { padding: 0, fontFamily: 'Nunito Sans, sans-serif', fontSize: '0.8rem' }
     }}
-    name="steam"
+    name="oil"
   /></Tooltip>
         </Box>
 
@@ -149,6 +161,9 @@ const SubStep2: React.FC = () => {
     type="text"
     value={propane}
     onChange={handleChange}
+    InputProps={{
+          startAdornment: <InputAdornment position="start">$</InputAdornment>,
+        }}
     sx={{
       flex: 0.5,
       fontSize: '0.7rem', fontFamily: 'Nunito Sans, sans-serif',
@@ -170,6 +185,9 @@ const SubStep2: React.FC = () => {
     type="text"
     value={steam}
     onChange={handleChange}
+    InputProps={{
+          startAdornment: <InputAdornment position="start">$</InputAdornment>,
+        }}
     sx={{
       flex: 0.5,
       fontSize: '0.7rem', fontFamily: 'Nunito Sans, sans-serif',
@@ -191,6 +209,9 @@ const SubStep2: React.FC = () => {
     type="text"
     value={chilledWater}
     onChange={handleChange}
+    InputProps={{
+          startAdornment: <InputAdornment position="start">$</InputAdornment>,
+        }}
     sx={{
       flex: 0.5,
       fontSize: '0.7rem', fontFamily: 'Nunito Sans, sans-serif',
@@ -212,6 +233,9 @@ const SubStep2: React.FC = () => {
     type="text"
     value={other}
     onChange={handleChange}
+    InputProps={{
+          startAdornment: <InputAdornment position="start">$</InputAdornment>,
+        }}
     sx={{
       flex: 0.5,
       fontSize: '0.7rem', fontFamily: 'Nunito Sans, sans-serif',
