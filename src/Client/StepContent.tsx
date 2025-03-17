@@ -83,8 +83,8 @@ const stepSubStepMapping: StepSubStepMapping = {
     1: {
       0: lazy(() => import('./pages/Financial Info/SubStep2/Own/Financial Preferences')),
       1: lazy(() => import('./pages/Financial Info/SubStep2/Own/Existing Energy Contracts - I')),
-      2: lazy(() => import('./pages/Financial Info/SubStep2/Own/Existing Energy Contracts - II')),
-      3: lazy(() => import('./pages/Financial Info/SubStep2/Own/Existing Energy Contracts - III')),
+      2: lazy(() => import('./pages/Financial Info/SubStep2/Own/Existing Power Purchase Agreement (PPA) Electricity Contracts - II')),
+      3: lazy(() => import('./pages/Financial Info/SubStep2/Own/Existing Power Purchase Agreement (PPA) for Combined Heat and/or Power (CHP) Contracts – III')),
       4: lazy(() => import('./pages/Financial Info/SubStep2/Own/Existing Energy Contracts - IV')),
       5: lazy(() => import('./pages/Financial Info/SubStep2/Own/Other Energy Commitments (Optional)')),
       6: lazy(() => import('./pages/Financial Info/SubStep2/Own/What Are Your Budget & Investment Goals')),
