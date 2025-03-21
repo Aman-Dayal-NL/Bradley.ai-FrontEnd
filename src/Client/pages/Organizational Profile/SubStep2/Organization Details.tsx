@@ -1,7 +1,14 @@
-import React from 'react'; 
-import { Box, TextField, Typography, Select, MenuItem, Tooltip } from '@mui/material';
+import React, {useState} from 'react'; 
+import { Box, TextField, Typography, Select, MenuItem, Tooltip, Autocomplete, Paper } from '@mui/material';
+
+const companyOptions = [
+  "Google", "Microsoft", "Amazon", "Apple", "Facebook", "Tesla", "Netflix",
+  "Adobe", "IBM", "Oracle", "Salesforce", "Intel", "Uber", "Twitter",
+  "LinkedIn", "Snapchat", "Spotify", "Zoom", "Slack"
+];
 
 const SubStep2: React.FC = () => { 
+  const [company, setCompany] = useState<string | null>(null);
   return ( 
     <Box sx={{ display: 'flex', flexDirection: 'column', fontFamily: 'Nunito Sans, sans-serif', fontSize: '0.75rem', p: 1, pr: 4, pl: 1, pt: 1 }}>
       <style>
@@ -13,53 +20,68 @@ const SubStep2: React.FC = () => {
       <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 0 }}>
         <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 2, p: '10px' }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, justifyContent: 'center' }}>
-        <Typography sx={{ fontFamily: 'Nunito Sans, sans-serif', fontSize: '0.75rem', minWidth: '150px', flex: 0.25 }}>
+  <Typography sx={{ fontFamily: 'Nunito Sans, sans-serif', fontSize: '0.75rem', minWidth: '150px', flex: 0.25 }}>
     <b>Organization Name:</b> 
   </Typography>
   <Tooltip title="Enter the name of your organization" placement='top-end' arrow>
-  <Select
-  fullWidth
-  size="small"
-  variant="outlined"
-  defaultValue="Option 1"
-  sx={{
-    flex: 0.498,
-    fontFamily: 'Nunito Sans, sans-serif',
-    fontSize: '0.7rem',
-    minWidth: '414px',
-    pl: '1px',
-    pr: '1px',
-    height: '40px',
-    '& .MuiInputBase-root': { height: '40px', padding: '0 6px' },
-    '& .MuiSelect-select': { padding: '4px 6px', fontSize: '0.7rem' },
-  }}
-  MenuProps={{
-    PaperProps: {
-      sx: {
-        maxHeight: '200px',
-        '& .MuiMenuItem-root': {
-          fontFamily: 'Nunito Sans, sans-serif',
+    <Autocomplete
+      options={['Select your Organization Name', ...companyOptions]}
+      getOptionDisabled={(option) => option === 'Select your Organization Name'}
+      value={company || 'Select your Organization Name'}
+      onChange={(_event: any, newValue: string | null) => setCompany(newValue)}
+      disableClearable={company === 'Select your Organization Name'}
+      noOptionsText="No options available"
+      renderInput={(params) => (
+        <TextField 
+          {...params} 
+          sx={{
+            '& .MuiInputBase-input': { 
+              fontFamily: 'Nunito Sans, sans-serif',
+              paddingLeft: 2,
+              fontSize: '0.7rem',
+            },
+            '& .MuiInputBase-root': { 
+              fontFamily: 'Nunito Sans, sans-serif',
+              fontSize: '0.7rem',
+              height: '40px', 
+              padding: '0 2px', 
+            }
+          }}
+        />
+      )}
+      ListboxProps={{ 
+        sx: { 
+          maxHeight: '200px',
+          fontFamily: 'Nunito Sans, sans-serif', 
+          fontSize: '0.7rem', 
+          scrollbarWidth: 'none', 
+          '&::-webkit-scrollbar': { display: 'none' },
+          borderRadius: '4px',
+          padding: '4px 0',
+        } 
+      }}
+      PaperComponent={({ children }) => (
+        <Paper sx={{ 
+          fontFamily: 'Nunito Sans, sans-serif', 
           fontSize: '0.7rem',
-        },
-        '&::-webkit-scrollbar': { display: 'none' },
-        msOverflowStyle: 'none',
-        scrollbarWidth: 'none',
-      },
-    },
-  }}
->
-  <MenuItem value="Option 1" disabled>
-  Look Up your Organization
-  </MenuItem>
-  <MenuItem value="Option 2">Business (For Profit)</MenuItem>
-  <MenuItem value="Option 3">Non Profit</MenuItem>
-  <MenuItem value="Option 4">Government Entity</MenuItem>
-  <MenuItem value="Option 5">Educational Institution</MenuItem>
-  <MenuItem value="Option 6">Healthcare Provider</MenuItem>
-  <MenuItem value="Option 7">Residential</MenuItem>
-  <MenuItem value="Option 8">Other</MenuItem>
-</Select></Tooltip>
+          padding: '4px 0',
+          textAlign: 'center'
+        }}>
+          {children}
+        </Paper>
+      )}
+      sx={{
+        flex: 0.498,
+        minWidth: '414px',
+        fontFamily: 'Nunito Sans, sans-serif',
+        fontSize: '0.7rem',
+        '& .MuiAutocomplete-input': { padding: '4px 6px', fontSize: '0.7rem' }
+      }}
+    />
+  </Tooltip>
 </Box>
+
+
 
 
 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, justifyContent: 'center' }}>
