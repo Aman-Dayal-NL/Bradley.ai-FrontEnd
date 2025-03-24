@@ -2,9 +2,32 @@ import React, {useState} from 'react';
 import { Box, TextField, Typography, Select, MenuItem, Tooltip, Autocomplete, Paper } from '@mui/material';
 
 const companyOptions = [
-  "Google", "Microsoft", "Amazon", "Apple", "Facebook", "Tesla", "Netflix",
-  "Adobe", "IBM", "Oracle", "Salesforce", "Intel", "Uber", "Twitter",
-  "LinkedIn", "Snapchat", "Spotify", "Zoom", "Slack"
+  "Adobe", "Airbnb", "Alibaba", "Alphabet", "Amazon", "AMD", "Apple", "ASUS", "Atlassian", "Autodesk",
+  "Baidu", "Bitdefender", "Block", "Bloomberg", "Broadcom", "Bytedance",
+  "Canonical", "Cisco", "Cloudflare", "Coinbase", "Coursera", "Cruise", "CyberArk",
+  "Databricks", "Datadog", "Dell", "DigitalOcean", "Discord", "DoorDash", "Dropbox",
+  "eBay", "Epic Games", "Ericsson", "Etsy", "Evernote", "Expedia",
+  "Figma", "FireEye", "Fortinet", "Foxconn",
+  "GitHub", "GitLab", "GoDaddy", "Google", "GoPro", "Grab",
+  "Hewlett Packard Enterprise", "Hitachi", "Honeywell", "Huawei", "Hulu",
+  "IBM", "Infosys", "Intel", "Intuit", "iRobot",
+  "JD.com", "JetBrains",
+  "Kaspersky", "Keyence", "Kickstarter",
+  "Lenovo", "LG", "Lyft",
+  "Magic Leap", "Mastercard", "Match Group", "McAfee", "Meta", "Microsoft", "MicroStrategy", "MongoDB",
+  "NCR", "NEC", "Netflix", "Nokia", "Nutanix", "Nvidia",
+  "Okta", "Olympus", "Onfido", "OpenAI", "Oracle",
+  "Palantir", "Panasonic", "PayPal", "Philips", "Pinterest", "Pivotal", "PlayStation", "Pure Storage",
+  "Qualcomm", "Quora",
+  "Rakuten", "Rapid7", "Red Hat", "Reddit", "Ripple", "Roblox", "Roku",
+  "Salesforce", "Samsung", "SAP", "Seagate", "ServiceNow", "Shopify", "Siemens", "Slack", "Snapchat", "Snowflake", "SoftBank", "Sony", "SpaceX", "Spotify", "Square", "Stripe", "SUSE", "Synopsys",
+  "T-Mobile", "Tableau", "Tencent", "Tesla", "TikTok", "Toshiba", "Toyota", "Trello", "TripAdvisor", "Twitch", "Twitter",
+  "Uber", "Unity", "Upwork",
+  "Verizon", "VMware", "Vimeo",
+  "WeChat", "Western Digital", "WhatsApp", "Wix",
+  "Xiaomi", "Xilinx",
+  "Yahoo", "Yandex", "YouTube",
+  "Zebra Technologies", "Zillow", "Zoom", "Zscaler"
 ];
 
 const SubStep2: React.FC = () => { 
