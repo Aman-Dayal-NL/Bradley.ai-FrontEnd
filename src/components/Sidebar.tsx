@@ -41,17 +41,22 @@ interface SidebarProps {
 }
 
 const CustomStepConnector = styled(StepConnector)(() => ({
+  marginLeft: '22px',
+  height: 25,
   [`& .MuiStepConnector-line`]: {
     borderColor: 'gray',
-    borderWidth: 1.5,
+    borderWidth: 2,
+    height: 30,
   },
   [`&.Mui-completed .MuiStepConnector-line`]: {
     borderColor: '#036ca1',
-    borderWidth: 1.5,
+    borderWidth: 2,
+    height: 30,
   },
   [`&.Mui-active .MuiStepConnector-line`]: {
     borderColor: '#036ca1',
-    borderWidth: 1.5,
+    borderWidth: 2,
+    height: 30,
   },
 }));
 
@@ -84,19 +89,19 @@ const Sidebar: React.FC<SidebarProps> = ({ currentStep, visitedSteps, onStepChan
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        width: 24,
-        height: 24,
+        width: 30,
+        height: 30,
         borderRadius: '50%',
         backgroundColor: completed || active || visited ? '#036ca1' : '#808080',
         color: '#fff',
       }}
     >
-      <IconComponent fontSize="small" style={{ color: '#fff' }} />
+      <IconComponent fontSize="medium" style={{ color: '#fff' }} />
     </div>
   );
 
   return (
-    <Paper sx={{ width: '173px', position: 'fixed', height: '100vh', top: 0, mt: '50px', padding: '10px', paddingTop: '40px', boxShadow: 1 }}>
+    <Paper sx={{ width: '210px', position: 'fixed', height: '100vh', top: 0, mt: '40px', padding: '10px', paddingTop: '40px', boxShadow: 1 }}>
       <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap');
       </style>
@@ -106,12 +111,13 @@ const Sidebar: React.FC<SidebarProps> = ({ currentStep, visitedSteps, onStepChan
         nonLinear
         connector={<CustomStepConnector />}
         sx={{
-          padding: 0,
+          padding: 0.5,
           '.MuiStep-root': {
-            padding: 0,
+            padding: 0.5,
           },
           '.MuiStepLabel-root': {
-            padding: 0,
+            padding: 0.5,
+            paddingBottom: 0,
           },
         }}
       >
@@ -144,7 +150,7 @@ const Sidebar: React.FC<SidebarProps> = ({ currentStep, visitedSteps, onStepChan
                     >
                       <ListItemText
                         primary={
-                          <Typography sx={{ fontSize: '0.700rem', fontFamily: 'Nunito Sans, sans-serif', fontWeight: index === currentStep ? 'bold' : 'normal' }}>
+                          <Typography sx={{ fontSize: '0.75rem', fontFamily: 'Nunito Sans, sans-serif', fontWeight: index === currentStep ? 'bold' : 'normal' }}>
                             {index === currentStep ? `${step.label}*` : step.label}
                           </Typography>
                         }
@@ -164,7 +170,7 @@ const Sidebar: React.FC<SidebarProps> = ({ currentStep, visitedSteps, onStepChan
                   >
                     <ListItemText
                       primary={
-                        <Typography sx={{ fontSize: '0.700rem', fontFamily: 'Nunito Sans, sans-serif' }}>
+                        <Typography sx={{ fontSize: '0.75rem', fontFamily: 'Nunito Sans, sans-serif' }}>
                           {step.label}
                         </Typography>
                       }
