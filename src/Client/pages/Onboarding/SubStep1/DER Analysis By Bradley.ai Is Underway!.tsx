@@ -120,25 +120,25 @@ const SubStep1: React.FC = () => {
                             <CardContent>
                                 {index === 0 && (
                                     <>
-                                        <Typography sx={{ fontFamily :'Nunito Sans,sans-serif' ,fontWeight :'bold' ,fontSize :'1rem' ,pb : 1 }}><b>Optimal Energy Mix</b></Typography>
+                                        <Typography sx={{ fontFamily :'Nunito Sans,sans-serif' ,fontWeight :'bold' ,fontSize :'1rem' ,pb : 1 }}>Optimal Energy Mix</Typography>
                                         <Typography sx={{ fontFamily :'Nunito Sans,sans-serif' ,fontSize :'0.7rem' ,color :'gray'}}>We'll recommend the ideal combination of renewable or other energy sources tailored to your needs and location.</Typography>
                                     </>
                                 )}
                                 {index === 1 && (
                                     <>
-                                        <Typography sx={{ fontFamily :'Nunito Sans,sans-serif' ,fontWeight :'bold' ,fontSize :'1rem' ,pb : 1 }}><b>Financial Projections</b></Typography>
+                                        <Typography sx={{ fontFamily :'Nunito Sans,sans-serif' ,fontWeight :'bold' ,fontSize :'1rem' ,pb : 1 }}>Financial Projections</Typography>
                                         <Typography sx={{ fontFamily :'Nunito Sans,sans-serif' ,fontSize :'0.7rem' ,color :'gray'}}>Detailed proforma analysis and energy cost redcution projections to help you understand the financial benefits.</Typography>
                                     </>
                                 )}
                                 {index === 2 && (
                                     <>
-                                        <Typography sx={{ fontFamily :'Nunito Sans,sans-serif' ,fontWeight :'bold' ,fontSize :'1rem' ,pb : 1 }}><b>Implementation Plan</b></Typography>
+                                        <Typography sx={{ fontFamily :'Nunito Sans,sans-serif' ,fontWeight :'bold' ,fontSize :'1rem' ,pb : 1 }}>Implementation Plan</Typography>
                                         <Typography sx={{ fontFamily :'Nunito Sans,sans-serif' ,fontSize :'0.7rem' ,color :'gray'}}>A step-by-step Project Management approach for implementing your custom DER solution, including timelines and key milestones.</Typography>
                                     </>
                                 )}
                                 {index === 3 && (
                                     <>
-                                        <Typography sx={{ fontFamily :'Nunito Sans,sans-serif' ,fontWeight :'bold' ,fontSize :'1rem' ,pb : 1 }}><b>Recommendations</b></Typography>
+                                        <Typography sx={{ fontFamily :'Nunito Sans,sans-serif' ,fontWeight :'bold' ,fontSize :'1rem' ,pb : 1 }}>Recommendations</Typography>
                                         <Typography sx={{ fontFamily :'Nunito Sans,sans-serif' ,fontSize :'0.7rem' ,color :'gray'}}>Specific technology recommendations based on your energy profile and site characteristics.</Typography>
                                     </>
                                 )}
