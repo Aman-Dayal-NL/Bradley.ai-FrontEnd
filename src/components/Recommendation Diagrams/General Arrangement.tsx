@@ -1,4 +1,4 @@
-export const Resources: React.FC<{ size: 'small' | 'large' }> = ({ size }) => {
+export const GeneralArrangement: React.FC<{ size: 'small' | 'large' }> = ({ size }) => {
 	const isLarge = size === 'large';
     const imageWidth = isLarge ? 1200 : 960;
     const imageHeight = isLarge ? 600 : 480;
@@ -6,8 +6,8 @@ export const Resources: React.FC<{ size: 'small' | 'large' }> = ({ size }) => {
     return (
         <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
             <img
-                src="src\components\Recommendation Diagrams\resources.png"
-                alt="Resources"
+                src="src\components\Recommendation Diagrams\generalarrangement.png"
+                alt="General Arrangement"
                 width={imageWidth}
                 height={imageHeight}
                 style={{

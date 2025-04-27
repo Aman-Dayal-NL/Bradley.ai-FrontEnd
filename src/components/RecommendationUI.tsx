@@ -12,6 +12,8 @@ import { EnergyFlowDiagram } from './Recommendation Diagrams/Energy Flow Diagram
 import { IndicativeFinanceDetails } from './Recommendation Diagrams/Indicative Interest Rate, Term of Financing & Internal Rate of Return';
 import { FinancialIncentives } from './Recommendation Diagrams/Financial Incentives';
 import { FinanceOptions } from './Recommendation Diagrams/Finance Options';
+import { Resources } from './Recommendation Diagrams/Resources';
+import { GeneralArrangement } from './Recommendation Diagrams/General Arrangement';
 
 export const StyledTitle = styled(Typography)(({ theme }) => ({
   fontFamily: 'Nunito Sans, sans-serif',
@@ -223,6 +225,22 @@ export const mockExpandedContent = (title: string) => {
     );
   }
 
+  if (title === "Resources") {
+    return (
+      <Box sx={{ p: 0, height: '400px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+        <Resources size="large" />
+      </Box>
+    );
+  }
+
+  if (title === "General Arrangement") {
+    return (
+      <Box sx={{ p: 0, height: '600px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+        <GeneralArrangement size="large" />
+      </Box>
+    );
+  }
+
   return (
     <Box sx={{ p: 0, height: '500px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
       <Box sx={{
@@ -242,4 +260,4 @@ export const mockExpandedContent = (title: string) => {
   );
 };
 
-export { EnergyProductionBreakdown, EnergyFlowDiagram, IndicativeFinanceDetails, FinancialIncentives, FinanceOptions };
+export { EnergyProductionBreakdown, EnergyFlowDiagram, IndicativeFinanceDetails, FinancialIncentives, FinanceOptions, Resources, GeneralArrangement };
