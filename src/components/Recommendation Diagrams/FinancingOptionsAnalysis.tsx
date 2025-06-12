@@ -79,7 +79,7 @@ export const FinancingOptionsAnalysis: React.FC<{ size: 'small' | 'large' }> = (
         background: '#fff',
       }}
     >
-      <Box sx={{ p: isLarge ? 3 : 2, borderBottom: '1px solid', borderColor: 'grey.200' }}>
+      {/* <Box sx={{ p: isLarge ? 3 : 2, borderBottom: '1px solid', borderColor: 'grey.200' }}>
         <Grid container spacing={isLarge ? 3 : 2}>
           <Grid item xs={12} sm={6}>
             <Box sx={{
@@ -122,7 +122,7 @@ export const FinancingOptionsAnalysis: React.FC<{ size: 'small' | 'large' }> = (
             </Box>
           </Grid>
         </Grid>
-      </Box>
+      </Box> */}
 
       <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' } }}>
         <Box sx={{
@@ -148,8 +148,8 @@ export const FinancingOptionsAnalysis: React.FC<{ size: 'small' | 'large' }> = (
                     py: 2,
                     px: 2.5,
                     borderRadius: 2,
-                    mx: 1,
-                    my: 0.5,
+                    mx: 2.5,
+                    my: 2.5,
                     transition: 'all 0.2s ease-in-out',
                     '&:hover': {
                       backgroundColor: 'rgba(25, 118, 210, 0.04)',
