@@ -20,11 +20,19 @@ import { useSolarAssets } from '../../../../Context/Site Assessment/SubStep3/INP
 import { useOwnershipPreference } from '../../../../Context/Financial Info/SubStep1/Ownership Preference Context';
 import { useFinancialsI } from '../../../../Context/Goals & Priorities/SubStep3/Financials & Investment Information - I Context';
 
+import { useThermalEnergyNeedsI } from '../../../../Context/Energy Profile/SubStep2/Thermal Energy Needs - I Context';
+import { useThermalEnergyNeedsII } from '../../../../Context/Energy Profile/SubStep2/Thermal Energy Needs - II Context';
+import { useThermalEnergyNeedsIII } from '../../../../Context/Energy Profile/SubStep2/Thermal Energy Needs - III Context';
+import { useThermalEnergyNeedsIV } from '../../../../Context/Energy Profile/SubStep2/Thermal Energy Needs - IV Context';
+import { useBoilerCogeneration } from '../../../../Context/Energy Profile/SubStep2/Existing Boiler Cogeneration Context';
+
+import { useLOA } from '../../../../Context/Energy Profile/SubStep3/Letter Of Authorization Context';
+
 interface SummarySectionProps {
   icon: React.ReactElement;
   title: string;
+  data: { label: string; value: string }[];
   completionStatus: 'complete' | 'partial' | 'empty';
-  summary: string;
   isExpanded: boolean;
   onExpand: () => void;
   onEdit: () => void;
@@ -33,8 +41,8 @@ interface SummarySectionProps {
 const SummarySection: React.FC<SummarySectionProps> = ({ 
   icon, 
   title, 
+  data,
   completionStatus, 
-  summary, 
   isExpanded, 
   onExpand, 
   onEdit 
@@ -117,18 +125,28 @@ const SummarySection: React.FC<SummarySectionProps> = ({
       </Box>
       <Collapse in={isExpanded} timeout="auto">
         <Box sx={{ p: '16px 24px', backgroundColor: '#fff' }}>
-          <Typography sx={{ 
-            fontFamily: 'Nunito Sans, sans-serif', 
-            fontSize: '0.8rem', 
-            whiteSpace: 'pre-wrap', 
-            lineHeight: 1.7,
-            color: '#555'
-          }}
-          dangerouslySetInnerHTML={{ 
-            __html: (summary || 'No data provided for this section.')
-              .replace(/\*\*(.*?):\*\*/g, '<strong>$1:</strong>') 
-          }}
-          />
+          {data.map((item, index) => (
+            <Box key={index} sx={{ display: 'flex', py: 0.5, lineHeight: 1.7 }}>
+              <Typography sx={{
+                fontWeight: 'bold',
+                color: '#555',    
+                fontSize: '0.8rem',
+                fontFamily: 'Nunito Sans, sans-serif',
+                minWidth: '160px',
+                flexShrink: 0,
+                mr: 2,
+              }}>
+                {item.label}:
+              </Typography>
+              <Typography sx={{
+                fontSize: '0.8rem',
+                color: '#555',    
+                fontFamily: 'Nunito Sans, sans-serif',
+              }}>
+                {item.value || 'Not Provided'}
+              </Typography>
+            </Box>
+          ))}
         </Box>
       </Collapse>
     </Paper>
@@ -147,52 +165,83 @@ const SubStep1: React.FC = () => {
   const { solarAssetsState } = useSolarAssets();
   const { ownershipPreference } = useOwnershipPreference();
   const { financialsIState } = useFinancialsI();
+
+  const { thermalNeedsIState } = useThermalEnergyNeedsI();
+  const { thermalNeedsIIState } = useThermalEnergyNeedsII();
+  const { thermalNeedsIIIState } = useThermalEnergyNeedsIII();
+  const { thermalNeedsIVState } = useThermalEnergyNeedsIV();
+  const { boilerCogenerationState } = useBoilerCogeneration();
+
+  const { loaState } = useLOA();
   
-  const orgSummary = [
-    `**Company Name:** ${organizationDetails.organizationName || 'Not Provided'}`,
-    `**Industry:** ${organizationDetails.industry || 'Not Provided'}`,
-    `**Contact Email:** ${organizationDetails.userEmail || 'Not Provided'}`
-  ].join('\n');
+  const orgData = [
+    { label: 'Company Name', value: organizationDetails.organizationName },
+    { label: 'Industry', value: organizationDetails.industry },
+    { label: 'Contact Email', value: organizationDetails.userEmail },
+  ];
 
   const totalAnnualSpend = 
     (parseFloat(String(annualEnergySpend.electricity).replace(/[^0-9.]/g, '')) || 0) +
     (parseFloat(String(annualEnergySpend.naturalGas).replace(/[^0-9.]/g, '')) || 0) +
     (parseFloat(String(annualEnergySpend.water).replace(/[^0-9.]/g, '')) || 0) +
+    (parseFloat(String(annualEnergySpend.oil).replace(/[^0-9.]/g, '')) || 0) +
+    (parseFloat(String(annualEnergySpend.propane).replace(/[^0-9.]/g, '')) || 0) +
     (parseFloat(String(annualEnergySpend.other).replace(/[^0-9.]/g, '')) || 0);
 
-  const energySummary = [
-    `**Total Annual Spend:** ${totalAnnualSpend.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`,
-    `**Energy Source:** Primarily Grid`,
-    `**LOA Status:** Pending`
-  ].join('\n');
+  const energySources = new Set<string>();
+  energySources.add("Grid Electricity");
+
+  if(thermalNeedsIState.showSteam) energySources.add("Steam");
+  if(thermalNeedsIIState.showHotWaterHVAC) energySources.add("Hot Water (HVAC)");
+  if(thermalNeedsIIState.showHotWaterBoilers) energySources.add("Hot Water (Domestic)");
+  if(thermalNeedsIIIState.showChilledWater) energySources.add("Chilled Water");
+  
+  if(thermalNeedsIVState.showWasteHeat && thermalNeedsIVState.wasteHeatSources.length > 0){
+      thermalNeedsIVState.wasteHeatSources.forEach(source => {
+          if (source.type) energySources.add(`Waste Heat (${source.type})`);
+      });
+  }
+  
+  if(boilerCogenerationState.sources.length > 0 && boilerCogenerationState.sources[0].type){
+      boilerCogenerationState.sources.forEach(source => {
+          if (source.type) energySources.add(source.type);
+      });
+  }
+
+  const energyData = [
+    { label: 'Total Annual Spend', value: `$${totalAnnualSpend.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`},
+    { label: 'Energy Sources', value: [...energySources].join(', ') },
+    { label: 'LOA Status', value: loaState.agreed ? 'Authorized' : 'Pending Authorization' },
+  ];
 
   const topPriority = prioritizationIState.selectedRanks[1] !== 'Select one' 
     ? prioritizationIState.selectedRanks[1] 
     : 'Not Set';
   
-  const goalsSummary = [
-    `**Top Priority:** ${topPriority}`,
-    `**Desired IRR:** ${financialsIState.acceptableIRR}%`,
-    `**Preferred Payback:** ${budgetGoalsState.simplePayback !== 'default' ? budgetGoalsState.simplePayback.replace('<', 'Less than ').replace('>', 'More than ') + ' Years' : 'Not Set'}`
-  ].join('\n');
+  const goalsData = [
+    { label: 'Top Priority', value: topPriority },
+    { label: 'Desired IRR', value: `${financialsIState.acceptableIRR}%` },
+    { label: 'Preferred Payback', value: budgetGoalsState.simplePayback !== 'default' ? budgetGoalsState.simplePayback.replace('<', 'Less than ').replace('>', 'More than ') + ' Years' : 'Not Set' },
+  ];
   
   const totalRoofSpace = solarAssetsState.roofSections.map(v => parseFloat(String(v).replace(/,/g, '')) || 0).reduce((a, b) => a + b, 0);
 
-  const siteSummary = [
-    `**Facility Size:** ${parseInt(siteCharacteristicsIState.overallFacilitySize || '0').toLocaleString()} sq. ft`,
-    `**Total Roof Space:** ${totalRoofSpace.toLocaleString()} sq. ft`,
-    `**Open Breaker Space:** ${siteCharacteristicsIState.isBreakerSpaceAvailable ? 'Yes' : 'No'}`
-  ].join('\n');
+  const siteData = [
+    { label: 'Facility Size', value: `${parseInt(siteCharacteristicsIState.overallFacilitySize || '0').toLocaleString()} sq. ft`},
+    { label: 'Total Roof Space', value: `${totalRoofSpace.toLocaleString()} sq. ft`},
+    { label: 'Open Breaker Space', value: siteCharacteristicsIState.isBreakerSpaceAvailable ? 'Yes' : 'No'},
+  ];
   
-  const financialSummary = [
-    `**Ownership Preference:** ${ownershipPreference.preference ? (ownershipPreference.preference.charAt(0).toUpperCase() + ownershipPreference.preference.slice(1)).replace('-', ' ') : 'Not Set'}`,
-    `**Budget Available:** ${budgetGoalsState.availableFunds === 'yes' ? 'Yes' : 'No'}`
-  ].join('\n');
+  const financialData = [
+    { label: 'Ownership Preference', value: ownershipPreference.preference ? (ownershipPreference.preference.charAt(0).toUpperCase() + ownershipPreference.preference.slice(1)).replace('-', ' ') : 'Not Set'},
+    { label: 'Budget Available', value: budgetGoalsState.availableFunds === 'yes' ? 'Yes' : 'No' },
+  ];
 
-  // Helper function to determine completion status
-  const getCompletionStatus = (summary: string): 'complete' | 'partial' | 'empty' => {
-    const notProvidedCount = (summary.match(/Not Provided|Not Set|Pending/g) || []).length;
-    const totalFields = summary.split('\n').length;
+  const getCompletionStatus = (data: { label: string; value: string }[]): 'complete' | 'partial' | 'empty' => {
+    const notProvidedCount = data.filter(item =>
+      item.value === 'Not Provided' || item.value === 'Not Set' || item.value === 'Pending' || item.value === 'Pending Authorization'
+    ).length;
+    const totalFields = data.length;
     
     if (notProvidedCount === 0) return 'complete';
     if (notProvidedCount === totalFields) return 'empty';
@@ -200,41 +249,11 @@ const SubStep1: React.FC = () => {
   };
   
   const sections = [
-    { 
-      title: "Organizational Profile", 
-      icon: <BusinessIcon />, 
-      summary: orgSummary, 
-      completionStatus: getCompletionStatus(orgSummary),
-      onEdit: () => { setCurrentStep(0); setCurrentSubStep(1); } 
-    },
-    { 
-      title: "Energy Profile", 
-      icon: <BoltIcon />, 
-      summary: energySummary, 
-      completionStatus: getCompletionStatus(energySummary),
-      onEdit: () => { setCurrentStep(1); setCurrentSubStep(1); } 
-    },
-    { 
-      title: "Goals & Priorities", 
-      icon: <FlagIcon />, 
-      summary: goalsSummary, 
-      completionStatus: getCompletionStatus(goalsSummary),
-      onEdit: () => { setCurrentStep(2); setCurrentSubStep(1); } 
-    },
-    { 
-      title: "Site Assessment", 
-      icon: <AssessmentIcon />, 
-      summary: siteSummary, 
-      completionStatus: getCompletionStatus(siteSummary),
-      onEdit: () => { setCurrentStep(3); setCurrentSubStep(1); } 
-    },
-    { 
-      title: "Financial Info", 
-      icon: <MonetizationOnIcon />, 
-      summary: financialSummary, 
-      completionStatus: getCompletionStatus(financialSummary),
-      onEdit: () => { setCurrentStep(4); setCurrentSubStep(0); } 
-    },
+    { title: "Organizational Profile", icon: <BusinessIcon />, data: orgData, completionStatus: getCompletionStatus(orgData), onEdit: () => { setCurrentStep(0); setCurrentSubStep(1); } },
+    { title: "Energy Profile", icon: <BoltIcon />, data: energyData, completionStatus: getCompletionStatus(energyData), onEdit: () => { setCurrentStep(1); setCurrentSubStep(1); } },
+    { title: "Goals & Priorities", icon: <FlagIcon />, data: goalsData, completionStatus: getCompletionStatus(goalsData), onEdit: () => { setCurrentStep(2); setCurrentSubStep(1); } },
+    { title: "Site Assessment", icon: <AssessmentIcon />, data: siteData, completionStatus: getCompletionStatus(siteData), onEdit: () => { setCurrentStep(3); setCurrentSubStep(1); } },
+    { title: "Financial Info", icon: <MonetizationOnIcon />, data: financialData, completionStatus: getCompletionStatus(financialData), onEdit: () => { setCurrentStep(4); setCurrentSubStep(0); } },
   ];
 
   const handleExpandClick = (index: number) => {
@@ -273,9 +292,10 @@ const SubStep1: React.FC = () => {
         {sections.map((section, index) => (
           <SummarySection 
             key={index}
+            data={section.data}
             title={section.title}
             icon={section.icon}
-            summary={section.summary}
+            // summary={section.summary}
             completionStatus={section.completionStatus}
             isExpanded={expanded.includes(index)}
             onExpand={() => handleExpandClick(index)}
