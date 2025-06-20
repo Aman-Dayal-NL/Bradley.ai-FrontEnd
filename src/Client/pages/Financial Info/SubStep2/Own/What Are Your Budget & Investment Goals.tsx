@@ -33,7 +33,7 @@ const SubStep2: React.FC = () => {
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, pt: '10px', pb: '10px', px: '160px' }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           <Typography sx={{ fontFamily: 'Nunito Sans, sans-serif', fontSize: '0.75rem', minWidth: '200px', flex: 0.5 }}>
-            <b>Do you have a current budget (this year) to invest in carbon reduction,<br />energy resiliency or cost reductions that could be applied to this project?</b>
+            <b>Do you have a current budget (this year) to invest in carbon reduction, energy resiliency or cost reductions that could be<br />applied to this project?</b>
           </Typography>
           <Select id="availableFunds-select" value={availableFunds} onChange={(e: SelectChangeEvent) => updateField('availableFunds', e.target.value)} sx={{ flex: 0.5, fontFamily: 'Nunito Sans, sans-serif', marginLeft: 'auto', fontSize: '0.7rem', height: '40px', '& .MuiInputBase-root': { padding: '0 6px' }, '& .MuiSelect-select': { padding: '4px 6px', fontSize: '0.7rem' } }}>
             <MenuItem value="yes" sx={{ fontSize: '0.7rem' }}>Yes</MenuItem>
