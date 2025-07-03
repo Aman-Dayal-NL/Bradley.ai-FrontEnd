@@ -80,7 +80,7 @@ const SubStep2: React.FC = () => {
           {daysOfOperation.length > 0 && (
             <Box sx={{ display: "flex", alignItems: "center", gap: 1, justifyContent: "center" }}>
               <Typography sx={{ fontFamily: "Nunito Sans, sans-serif", fontSize: "0.75rem", flex: 0.3 }}><b>Enter the time of each day that the building begins conditioning for occupancy and when the buildings conditioning stops (or when it setsback):</b></Typography>
-              <Box sx={{ display: 'flex', gap: 1, flexWrap: 'nowrap', justifyContent: 'center', flex: 0.448 }}>
+              <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', justifyContent: 'center', flex: 0.448 }}>
                 {daysOfOperation.sort((a, b) => daysOfWeek.indexOf(a) - daysOfWeek.indexOf(b)).map((day) => (
                   <TextField
                     key={day}
@@ -96,7 +96,7 @@ const SubStep2: React.FC = () => {
                       "& .MuiInputBase-root": { height: "40px", padding: "0 6px" },
                       "& input": { padding: 0, fontFamily: "Nunito Sans, sans-serif", fontSize: "0.8rem", textAlign: 'center' },
                       "& .MuiInputBase-input::placeholder": { fontFamily: "Nunito Sans, sans-serif", fontSize: "0.7rem" },
-                      flex: `1 1 ${100 / daysOfOperation.length}%`,
+                      flex: '1 1 30%',
                       minWidth: '120px'
                     }}
                   />

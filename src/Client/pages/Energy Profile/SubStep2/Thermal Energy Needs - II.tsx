@@ -48,7 +48,7 @@ const SubStep2: React.FC = () => {
   
   const handleTextChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
-    const regex = /^\d{0,2}(\.\d{0,2})?$/;
+    const regex = /^\d{0,3}(\.\d{0,2})?$/; // Allow up to 3 digits before the decimal
     if (name === 'hotWaterTemperature' && value !== '' && !regex.test(value)) {
         return;
     }
@@ -90,7 +90,7 @@ const SubStep2: React.FC = () => {
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                     <Typography sx={{ fontFamily: 'Nunito Sans, sans-serif', fontSize: '0.75rem', minWidth: '150px', flex: 0.25 }}><b>Hot Water Temperature:</b> (°F)</Typography>
                     <Tooltip title="Enter the hot water temperature in °F" placement='top-end' arrow>
-                      <TextField name="hotWaterTemperature" variant="outlined" placeholder='Enter the hot water temperature in °F' size="small" type="text" value={hotWaterTemperature} onChange={handleTextChange} inputProps={{ maxLength: 5 }} sx={{ flex: 0.75, fontFamily: 'Nunito Sans, sans-serif', fontSize: '0.7rem', '& .MuiInputBase-root': { height: '40px', padding: '0 6px' }, '& input': { padding: 0, fontFamily: 'Nunito Sans, sans-serif', fontSize: '0.8rem' } }} />
+                      <TextField name="hotWaterTemperature" variant="outlined" placeholder='Enter the hot water temperature in °F' size="small" type="text" value={hotWaterTemperature} onChange={handleTextChange} inputProps={{ maxLength: 6 }} sx={{ flex: 0.75, fontFamily: 'Nunito Sans, sans-serif', fontSize: '0.7rem', '& .MuiInputBase-root': { height: '40px', padding: '0 6px' }, '& input': { padding: 0, fontFamily: 'Nunito Sans, sans-serif', fontSize: '0.8rem' } }} />
                     </Tooltip>
                   </Box>
 

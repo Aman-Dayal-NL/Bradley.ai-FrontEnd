@@ -445,11 +445,22 @@ const SubStep2: React.FC = () => {
                   fullWidth
                   variant="outlined"
                   name="estimatedLTV"
-                  placeholder='Enter estimated LTV'
-                  value={financialDetails.estimatedLTV}
-                  onChange={handleFinancialDetailsChange}
+                  placeholder="Enter estimated LTV"
+                  value={
+                    financialDetails.estimatedLTV
+                      ? `${financialDetails.estimatedLTV.replace(/[^0-9.]/g, '')}%`
+                      : ''
+                  }
+                  onChange={(e) => {
+                    // Only allow numbers and dot, strip % if user types it
+                    const raw = e.target.value.replace(/[^0-9.]/g, '');
+                    handleNestedChange('financialDetails', 'estimatedLTV', raw);
+                  }}
                   size="small"
                   sx={commonInputStyle}
+                  // InputProps={{
+                  //   endAdornment: <span style={{ fontSize: '0.9em', color: '#888' }}>%</span>,
+                  // }}
                 />
               </Box>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
@@ -463,6 +474,11 @@ const SubStep2: React.FC = () => {
                   onChange={handleFinancialDetailsChange}
                   size="small"
                   sx={commonInputStyle}
+                  InputProps={{
+                    startAdornment: (
+                      <span style={{ fontSize: '1rem', color: '#888', marginRight: 4 }}>$</span>
+                    ),
+                  }}
                 />
               </Box>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
@@ -489,6 +505,11 @@ const SubStep2: React.FC = () => {
                   onChange={handleFinancialDetailsChange}
                   size="small"
                   sx={commonInputStyle}
+                  InputProps={{
+                    startAdornment: (
+                      <span style={{ fontSize: '1rem', color: '#888', marginRight: 4 }}>$</span>
+                    ),
+                  }}
                 />
               </Box>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
@@ -497,9 +518,16 @@ const SubStep2: React.FC = () => {
                   fullWidth
                   variant="outlined"
                   name="capRate"
-                  value={financialDetails.capRate}
-                  placeholder='Enter cap rate'
-                  onChange={handleFinancialDetailsChange}
+                  value={
+                    financialDetails.capRate
+                      ? `${financialDetails.capRate.replace(/[^0-9.]/g, '')}%`
+                      : ''
+                  }
+                  placeholder="Enter cap rate"
+                  onChange={e => {
+                    const raw = e.target.value.replace(/[^0-9.]/g, '');
+                    handleNestedChange('financialDetails', 'capRate', raw);
+                  }}
                   size="small"
                   sx={commonInputStyle}
                 />
