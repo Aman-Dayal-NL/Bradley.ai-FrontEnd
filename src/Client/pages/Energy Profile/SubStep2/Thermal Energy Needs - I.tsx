@@ -160,15 +160,15 @@ const SubStep2: React.FC = () => {
 
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                     <Typography sx={{ fontFamily: 'Nunito Sans, sans-serif', fontSize: '0.75rem', minWidth: '150px', flex: 0.25 }}>
-                      <b>Condensate Return:</b> (in MLbs)
+                      <b>Condensate Return:</b> (in kGals)
                     </Typography>
-                    <Tooltip title="Enter the condensate return in MLbs" placement='top-end' arrow>
+                    <Tooltip title="Enter the condensate return in kGals" placement='top-end' arrow>
                       <TextField
                         name="condensateReturn"
                         variant="outlined"
                         size="small"
                         type="text"
-                        placeholder='Enter the condensate return in MLbs'
+                        placeholder='Enter the condensate return in kGals'
                         value={formatNumberWithCommas(condensateReturn)}
                         onChange={handleNumberChange}
                         sx={{ flex: 0.75, fontFamily: 'Nunito Sans, sans-serif', fontSize: '0.7rem', '& .MuiInputBase-root': { height: '40px', padding: '0 6px' }, '& input': { padding: 0, fontFamily: 'Nunito Sans, sans-serif', fontSize: '0.8rem' } }}

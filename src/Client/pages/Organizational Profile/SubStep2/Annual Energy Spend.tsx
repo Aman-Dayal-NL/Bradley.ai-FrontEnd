@@ -4,13 +4,11 @@ import { useAnnualEnergySpend } from '../../../../Context/Organizational Profile
 
 const formatNumber = (value: string) => {
   if (!value) return '';
-  // This regex handles integers and decimals correctly
   const parts = value.split('.');
   parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   return parts.join('.');
 };
 
-// Helper function to remove formatting and invalid characters before updating state
 const parseInput = (value: string) => {
   return value.replace(/,/g, '');
 };
@@ -18,20 +16,16 @@ const parseInput = (value: string) => {
 const SubStep2: React.FC = () => {
   const { annualEnergySpend, updateAnnualEnergySpend } = useAnnualEnergySpend();
 
-  // 3. Create a single, generic handler function to update the context
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    
-    // For text fields like 'otherLabel', update directly
+  
     if (name === 'otherLabel') {
       updateAnnualEnergySpend({ [name]: value });
       return;
     }
 
-    // For numeric fields, parse and validate
     const parsedValue = parseInput(value);
 
-    // Allow only one decimal point and numbers
     if (!/^\d*\.?\d*$/.test(parsedValue)) {
       return;
     }
@@ -88,60 +82,8 @@ const SubStep2: React.FC = () => {
           {renderCurrencyField('Water', 'water', 'Used for verifying unit prices and presenting pre/post design costs')}
           {renderCurrencyField('Oil', 'oil', 'Used for verifying unit prices and presenting pre/post design costs')}
           {renderCurrencyField('Propane', 'propane', 'Used for verifying unit prices and presenting pre/post design costs')}
-
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, justifyContent: 'center' }}>
-            <Tooltip title="Used for verifying unit prices and presenting pre/post design costs" placement="left-end" arrow>
-              <Typography sx={{ fontFamily: 'Nunito Sans, sans-serif', fontSize: '0.75rem', minWidth: '150px', flex: 0.25 }}>
-                <b>Steam:</b> (in MLbs)
-              </Typography>
-            </Tooltip>
-            <Tooltip title="Enter the total annual spend on steam (in MLbs)." placement="top-end" arrow>
-              <TextField
-                fullWidth
-                variant="outlined"
-                placeholder="Enter the total annual spend on steam (in MLbs)."
-                size="small"
-                type="text"
-                value={formatNumber(annualEnergySpend.steam)}
-                onChange={handleChange}
-                name="steam"
-                sx={{
-                  flex: 0.5,
-                  fontSize: '0.7rem',
-                  fontFamily: 'Nunito Sans, sans-serif',
-                  '& .MuiInputBase-root': { height: '40px', padding: '0 6px' },
-                  '& input': { padding: 0, fontFamily: 'Nunito Sans, sans-serif', fontSize: '0.8rem' },
-                }}
-              />
-            </Tooltip>
-          </Box>
-
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, justifyContent: 'center' }}>
-            <Tooltip title="Used for verifying unit prices and presenting pre/post design costs" placement="left-end" arrow>
-              <Typography sx={{ fontFamily: 'Nunito Sans, sans-serif', fontSize: '0.75rem', minWidth: '150px', flex: 0.25 }}>
-                <b>Chilled Water:</b> (in Tons/hr)
-              </Typography>
-            </Tooltip>
-            <Tooltip title="Enter the total annual spend on chilled water (in Tons/hr)." placement="top-end" arrow>
-              <TextField
-                fullWidth
-                variant="outlined"
-                placeholder="Enter the total annual spend on chilled water (in Tons/hr)."
-                size="small"
-                type="text"
-                value={formatNumber(annualEnergySpend.chilledWater)}
-                onChange={handleChange}
-                name="chilledWater"
-                sx={{
-                  flex: 0.5,
-                  fontSize: '0.7rem',
-                  fontFamily: 'Nunito Sans, sans-serif',
-                  '& .MuiInputBase-root': { height: '40px', padding: '0 6px' },
-                  '& input': { padding: 0, fontFamily: 'Nunito Sans, sans-serif', fontSize: '0.8rem' },
-                }}
-              />
-            </Tooltip>
-          </Box>
+          {renderCurrencyField('Steam', 'steam', 'Used for verifying unit prices and presenting pre/post design costs')}
+          {renderCurrencyField('Chilled Water', 'chilledWater', 'Used for verifying unit prices and presenting pre/post design costs')}
 
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, justifyContent: 'center' }}>
             <Tooltip title="Used for verifying unit prices and presenting pre/post design costs" placement="left-end" arrow>
