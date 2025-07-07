@@ -12,7 +12,7 @@ import { AnnualEnergySpendProvider } from '../Context/Organizational Profile/Sub
 import { FacilityOperationProvider } from '../Context/Organizational Profile/SubStep2/Facility Operation Description Context';
 import { FacilityAddressProvider } from '../Context/Organizational Profile/SubStep2/Facility Address Context';
 import { OtherDetailsProvider } from '../Context/Organizational Profile/SubStep2/Other Details Context';
-import { ElectricBillUploadProvider } from '../Context/Energy Profile/SubStep2/Electric Bill Upload Context';
+import { ElectricBillUploadProvider, useElectricBillUploadProvider } from '../Context/Energy Profile/SubStep2/Electric Bill Upload Context';
 import { LOAProvider } from '../Context/Energy Profile/SubStep2/Letter Of Authorization Context';
 import { LOAStatusProvider } from '../Context/Energy Profile/SubStep2/LOA - Status Context';
 import { NaturalGasBillUploadProvider } from '../Context/Energy Profile/SubStep2/Natural Gas Bill Upload Context';
@@ -161,6 +161,7 @@ const AppContent: React.FC = () => {
   } = useAppContext();
 
   const { ownershipPreference, setOwnershipPreference } = useOwnershipPreference();
+  const { electricBillUploadState } = useElectricBillUploadProvider();
   const navigate = useNavigate();
 
   const markVisited = (step: number, subStep: number) => {
@@ -201,6 +202,22 @@ const AppContent: React.FC = () => {
     const isLastSubStep = currentSubStep === steps[currentStep].subSteps - 1;
     const isLastStep = currentStep === TOTAL_STEPS - 1;
 
+    if (currentStep === 1 && currentSubStep === 1 && currentFurtherSubStep === 0) {
+        markCompleted(1, 1);
+        const hasFiles = electricBillUploadState.fileMetadata.length > 0;
+
+        if (hasFiles) {
+            setCurrentStep(1);
+            setCurrentSubStep(1);
+            setCurrentFurtherSubStep(4);
+            markVisited(1, 4);
+        } else {
+            setCurrentFurtherSubStep(1);
+            markVisited(1, 1);
+        }
+        return; 
+    }
+
     // Special case for jumping from the "Third Party" path end to step 5
     if (currentStep === 4 && currentSubStep === 2 && currentFurtherSubStep === 2) {
       setCurrentStep(5);
@@ -230,6 +247,18 @@ const AppContent: React.FC = () => {
   };
 
   const handleBack = () => {
+
+    if (currentStep === 1 && currentSubStep === 1 && currentFurtherSubStep === 4) {
+        const hasFiles = electricBillUploadState.fileMetadata.length > 0;
+
+        if (hasFiles) {
+            setCurrentStep(1);
+            setCurrentSubStep(1);
+            setCurrentFurtherSubStep(0);
+            return;
+        }
+    }
+
     // Special case: Going back from the start of Step 5
     if (currentStep === 5 && currentSubStep === 0 && currentFurtherSubStep === 0) {
         // Navigate back to the end of the previously chosen financial path

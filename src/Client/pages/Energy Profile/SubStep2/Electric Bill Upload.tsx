@@ -6,7 +6,7 @@ import { useElectricBillUploadProvider } from '../../../../Context/Energy Profil
 
 const SubStep2: React.FC = () => {
   const { electricBillUploadState, addFiles, removeFile, updateDateRange } = useElectricBillUploadProvider();
-  const { files, dateRange } = electricBillUploadState;
+  const { fileMetadata, dateRange } = electricBillUploadState;
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -32,13 +32,13 @@ const SubStep2: React.FC = () => {
     fileInputRef.current?.click();
   };
 
-  const formatFileSize = (bytes: number) => {
-    if (bytes === 0) return '0 Bytes';
-    const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-  };
+  // const formatFileSize = (bytes: number) => {
+  //   if (bytes === 0) return '0 Bytes';
+  //   const k = 1024;
+  //   const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+  //   const i = Math.floor(Math.log(bytes) / Math.log(k));
+  //   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  // };
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', fontFamily: 'Nunito Sans, sans-serif', fontSize: '0.75rem', p: 1, pr: 4, pl: 1, pt: 1 }}>
@@ -124,11 +124,11 @@ const SubStep2: React.FC = () => {
 
           <Typography sx={{ fontSize: '0.75rem', fontFamily: 'Nunito Sans, sans-serif', mb: 0, textAlign: 'right' }}><b>*</b>Accepted File Formats: .xls, .xlsx, .csv</Typography>
 
-          {files.length > 0 && (
+          {fileMetadata.length > 0 && (
             <Box sx={{ mt: 2 }}>
               <Typography sx={{ fontSize: '0.8rem', fontFamily: 'Nunito Sans, sans-serif', mb: 1, fontWeight: 'bold' }}>Uploaded Files:</Typography>
               <List dense>
-                {files.map((file, index) => (
+                {fileMetadata.map((file, index) => (
                   <ListItem
                     key={index}
                     secondaryAction={
@@ -139,7 +139,7 @@ const SubStep2: React.FC = () => {
                   >
                     <ListItemText
                       primary={file.name}
-                      secondary={formatFileSize(file.size)}
+                      secondary={file.size}
                       primaryTypographyProps={{ fontSize: '0.75rem', fontFamily: 'Nunito Sans, sans-serif' }}
                       secondaryTypographyProps={{ fontSize: '0.65rem', fontFamily: 'Nunito Sans, sans-serif' }}
                     />
