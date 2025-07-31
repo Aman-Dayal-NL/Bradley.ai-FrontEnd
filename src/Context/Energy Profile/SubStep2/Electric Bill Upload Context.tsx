@@ -10,17 +10,12 @@ interface FileMetadata {
 // Main state interface
 interface ElectricBillUploadState {
   fileMetadata: FileMetadata[];
-  dateRange: {
-    start: string;
-    end: string;
-  };
 }
 
 interface ElectricBillUploadContextType {
   electricBillUploadState: ElectricBillUploadState;
   addFiles: (newFiles: File[]) => void;
   removeFile: (fileName: string) => void;
-  updateDateRange: (range: Partial<ElectricBillUploadState['dateRange']>) => void;
 }
 
 const ElectricBillUploadContext = createContext<ElectricBillUploadContextType | undefined>(undefined);
@@ -36,7 +31,6 @@ export const useElectricBillUploadProvider = () => {
 
 const defaultState: ElectricBillUploadState = {
   fileMetadata: [],
-  dateRange: { start: '', end: '' },
 };
 
 // Helper function to format file size
@@ -83,16 +77,9 @@ export const ElectricBillUploadProvider: React.FC<{ children: ReactNode }> = ({ 
       fileMetadata: prevState.fileMetadata.filter(meta => meta.name !== fileName),
     }));
   };
-  
-  const updateDateRange = (range: Partial<ElectricBillUploadState['dateRange']>) => {
-    setElectricBillUploadState(prevState => ({
-      ...prevState,
-      dateRange: { ...prevState.dateRange, ...range },
-    }));
-  };
 
   return (
-    <ElectricBillUploadContext.Provider value={{ electricBillUploadState, addFiles, removeFile, updateDateRange }}>
+    <ElectricBillUploadContext.Provider value={{ electricBillUploadState, addFiles, removeFile }}>
       {children}
     </ElectricBillUploadContext.Provider>
   );

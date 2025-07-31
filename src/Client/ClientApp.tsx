@@ -49,6 +49,7 @@ import { ExistingContractsIVProvider } from '../Context/Financial Info/SubStep2/
 import { OtherEnergyCommitmentsProvider } from '../Context/Financial Info/SubStep2/Own/Other Energy Commitments (Optional) Context';
 import { BudgetGoalsProvider } from '../Context/Financial Info/SubStep2/Own/What Are Your Budget & Investment Goals Context';
 import { FinancingPreferencesProvider } from '../Context/Financial Info/SubStep2/Own/Financing Preferences Context';
+import { BillAddressProvider } from '../Context/Energy Profile/BillAddressContext';
 
 // UI Components
 import HorizontalStepper from '../components/HorizontalStepper';
@@ -104,7 +105,9 @@ const AppProviders: React.FC<{ children: React.ReactNode }> = ({ children }) => 
                                                                                 <OtherEnergyCommitmentsProvider>
                                                                                   <BudgetGoalsProvider>
                                                                                     <FinancingPreferencesProvider>
-                                                                                      {children}
+                                                                                      <BillAddressProvider appPrefix="client">
+                                                                                        {children}
+                                                                                      </BillAddressProvider>
                                                                                     </FinancingPreferencesProvider>
                                                                                   </BudgetGoalsProvider>
                                                                                 </OtherEnergyCommitmentsProvider>

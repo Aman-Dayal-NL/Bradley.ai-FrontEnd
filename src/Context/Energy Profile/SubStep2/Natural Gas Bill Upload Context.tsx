@@ -10,17 +10,12 @@ interface FileMetadata {
 interface NaturalGasBillUploadState {
 	files: File[];
 	fileMetadata: FileMetadata[];
-	dateRange: {
-		start: string;
-		end: string;
-	};
 }
 
 interface NaturalGasBillUploadContextType {
 	naturalGasBillUploadState: NaturalGasBillUploadState;
 	addFiles: (newFiles: File[]) => void;
 	removeFile: (fileName: string) => void;
-	updateDateRange: (range: Partial<NaturalGasBillUploadState['dateRange']>) => void;
 }
 
 const NaturalGasBillUploadContext = createContext<NaturalGasBillUploadContextType | undefined>(undefined);
@@ -36,7 +31,6 @@ export const useNaturalGasBillUploadProvider = () => {
 const defaultState: NaturalGasBillUploadState = {
 	files: [],
 	fileMetadata: [],
-	dateRange: { start: '', end: '' },
 };
 
 export const NaturalGasBillUploadProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
@@ -52,10 +46,9 @@ export const NaturalGasBillUploadProvider: React.FC<{ children: ReactNode }> = (
 	useEffect(() => {
 		const stateToSave = {
 			fileMetadata: naturalGasBillUploadState.fileMetadata,
-			dateRange: naturalGasBillUploadState.dateRange,
 		};
 		Cookies.set('naturalGasBillUploadState', JSON.stringify(stateToSave));
-	}, [naturalGasBillUploadState.fileMetadata, naturalGasBillUploadState.dateRange]);
+	}, [naturalGasBillUploadState.fileMetadata]);
 
 	const addFiles = (newFiles: File[]) => {
 		setNaturalGasBillUploadState(prevState => {
@@ -78,16 +71,9 @@ export const NaturalGasBillUploadProvider: React.FC<{ children: ReactNode }> = (
 			fileMetadata: prevState.fileMetadata.filter(meta => meta.name !== fileName),
 		}));
 	};
-	
-	const updateDateRange = (range: Partial<NaturalGasBillUploadState['dateRange']>) => {
-		setNaturalGasBillUploadState(prevState => ({
-			...prevState,
-			dateRange: { ...prevState.dateRange, ...range },
-		}));
-	};
 
 	return (
-		<NaturalGasBillUploadContext.Provider value={{ naturalGasBillUploadState, addFiles, removeFile, updateDateRange }}>
+		<NaturalGasBillUploadContext.Provider value={{ naturalGasBillUploadState, addFiles, removeFile }}>
 			{children}
 		</NaturalGasBillUploadContext.Provider>
 	);

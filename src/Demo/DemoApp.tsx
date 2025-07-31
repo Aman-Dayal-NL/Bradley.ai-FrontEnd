@@ -26,6 +26,7 @@ import { ThermalEnergyNeedsIIProvider } from '../Context/Energy Profile/SubStep2
 import { ThermalEnergyNeedsIIIProvider } from '../Context/Energy Profile/SubStep2/Thermal Energy Needs - III Context';
 import { ThermalEnergyNeedsIVProvider } from '../Context/Energy Profile/SubStep2/Thermal Energy Needs - IV Context';
 import { BoilerCogenerationProvider } from '../Context/Energy Profile/SubStep2/Existing Boiler Cogeneration Context';
+import { BillAddressProvider } from '../Context/Energy Profile/BillAddressContext';
 
 // The main content of the app, which can now use all the contexts
 const AppContent: React.FC = () => {
@@ -212,7 +213,9 @@ const DemoApp: React.FC = () => {
                       <ThermalEnergyNeedsIIIProvider>
                         <ThermalEnergyNeedsIVProvider>
                           <BoilerCogenerationProvider>
-                            <AppContent />
+                            <BillAddressProvider appPrefix="demo">
+                              <AppContent />
+                            </BillAddressProvider>
                           </BoilerCogenerationProvider>
                         </ThermalEnergyNeedsIVProvider>
                       </ThermalEnergyNeedsIIIProvider>
