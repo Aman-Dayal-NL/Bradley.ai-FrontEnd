@@ -159,7 +159,7 @@ const SubStep2: React.FC = () => {
                             <FormControl sx={{ width: '180px' }} size="small">
                                 <InputLabel sx={{ fontFamily: 'Nunito Sans, sans-serif', fontSize: '0.8rem' }}>Address</InputLabel>
                                 <Select
-                                    value={bill.id || ''}
+                                    value={bill.addressId || ''}
                                     onChange={(e) => assignAddressToBill(bill.id, e.target.value as string)}
                                     label="Address"
                                     sx={{ fontFamily: 'Nunito Sans, sans-serif', fontSize: '0.8rem' }}
