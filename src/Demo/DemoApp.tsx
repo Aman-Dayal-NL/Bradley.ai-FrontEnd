@@ -14,6 +14,9 @@ import Sidebar from './components/Sidebar';
 import Footer from '../components/Footer';
 import ChatBot from '../components/ChatBot';
 
+// Import the EmissionsDashboard component
+import EmissionsDashboard from './pages/Demo/SubStep1/DemoPage';
+
 // Feature Contexts
 import { OrganizationDetailsProvider, useOrganizationDetails } from '../Context/Organizational Profile/SubStep2/Organization Details Context';
 import { FacilityAddressProvider, useFacilityAddress } from '../Context/Organizational Profile/SubStep2/Facility Address Context';
@@ -29,7 +32,7 @@ import { BoilerCogenerationProvider } from '../Context/Energy Profile/SubStep2/E
 import { BillAddressProvider, useBillAddress } from '../Context/Energy Profile/BillAddressContext';
 import { updateOrganizationDetails, updateFacilityAddresses, uploadBillData, BillMetadata } from '../services/APIServices';
 
-// Import the new Dashboard Context
+// Import the updated Dashboard Context
 import { DashboardDataProvider, useDashboardData } from '../Context/DashboardDataContext';
 
 // The main content of the app, which can now use all the contexts
@@ -44,13 +47,13 @@ const AppContent: React.FC = () => {
     } = useAppContext();
 
     // Use the dashboard context
-    const { setDashboardData, isLoading, setIsLoading } = useDashboardData();
+    const { dashboardData, setDashboardData, isLoading, setIsLoading } = useDashboardData();
 
     const { organizationDetailsState } = useOrganizationDetails();
     const { facilityAddressState } = useFacilityAddress();
     const { electricBillUploadState } = useElectricBillUpload();
     const { naturalGasBillUploadState } = useNaturalGasBillUpload();
-    const { bills } = useBillAddress();
+    const { bills, isNextDisabled } = useBillAddress();
 
     const navigate = useNavigate();
 
@@ -209,6 +212,9 @@ const AppContent: React.FC = () => {
         navigate('/login');
     };
 
+    // Check if we should show the dashboard instead of the stepper
+    const shouldShowDashboard = dashboardData && dashboardData.length > 0;
+
     return (
         <Box sx={{ display: 'flex', flexDirection: 'row', height: '100vh', zIndex: 500 }}>
             <Backdrop
@@ -227,24 +233,44 @@ const AppContent: React.FC = () => {
                         <Box sx={{ flexGrow: 1 }}>
                             <HorizontalStepper currentSubStep={currentSubStep} totalSubSteps={steps[currentStep]?.subSteps} visitedSteps={visitedSteps[currentStep]} completedSubSteps={completedSubSteps[currentStep]} onSubStepChange={handleSubStepChange} currentStep={currentStep} />
                             <LinearProgress variant="determinate" value={calculateProgress()} sx={{ width: 'calc(100% + 16px)', height: '3.5px', margin: '0px -16px', mt: '30px', mb: '10px', backgroundColor: '#e0e0e0', '& .MuiLinearProgress-bar': { backgroundColor: '#036cc1' } }} />
-                            <StepContent step={currentStep} subStep={currentSubStep} furtherSubStep={currentFurtherSubStep} />
-                            <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 3, mr: 5.2, ml: 1, mb: 1 }}>
-                                {!(currentStep === steps.length - 1 && currentSubStep === steps[currentStep].subSteps - 1 && currentFurtherSubStep === steps[currentStep].furtherSubSteps[currentSubStep] - 1) && (
-                                    <Tooltip title="Navigate to previous step" placement='bottom' arrow>
-                                        <Button variant="outlined" onClick={handleBack} disabled={currentStep === 0 && currentSubStep === 0 && currentFurtherSubStep === 0} sx={{ fontFamily: 'Nunito Sans, sans-serif', fontSize: '0.75rem', padding: '2px 10px', minWidth: '10px', maxHeight: '25px', textTransform: 'none', '&:focus': { outline: 'none' } }}>Back</Button>
-                                    </Tooltip>
-                                )}
-                                <Box sx={{ display: 'flex', gap: 1, ml: 'auto' }}>
-                                    <>
+                            {shouldShowDashboard ? (
+                                <EmissionsDashboard data={dashboardData} />
+                            ) : (
+                                <>
+                                    <StepContent step={currentStep} subStep={currentSubStep} furtherSubStep={currentFurtherSubStep} />
+                                    <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 3, mr: 5.2, ml: 1, mb: 1 }}>
                                         {!(currentStep === steps.length - 1 && currentSubStep === steps[currentStep].subSteps - 1 && currentFurtherSubStep === steps[currentStep].furtherSubSteps[currentSubStep] - 1) && (
-                                            <Tooltip title="Save progress and log out" placement='bottom' arrow><Button variant="outlined" onClick={handleSaveAndContinueLater} sx={{ fontFamily: 'Nunito Sans, sans-serif', fontSize: '0.75rem', padding: '2px 10px', minWidth: '10px', maxHeight: '25px', textTransform: 'none', '&:focus': { outline: 'none' } }}>Save and Continue Later</Button></Tooltip>
+                                            <Tooltip title="Navigate to previous step" placement='bottom' arrow>
+                                                <Button variant="outlined" onClick={handleBack} disabled={currentStep === 0 && currentSubStep === 0 && currentFurtherSubStep === 0} sx={{ fontFamily: 'Nunito Sans, sans-serif', fontSize: '0.75rem', padding: '2px 10px', minWidth: '10px', maxHeight: '25px', textTransform: 'none', '&:focus': { outline: 'none' } }}>Back</Button>
+                                            </Tooltip>
                                         )}
-                                        <Button variant="contained" color="primary" onClick={handleNext} sx={{ fontFamily: 'Nunito Sans, sans-serif', fontSize: '0.75rem', padding: '2px 10px', minWidth: '10px', maxHeight: '25px', textTransform: 'none', boxShadow: 'none', '&:focus': { outline: 'none' } }}>
-                                            {currentStep === steps.length - 1 && currentSubStep === steps[currentStep].subSteps - 1 && currentFurtherSubStep === steps[currentStep].furtherSubSteps[currentSubStep] - 2 ? (<Tooltip title="Generate customized DER report" placement='bottom' arrow><span>Generate Report</span></Tooltip>) : currentStep === steps.length - 1 && currentSubStep === steps[currentStep].subSteps - 1 && currentFurtherSubStep === steps[currentStep].furtherSubSteps[currentSubStep] - 1 ? (<Tooltip title="Download DER report" placement='bottom' arrow><span>Download Report</span></Tooltip>) : currentStep === 1 && currentSubStep === 1 && currentFurtherSubStep === 2 ? (<Tooltip title="Submit LOA" placement='bottom' arrow><span>Authorize & Send Request</span></Tooltip>) : currentStep === 5 && currentSubStep === 0 && currentFurtherSubStep === 0 ? (<Tooltip title="Submit your profile" placement='bottom' arrow><span>Submit</span></Tooltip>) : (<Tooltip title="Navigate to next step" placement='bottom' arrow><span>Next</span></Tooltip>)}
-                                        </Button>
-                                    </>
-                                </Box>
-                            </Box>
+                                        <Box sx={{ display: 'flex', gap: 1, ml: 'auto' }}>
+                                            {!(currentStep === steps.length - 1 && currentSubStep === steps[currentStep].subSteps - 1 && currentFurtherSubStep === steps[currentStep].furtherSubSteps[currentSubStep] - 1) && (
+                                                <Tooltip title="Save progress and log out" placement='bottom' arrow>
+                                                    <Button variant="outlined" onClick={handleSaveAndContinueLater} sx={{ fontFamily: 'Nunito Sans, sans-serif', fontSize: '0.75rem', padding: '2px 10px', minWidth: '10px', maxHeight: '25px', textTransform: 'none', '&:focus': { outline: 'none' } }}>Save and Continue Later</Button>
+                                                </Tooltip>
+                                            )}
+                                            <Tooltip title={(currentStep === 0 && currentSubStep === 0 && currentFurtherSubStep === 6 && isNextDisabled()) ? "You haven't uploaded bills for all addresses. Upload atleast one bill for every address first." : "Navigate to next step"} placement='bottom' arrow>
+                                                <span>
+                                                    <Button variant="contained" color="primary" onClick={handleNext} disabled={currentStep === 0 && currentSubStep === 0 && currentFurtherSubStep === 6 && isNextDisabled()} sx={{ fontFamily: 'Nunito Sans, sans-serif', fontSize: '0.75rem', padding: '2px 10px', minWidth: '10px', maxHeight: '25px', textTransform: 'none', boxShadow: 'none', '&:focus': { outline: 'none' } }}>
+                                                        {currentStep === steps.length - 1 && currentSubStep === steps[currentStep].subSteps - 1 && currentFurtherSubStep === steps[currentStep].furtherSubSteps[currentSubStep] - 2 ? (
+                                                            "Generate Report"
+                                                        ) : currentStep === steps.length - 1 && currentSubStep === steps[currentStep].subSteps - 1 && currentFurtherSubStep === steps[currentStep].furtherSubSteps[currentSubStep] - 1 ? (
+                                                            "Download Report"
+                                                        ) : currentStep === 1 && currentSubStep === 1 && currentFurtherSubStep === 2 ? (
+                                                            "Authorize & Send Request"
+                                                        ) : currentStep === 5 && currentSubStep === 0 && currentFurtherSubStep === 0 ? (
+                                                            "Submit"
+                                                        ) : (
+                                                            "Next"
+                                                        )}
+                                                    </Button>
+                                                </span>
+                                            </Tooltip>
+                                        </Box>
+                                    </Box>
+                                </>
+                            )}
                         </Box>
                     </Box>
                     <ChatBot />
@@ -258,7 +284,7 @@ const AppContent: React.FC = () => {
 const DemoApp: React.FC = () => {
     return (
         <AppProvider steps={steps} appPrefix="demo">
-            <DashboardDataProvider> {/* Wrap with the new provider */}
+            <DashboardDataProvider>
                 <OrganizationDetailsProvider>
                     <FacilityAddressProvider>
                         <ElectricBillUploadProvider>

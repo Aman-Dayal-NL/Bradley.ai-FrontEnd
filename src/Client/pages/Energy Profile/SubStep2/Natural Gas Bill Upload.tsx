@@ -7,11 +7,9 @@ import { useBillAddress } from '../../../../Context/Energy Profile/BillAddressCo
 
 const SubStep2: React.FC = () => {
   const { addFiles, removeFile } = useNaturalGasBillUpload();
-  const { bills, addBill, removeBill: removeBillFromContext, addresses, assignAddressToBill, getUnassignedAddresses, isAddressAssigned, updateBillDateRange } = useBillAddress();
+  const { bills, addBill, removeBill: removeBillFromContext, addresses, assignAddressToBill, updateBillDateRange } = useBillAddress();
   const gasBills = bills.filter(b => b.type === 'gas');
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const unassignedAddresses = getUnassignedAddresses();
-  const allAddressesAssigned = (unassignedAddresses.length === 0 && addresses.length > 0) || addresses.length === 0;
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       const newFiles = event.target.files;
@@ -39,7 +37,6 @@ const SubStep2: React.FC = () => {
     };
  
     const handleUploadBoxClick = () => {
-      if (allAddressesAssigned) return;
       fileInputRef.current?.click();
     };
 
@@ -76,10 +73,10 @@ const SubStep2: React.FC = () => {
             onChange={handleFileChange}
             ref={fileInputRef}
             style={{ display: 'none' }}
-            disabled={allAddressesAssigned}
+            
           />
 
-          <Tooltip title={allAddressesAssigned ? "No unbilled addresses remaining." : "Click to upload files here." } placement='top-start' arrow>
+          <Tooltip title="Click to upload files here." placement='top-start' arrow>
             <Box
               sx={{
                 display: 'flex',
@@ -90,10 +87,10 @@ const SubStep2: React.FC = () => {
                 mb: 0,
                 mt: 1.5,
                 justifyContent: 'center',
-                cursor: allAddressesAssigned ? 'not-allowed' : 'pointer',
-                backgroundColor: allAddressesAssigned ? '#f5f5f5' : 'transparent',
+                cursor: 'pointer',
+                backgroundColor: 'transparent',
                 '&:hover': {
-                  borderColor: allAddressesAssigned ? 'grey' : 'primary.main',
+                  borderColor: /* allAddressesAssigned ? 'grey' : */ 'primary.main',
                 }
               }}
               onClick={handleUploadBoxClick}
@@ -168,7 +165,6 @@ const SubStep2: React.FC = () => {
                                     <MenuItem  
                                         key={address.id}  
                                         value={address.id}  
-                                        disabled={isAddressAssigned(address.id) && bill.addressId !== address.id}
                                         sx={{ fontFamily: 'Nunito Sans, sans-serif', fontSize: '0.8rem' }}
                                     >
                                         {address.address}

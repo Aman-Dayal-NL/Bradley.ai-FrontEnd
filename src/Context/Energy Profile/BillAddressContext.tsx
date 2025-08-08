@@ -24,8 +24,7 @@ interface BillAddressContextType {
   setAddresses: React.Dispatch<React.SetStateAction<Address[]>>;
   assignAddressToBill: (billId: string, addressId: string) => void;
   getAssignedAddress: (billId: string) => string | undefined;
-  getUnassignedAddresses: () => Address[];
-  isAddressAssigned: (addressId: string) => boolean;
+  isNextDisabled: () => boolean;
   updateBillDateRange: (billId: string, dateRange: { start: string; end: string }) => void;
 }
 
@@ -87,13 +86,11 @@ export const BillAddressProvider = ({ children, appPrefix }: BillAddressProvider
     return bills.find(b => b.id === billId)?.addressId;
   };
 
-  const isAddressAssigned = (addressId: string) => {
-    return bills.some(bill => bill.addressId === addressId);
-  };
-
-  const getUnassignedAddresses = () => {
-    const assignedAddressIds = bills.map(bill => bill.addressId).filter(Boolean);
-    return addresses.filter(a => !assignedAddressIds.includes(a.id));
+  const isNextDisabled = () => {
+    const hasUnassignedBill = bills.some(bill => !bill.addressId);
+    const assignedAddressIds = new Set(bills.map(bill => bill.addressId).filter(Boolean));
+    const hasUnassignedAddress = addresses.some(address => !assignedAddressIds.has(address.id));
+    return hasUnassignedBill || hasUnassignedAddress;
   };
 
   const updateBillDateRange = (billId: string, dateRange: { start: string; end: string }) => {
@@ -110,8 +107,7 @@ export const BillAddressProvider = ({ children, appPrefix }: BillAddressProvider
       setAddresses,
       assignAddressToBill,
       getAssignedAddress,
-      getUnassignedAddresses,
-      isAddressAssigned,
+      isNextDisabled,
       updateBillDateRange,
     }}>
       {children}
