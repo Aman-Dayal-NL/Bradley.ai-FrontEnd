@@ -1,7 +1,6 @@
-import React, { useState, useEffect, useMemo, useRef } from 'react';
+import React, { useMemo/* , useRef */ } from 'react';
 import {
-    Box, Card, CardContent, CardHeader, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, Slider, Select, MenuItem, FormControl, Grid, Container, styled, createTheme, ThemeProvider, CssBaseline, Modal, Fade, IconButton,
-    Button
+    Box, Card, CardContent, CardHeader, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, Slider, Select, MenuItem, FormControl, Grid, Container, styled, createTheme, ThemeProvider, CssBaseline, Modal, Fade, IconButton, Button
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ComposedChart } from 'recharts';
@@ -12,7 +11,6 @@ interface ChartDataRow {
     month: string;
     [key: string]: string | number;
 }
-
 const nunitoSansUrl = 'https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&display=swap';
 const theme = createTheme({ typography: { fontFamily: '"Nunito Sans", "Roboto", "Helvetica", "Arial", sans-serif', h4: { fontWeight: 700 }, h5: { fontWeight: 700 }, subtitle2: { fontWeight: 600 } } });
 const StyledCard = styled(Card)(({ theme }) => ({ boxShadow: theme.shadows[2], width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }));
@@ -35,25 +33,24 @@ export interface DashboardState {
 interface EmissionsDashboardProps {
     data: LocationData[];
     onUpdate: (payload: DashboardState) => void;
+    dashboardState: DashboardState;
+    setDashboardState: React.Dispatch<React.SetStateAction<DashboardState | null>>;
+    hasUnsavedChanges: boolean;
+    setHasUnsavedChanges: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-// --- MAIN COMPONENT ---
-const EmissionsDashboard: React.FC<EmissionsDashboardProps> = ({ data, onUpdate }) => {
-    // --- STATE MANAGEMENT ---
-    const [dashboardState, setDashboardState] = useState<DashboardState>({
-        selectedLocationName: '',
-        selectedSource: '',
-        selectedYear: '',
-        co2eGoal: 10,
-        derAllocation: { 'PLANT': 100, 'Solar PV': 0, 'CHP': 0, 'Simple Cycle Turbines': 0, 'Fuel Cells': 0, 'Linear Generation': 0, 'Battery Storage': 0 },
-    });
-    const [isUpdating, setIsUpdating] = useState(false);
-    const [expandedChart, setExpandedChart] = useState<{ key: string, title: string } | null>(null);
-    const isInitialMount = useRef(true);
-    const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
-    const [countdown, setCountdown] = useState(60);
+const EmissionsDashboard: React.FC<EmissionsDashboardProps> = ({
+    data,
+    onUpdate,
+    dashboardState,
+    setDashboardState,
+    hasUnsavedChanges,
+    setHasUnsavedChanges,
+}) => {
+    // Local state only for UI elements that don't affect data, like the modal
+    const [expandedChart, setExpandedChart] = React.useState<{ key: string, title: string } | null>(null);
 
-    // --- DATA DERIVATION & TRANSFORMATION ---
+    // --- DATA DERIVATION ---
     const uniqueLocations = useMemo(() => {
         if (!data || data.length === 0) return [];
         return Array.from(new Set(data.map(d => d.location)));
@@ -71,103 +68,50 @@ const EmissionsDashboard: React.FC<EmissionsDashboardProps> = ({ data, onUpdate 
         return data.filter(d => d.location === dashboardState.selectedLocationName).map(d => d.source);
     }, [data, dashboardState.selectedLocationName]);
 
-    // --- EFFECT HOOKS ---
-    useEffect(() => {
-        if (data && data.length > 0 && isInitialMount.current) {
-            const firstLocation = uniqueLocations[0] || '';
-            const firstSource = data.find(d => d.location === firstLocation)?.source || '';
-            const latestYear = uniqueYears[0] || '';
-            setDashboardState(prev => ({ ...prev, selectedLocationName: firstLocation, selectedSource: firstSource, selectedYear: latestYear }));
-            isInitialMount.current = false;
-        }
-    }, [data, uniqueLocations, uniqueYears]);
-
-    // --- EVENT HANDLERS (REVISED) ---
-    const triggerSocketUpdate = (stateToUpdate: DashboardState) => {
-    if (isUpdating) return;
-    onUpdate(stateToUpdate);
-    setCountdown(60); // Reset countdown to 10
-    setIsUpdating(true); // Start the update process
-};
-
-useEffect(() => {
-    // Only run the timer if we are in an updating state
-    if (isUpdating) {
-        // Set up an interval that runs every second
-        const timer = setInterval(() => {
-            setCountdown(prevCountdown => {
-                // When the countdown is about to hit zero...
-                if (prevCountdown <= 1) {
-                    clearInterval(timer); // ...stop the timer...
-                    setIsUpdating(false); // ...and finish the update state.
-                    return 60; // Reset to 10 for the next time
-                }
-                // Otherwise, just subtract 1
-                return prevCountdown - 1;
-            });
-        }, 1000);
-
-        // Cleanup function to clear the interval if the component unmounts
-        return () => clearInterval(timer);
-    }
-}, [isUpdating]);
-
+    // --- EVENT HANDLERS ---
     const handleFilterChange = (event: { target: { value: any } }, filterName: 'selectedLocationName' | 'selectedSource' | 'selectedYear') => {
         const value = event.target.value;
-        
-        setDashboardState(currentState => {
-            let newState = { ...currentState, [filterName]: value };
+        const newState = { ...dashboardState };
 
-            // If the location changed, we need to find a valid source for it.
-            if (filterName === 'selectedLocationName') {
-                const newSources = data.filter(d => d.location === value).map(d => d.source);
-                newState.selectedSource = newSources[0] || ''; // Auto-select the first available source
-            }
-            
-            triggerSocketUpdate(newState);
-            return newState;
-        });
+        (newState as any)[filterName] = value;
+
+        if (filterName === 'selectedLocationName') {
+            const newSources = data.filter(d => d.location === value).map(d => d.source);
+            newState.selectedSource = newSources[0] || '';
+        }
+        
+        setDashboardState(newState);
+        onUpdate(newState);
     };
 
     const handleSliderChange = (newValue: number, sliderName: 'co2eGoal' | string) => {
+        const newState = { ...dashboardState };
         if (sliderName === 'co2eGoal') {
-            setDashboardState(prev => ({ ...prev, co2eGoal: newValue }));
+            newState.co2eGoal = newValue;
         } else {
-            // Only DER sliders should trigger the confirm button
             setHasUnsavedChanges(true);
-            setDashboardState(prev => {
-                const oldAllocation = prev.derAllocation;
-                const oldValue = oldAllocation[sliderName];
-                const difference = newValue - oldValue;
-                const currentPlantValue = oldAllocation.PLANT;
-                if (difference > 0 && currentPlantValue < difference) {
-                    return prev;
-                }
-                const newDerAllocation = { ...oldAllocation, [sliderName]: newValue, PLANT: currentPlantValue - difference };
-                return { ...prev, derAllocation: newDerAllocation };
-            });
+            const oldAllocation = newState.derAllocation;
+            const oldValue = oldAllocation[sliderName];
+            const difference = newValue - oldValue;
+            const currentPlantValue = oldAllocation.PLANT;
+            if (difference > 0 && currentPlantValue < difference) {
+                return; // Do nothing if invalid
+            }
+            newState.derAllocation = { ...oldAllocation, [sliderName]: newValue, PLANT: currentPlantValue - difference };
         }
+        setDashboardState(newState);
     };
 
     const handleCO2eSliderCommit = () => {
-        triggerSocketUpdate(dashboardState);
+        onUpdate(dashboardState);
     };
 
-    // This handler is now ONLY for the DER system sliders
     const handleConfirmChanges = () => {
-        triggerSocketUpdate(dashboardState);
+        onUpdate(dashboardState);
         setHasUnsavedChanges(false);
     };
 
-    // const handleSliderCommit = () => {
-    //     // Use a callback to ensure we get the most up-to-date state
-    //     setDashboardState(currentState => {
-    //         triggerSocketUpdate(currentState);
-    //         return currentState;
-    //     });
-    // };
-
-    // --- DATA & RENDER LOGIC ---
+    // --- RENDER LOGIC ---
     const selectedLocationData = useMemo(() => {
         const baseData = data?.find(d => d.location === dashboardState.selectedLocationName && d.source === dashboardState.selectedSource) || null;
         if (!baseData || !dashboardState.selectedYear) return baseData;
@@ -194,11 +138,14 @@ useEffect(() => {
             });
         });
         const finalChartData: ChartDataRow[] = monthNames.map(monthName => ({ month: monthName, ...(monthlyAggregates[monthName] || {}), }));
-        const selectedLocationSourceKey = `${dashboardState.selectedLocationName} (${dashboardState.selectedSource})`;
         const derFactor = 1 - (Object.values(dashboardState.derAllocation).filter((_, i) => i > 0).reduce((acc, v) => acc + v, 0) / 100);
+        const selectedLocationSourceKey = `${dashboardState.selectedLocationName} (${dashboardState.selectedSource})`;
         const dataWithDer = finalChartData.map(d => ({ ...d, 'DER': (d[selectedLocationSourceKey] as number || 0) * derFactor, }));
         return { all: dataWithDer, electric: electricLocations, gas: gasLocations };
     }, [data, dashboardState.selectedLocationName, dashboardState.selectedSource, dashboardState.derAllocation, dashboardState.selectedYear]);
+
+    // Define selectedLocationSourceKey for use in JSX
+    const selectedLocationSourceKey = `${dashboardState.selectedLocationName} (${dashboardState.selectedSource})`;
 
     const formatNumber = (num?: number | null, digits = 2) => num?.toLocaleString('en-US', { maximumFractionDigits: digits, minimumFractionDigits: digits }) ?? 'N/A';
     const formatString = (str?: string | null) => str?.toString() || 'N/A';
@@ -207,19 +154,15 @@ useEffect(() => {
     
     const { target_goals, current_year_summary, targets_2030 } = selectedLocationData ?? {};
     const hasData = data && data.length > 0;
-    const selectedLocationSourceKey = `${dashboardState.selectedLocationName} (${dashboardState.selectedSource})`;
 
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline />
             <link href={nunitoSansUrl} rel="stylesheet" />
-            <Box sx={{ minHeight: '100vh', backgroundColor: '#f5f5f5', p: 3, opacity: isUpdating ? 0.7 : 1, transition: 'opacity 0.3s', pointerEvents: isUpdating ? 'none' : 'auto' }}>
-                {isUpdating && <Typography sx={{ textAlign: 'center', mb: 2, color: 'primary.main', fontWeight: 'bold' }}>Updating... Please wait {countdown} seconds.</Typography>}
+            <Box sx={{ minHeight: '100vh', backgroundColor: '#f5f5f5', p: 3 }}>
                 <Container maxWidth="xl">
                     <Typography variant="h4" component="h1" textAlign="center" fontWeight="bold" mb={4} color="text.primary">EMISSIONS MONITORING DASHBOARD</Typography>
-                    
                     <Grid container spacing={3} mb={4}>
-                        {/* FILTERS CARD */}
                         <Grid item xs={12} md={6} sx={{ display: 'flex' }}>
                             <FilterCard>
                                 <CardHeader title={<Typography variant="subtitle2" fontWeight="bold">FILTERS</Typography>} sx={{ textAlign: 'center', py: 1 }} />
@@ -231,7 +174,7 @@ useEffect(() => {
                                                     <LabelCell>Location</LabelCell>
                                                     <StyledTableCell>
                                                         <FormControl size="small" fullWidth>
-                                                            <Select value={dashboardState.selectedLocationName || ''} onChange={(e) => handleFilterChange(e, 'selectedLocationName')} sx={{ fontSize: '0.75rem' }} disabled={!hasData || isUpdating} displayEmpty>
+                                                            <Select value={dashboardState.selectedLocationName || ''} onChange={(e) => handleFilterChange(e, 'selectedLocationName')} sx={{ fontSize: '0.75rem' }} disabled={!hasData} displayEmpty>
                                                                 {hasData ? (uniqueLocations.map(location => (<MenuItem key={location} value={location}>{location}</MenuItem>))) : (<MenuItem value="" disabled>No location found</MenuItem>)}
                                                             </Select>
                                                         </FormControl>
@@ -241,7 +184,7 @@ useEffect(() => {
                                                     <LabelCell>Source</LabelCell>
                                                     <StyledTableCell>
                                                         <FormControl size="small" fullWidth>
-                                                            <Select value={dashboardState.selectedSource || ''} onChange={(e) => handleFilterChange(e, 'selectedSource')} sx={{ fontSize: '0.75rem' }} disabled={!hasData || availableSources.length === 0 || isUpdating} displayEmpty>
+                                                            <Select value={dashboardState.selectedSource || ''} onChange={(e) => handleFilterChange(e, 'selectedSource')} sx={{ fontSize: '0.75rem' }} disabled={!hasData || availableSources.length === 0} displayEmpty>
                                                                 {availableSources.length > 0 ? (availableSources.map(source => (<MenuItem key={source} value={source}>{source}</MenuItem>))) : (<MenuItem value="" disabled>No source available</MenuItem>)}
                                                             </Select>
                                                         </FormControl>
@@ -251,7 +194,7 @@ useEffect(() => {
                                                     <LabelCell>Year</LabelCell>
                                                     <StyledTableCell>
                                                         <FormControl size="small" fullWidth>
-                                                            <Select value={dashboardState.selectedYear || ''} onChange={(e) => handleFilterChange(e, 'selectedYear')} sx={{ fontSize: '0.75rem' }} disabled={!hasData || isUpdating} displayEmpty>
+                                                            <Select value={dashboardState.selectedYear || ''} onChange={(e) => handleFilterChange(e, 'selectedYear')} sx={{ fontSize: '0.75rem' }} disabled={!hasData} displayEmpty>
                                                                 {uniqueYears.length > 0 ? (uniqueYears.map(year => (<MenuItem key={year} value={year}>{year}</MenuItem>))) : (<MenuItem value="" disabled>No year found</MenuItem>)}
                                                             </Select>
                                                         </FormControl>
@@ -267,7 +210,6 @@ useEffect(() => {
                                                 value={dashboardState.co2eGoal}
                                                 onChange={(_e, val) => handleSliderChange(val as number, 'co2eGoal')}
                                                 onChangeCommitted={handleCO2eSliderCommit}
-                                                disabled={isUpdating}
                                                 min={0} max={100} size="small" sx={{ flexGrow: 1 }}
                                             />
                                             <Typography variant="caption" color="text.secondary" minWidth="35px">{dashboardState.co2eGoal}%</Typography>
@@ -276,8 +218,6 @@ useEffect(() => {
                                 </CardContent>
                             </FilterCard>
                         </Grid>
-
-                        {/* PLANT & DER CARDS */}
                         <Grid item xs={12} md={6}>
                             <Grid container spacing={3} direction="column">
                                 <Grid item>
@@ -308,49 +248,27 @@ useEffect(() => {
                                 <Grid item>
                                     <StyledCard>
                                         <CardHeader
-  title={
-    <Box sx={{ display: "flex", alignItems: "center", width: "100%", position: "relative" }}>
-      {/* Centered title */}
-      <Typography
-        variant="subtitle2"
-        fontWeight="bold"
-        sx={{
-          position: "absolute",
-          left: "50%",
-          transform: "translateX(-50%)",
-        }}
-      >
-        DER SYSTEM
-      </Typography>
-
-      {/* Right-aligned placeholder for button */}
-      <Box sx={{ marginLeft: "auto", minHeight: 25 }}>
-        {hasUnsavedChanges && (
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleConfirmChanges}
-            disabled={isUpdating}
-            sx={{
-              fontFamily: "Nunito Sans, sans-serif",
-              fontSize: "0.75rem",
-              padding: "2px 10px",
-              minWidth: "10px",
-              maxHeight: "25px",
-              textTransform: "none",
-              boxShadow: "none",
-              "&:focus": { outline: "none" },
-            }}
-          >
-            Confirm Changes
-          </Button>
-        )}
-      </Box>
-    </Box>
-  }
-  sx={{ textAlign: "center", py: 1 }}
-/>
-
+                                            title={
+                                                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', position: 'relative' }}>
+                                                    <Typography variant="subtitle2" fontWeight="bold" sx={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)' }}>
+                                                        DER SYSTEM
+                                                    </Typography>
+                                                    <Box sx={{ marginLeft: "auto", minHeight: 25 }}>
+                                                        {hasUnsavedChanges && (
+                                                            <Button
+                                                                variant="contained"
+                                                                color="primary"
+                                                                onClick={handleConfirmChanges}
+                                                                sx={{ fontFamily: 'Nunito Sans, sans-serif', fontSize: '0.75rem', padding: '2px 10px', minWidth: '10px', maxHeight: '25px', textTransform: 'none', boxShadow: 'none', '&:focus': { outline: 'none' } }}
+                                                            >
+                                                                Confirm Changes
+                                                            </Button>
+                                                        )}
+                                                    </Box>
+                                                </Box>
+                                            }
+                                            sx={{ py: 1 }}
+                                        />
                                         <CardContent sx={{ p: '0 !important' }}>
                                             <TableContainer>
                                                 <Table size="small" sx={{ tableLayout: 'fixed' }}>
@@ -366,8 +284,6 @@ useEffect(() => {
                                                                         <Slider
                                                                             value={value}
                                                                             onChange={(_e, val) => handleSliderChange(val as number, name)}
-                                                                            // onChangeCommitted={handleSliderCommit}
-                                                                            disabled={isUpdating}
                                                                             size="small" sx={{ flexGrow: 1 }}
                                                                         />
                                                                         <Typography variant="caption" fontWeight="medium" minWidth="35px">{value}%</Typography>
