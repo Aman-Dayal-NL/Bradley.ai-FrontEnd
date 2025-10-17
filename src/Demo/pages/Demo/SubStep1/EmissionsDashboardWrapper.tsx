@@ -199,7 +199,7 @@ if (!activeDashboardData) {
                 <Typography variant="h6">{loadingMessages[loadingMessageIndex]}</Typography>
             </Backdrop>
             <EmissionsDashboard
-                data={activeDashboardData}
+                allData={dashboardData}
                 onConfirmChanges={handleConfirmChanges}
                 hasUnsavedChanges={hasUnsavedChanges}
                 setHasUnsavedChanges={setHasUnsavedChanges}
