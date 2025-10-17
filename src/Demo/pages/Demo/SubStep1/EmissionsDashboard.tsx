@@ -15,12 +15,20 @@ interface DashboardData {
     verdict: { status_banner: string; severity: string; penalty_risk_usd: number; time_left_months: number; limit_utilization_pct: number; };
     evidence: { metrics: { actual_emissions: number; actual_yoy_pct: number | string; compliance_target: number; compliance_jurisdiction: string; required_reduction_pct: number; bradley_solution?: number; bradley_reduction_pct?: number; over_by: number; estimated_penalty_cost_usd_per_year: number; bradley_savings?: number; bradley_roi_years?: number; } };
     der_control_panel: { current_mix_pct: { [key: string]: number }; recommended_mix_pct: { [key: string]: number }; impact_by_der: { [key: string]: number }; };
-    monthly_tracking: { target_per_month: number; with_bradley_der_per_month: number; monthly_emissions: { month: string; year: number | string; actual: number | null; projected: number | null; }[]; };
+    monthly_tracking: { target_per_month: number; with_bradley_der_per_month: number; monthly_emissions: { month: string | number; year: number | string; actual: number | null; projected: number | null; }[]; };
     action_center: {
         recommended_solution: { title: string; components: { type: string; size: string; }[]; investment_usd: number; payback_years: number; eliminates_penalties: boolean; };
         alternatives?: { title: string; investment_usd: number; reduction_pct: number; estimated_penalties_remaining_usd_per_year?: number; carbon_negative_by_year?: number; }[];
     };
 }
+
+// --- IMPROVED COLOR PALETTE FOR CHART ---
+const colorPalette = {
+    actual: '#424242',      // Dark Grey
+    projected: '#BDBDBD',    // Light Grey
+    target: '#d32f2f',      // Strong Red
+    withBradley: '#388E3C', // Clear Green
+};
 
 // --- STYLED COMPONENTS ---
 const StyledTitle = styled(Typography)(({ theme }) => ({
@@ -157,11 +165,23 @@ const EmissionsDashboard: React.FC<EmissionsDashboardProps> = ({ data, onConfirm
         if (!data || !selectedYear) return [];
         const monthOrder = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
         const filtered = data.monthly_tracking.monthly_emissions.filter(em => em.year == selectedYear);
-        const processed = filtered.map(em => ({
-            ...em,
-            emissions: em.actual ?? em.projected,
-            fill: em.actual !== null ? '#007aff' : '#82ca9d'
-        }));
+        
+        // --- MODIFIED SECTION ---
+        // This now correctly handles month data that is numeric (1-12) or already a string ("Jan").
+        const processed = filtered.map(em => {
+            const monthIndex = Number(em.month) - 1;
+            const monthName = (typeof em.month === 'number' && monthIndex >= 0 && monthIndex < 12)
+                ? monthOrder[monthIndex]
+                : String(em.month);
+
+            return {
+                ...em,
+                month: monthName, // Use the converted month name for the chart
+                emissions: em.actual ?? em.projected,
+                fill: em.actual !== null ? colorPalette.actual : colorPalette.projected
+            };
+        });
+        
         return processed.sort((a, b) => monthOrder.indexOf(a.month) - monthOrder.indexOf(b.month));
     }, [data, selectedYear]);
 
@@ -216,10 +236,10 @@ const EmissionsDashboard: React.FC<EmissionsDashboardProps> = ({ data, onConfirm
                 </Typography>
                 <Paper variant="outlined" sx={{ p: 2, backgroundColor: '#f9f9f9' }}>
                     <ul style={{ margin: 0, paddingLeft: '20px' }}>
-                        <li><b><span style={{ color: '#007aff' }}>Blue bars</span></b> show your recorded historical emissions.</li>
-                        <li><b><span style={{ color: '#82ca9d' }}>Green bars</span></b> are our AI-powered forecasts for the upcoming months.</li>
-                        <li style={{ marginTop: '8px' }}>The <b style={{ color: '#ff3b30' }}>Red Target Line</b> represents your monthly compliance limit. Staying below this is key to avoiding penalties.</li>
-                        <li style={{ marginTop: '8px' }}>The <b style={{ color: '#34c759' }}>Green Bradley Line</b> shows your projected emissions if you adopt our recommended solution, keeping you safely under target.</li>
+                        <li><b><span style={{ color: colorPalette.actual }}>Dark Grey bars</span></b> show your recorded historical emissions.</li>
+                        <li style={{ marginTop: '8px' }}><b><span style={{ color: colorPalette.projected }}>Light Grey bars</span></b> are our AI-powered forecasts for the upcoming months.</li>
+                        <li style={{ marginTop: '8px' }}>The <b style={{ color: colorPalette.target }}>Red Target Line</b> represents your monthly compliance limit. Staying below this is key to avoiding penalties.</li>
+                        <li style={{ marginTop: '8px' }}>The <b style={{ color: colorPalette.withBradley }}>Green Bradley Line</b> shows your projected emissions if you adopt our recommended solution, keeping you safely under target.</li>
                     </ul>
                 </Paper>
             </>
@@ -267,7 +287,20 @@ const EmissionsDashboard: React.FC<EmissionsDashboardProps> = ({ data, onConfirm
 
     return (
         <Box sx={{ display: 'flex', flexDirection: 'column', fontFamily: 'Nunito Sans, sans-serif', fontSize: '0.75rem', p: 1, maxWidth: '1200px', margin: '0 auto', width: '100%' }}>
-            <style>{`@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700;900&display=swap');`}</style>
+            <style>{`
+                @import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700;900&display=swap');
+                
+                .ref-line-target .recharts-reference-line-line,
+                .ref-line-bradley .recharts-reference-line-line {
+                    transition: all 0.2s ease-in-out;
+                }
+                
+                .ref-line-target .recharts-reference-line-line:hover,
+                .ref-line-bradley .recharts-reference-line-line:hover {
+                    stroke-width: 2.5;
+                    stroke-opacity: 1;
+                }
+            `}</style>
             
             <Modal open={modalOpen} onClose={handleCloseModal}><ModalBox>{renderModalContent()}</ModalBox></Modal>
 
@@ -333,13 +366,53 @@ const EmissionsDashboard: React.FC<EmissionsDashboardProps> = ({ data, onConfirm
                                             <CartesianGrid strokeDasharray="3 3" />
                                             <XAxis dataKey="month" />
                                             <YAxis />
-                                            <Tooltip />
-                                            <Legend payload={[{ value: 'Actual', type: 'square', color: '#007aff' }, { value: 'Projected', type: 'square', color: '#82ca9d' }]} />
-                                            <ReferenceLine y={data?.monthly_tracking?.target_per_month} label={{ value: `Target`, position: 'insideTopLeft' }} stroke="#ff3b30" strokeDasharray="3 3" />
-                                            <ReferenceLine y={data?.monthly_tracking?.with_bradley_der_per_month} label={{ value: `With Bradley`, position: 'insideBottomLeft' }} stroke="#34c759" strokeDasharray="3 3" />
+                                            <Tooltip cursor={{fill: 'rgba(230, 230, 230, 0.4)'}}/>
+                                            
+                                            <Legend
+                                                payload={[
+                                                    { value: 'Actual', type: 'square', color: colorPalette.actual },
+                                                    { value: 'Projected', type: 'square', color: colorPalette.projected },
+                                                    { value: 'Target', type: 'line', color: colorPalette.target },
+                                                    { value: 'With Bradley', type: 'line', color: colorPalette.withBradley },
+                                                ]}
+                                            />
+                                            
                                             <Bar dataKey="emissions" name="Emissions">
-                                                {filteredAndSortedChartData.map((entry, index) => ( <Cell key={`cell-${index}`} fill={entry.fill} /> ))}
+                                                {filteredAndSortedChartData.map((entry, index) => (
+                                                    <Cell key={`cell-${index}`} fill={entry.fill} />
+                                                ))}
                                             </Bar>
+                                            
+                                            <ReferenceLine
+    ifOverflow="extendDomain"
+    y={data?.monthly_tracking?.target_per_month}
+    stroke={colorPalette.target}
+    strokeDasharray="3 3"
+    strokeWidth={1.5}
+    label={{
+        value: `Target: ${data?.monthly_tracking?.target_per_month}`,
+        position: 'insideBottomLeft',
+        fill: colorPalette.target,
+        fontSize: 14,
+    }}
+    className="ref-line-target"
+/>
+
+<ReferenceLine
+    ifOverflow="extendDomain"
+    y={data?.monthly_tracking?.with_bradley_der_per_month}
+    stroke={colorPalette.withBradley}
+    strokeDasharray="3 3"
+    strokeWidth={1.5}
+    label={{
+        value: `With Bradley: ${data?.monthly_tracking?.with_bradley_der_per_month}`,
+        position: 'insideTopLeft',
+        fill: colorPalette.withBradley,
+        fontSize: 14,
+    }}
+    className="ref-line-bradley"
+/>
+
                                         </BarChart>
                                     </ResponsiveContainer>
                                 </Box>
@@ -365,7 +438,7 @@ const EmissionsDashboard: React.FC<EmissionsDashboardProps> = ({ data, onConfirm
                                                         </ul>
                                                         <Typography><b>Investment:</b> {formatValue(data?.action_center?.recommended_solution?.investment_usd, 'currency')} | <b>Payback:</b> {data?.action_center?.recommended_solution?.payback_years} years</Typography>
                                                     
-                                                    <Box sx={{ mt: 2, display: 'flex', gap: 1 }}><Button variant="contained" size="small">Schedule Consultation</Button><Button variant="outlined" size="small">Email Proposal</Button></Box>
+                                                        <Box sx={{ mt: 2, display: 'flex', gap: 1 }}><Button variant="contained" size="small">Schedule Consultation</Button><Button variant="outlined" size="small">Email Proposal</Button></Box>
                                                 </div></CardContent>
                                             </Card>
                                         </Paper>
@@ -398,4 +471,3 @@ const EmissionsDashboard: React.FC<EmissionsDashboardProps> = ({ data, onConfirm
 };
 
 export default EmissionsDashboard;
-
