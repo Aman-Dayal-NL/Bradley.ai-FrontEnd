@@ -3,7 +3,7 @@ import React, { createContext, useState, useContext, ReactNode } from 'react';
 // --- Interfaces matching the FINAL API Response Structure ---
 
 export interface Verdict {
-    compliance_status: string;
+    // compliance_status: string;
     status_banner: string;
     severity: string;
     penalty_risk_usd: number;
@@ -13,6 +13,8 @@ export interface Verdict {
 
 export interface EvidenceMetrics {
     actual_emissions: number;
+    projected_emissions: number;
+    full_year_projection: number;
     actual_yoy_pct: number | string;
     compliance_target: number;
     compliance_jurisdiction: string;
@@ -20,7 +22,7 @@ export interface EvidenceMetrics {
     bradley_solution?: number;
     bradley_reduction_pct?: number;
     over_by: number;
-    estimated_penalty_cost_usd_per_year: number;
+    // estimated_penalty_cost_usd_per_year: number;
     bradley_savings?: number;
     bradley_roi_years?: number;
 }
