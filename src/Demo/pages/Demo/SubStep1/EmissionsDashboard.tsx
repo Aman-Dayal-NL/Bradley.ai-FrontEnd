@@ -12,8 +12,8 @@ interface DashboardDataObject {
     file_id: string;
     source: string;
     location: string;
-    verdict: { compliance_status: string; status_banner: string; severity: string; penalty_risk_usd: number; time_left_months: number; limit_utilization_pct: number; }; // Added compliance_status
-    evidence: { metrics: { actual_emissions: number; actual_yoy_pct: number | string; compliance_target: number; compliance_jurisdiction: string; required_reduction_pct: number; bradley_solution?: number; bradley_reduction_pct?: number; over_by: number; estimated_penalty_cost_usd_per_year: number; bradley_savings?: number; bradley_roi_years?: number; } };
+    verdict: { /* compliance_status: string; */ status_banner: string; severity: string; penalty_risk_usd: number; time_left_months: number; limit_utilization_pct: number; };
+    evidence: { metrics: { actual_emissions: number; projected_emissions: number; full_year_projection: number; actual_yoy_pct: number | string; compliance_target: number; compliance_jurisdiction: string; required_reduction_pct: number; bradley_solution?: number; bradley_reduction_pct?: number; over_by: number; bradley_savings?: number; bradley_roi_years?: number; } };
     der_control_panel: { 
         current_mix_pct: { [key: string]: number }; 
         recommended_mix_pct: { [key: string]: number }; 
@@ -236,9 +236,9 @@ const EmissionsDashboard: React.FC<EmissionsDashboardProps> = ({
 
     const evidenceCards: BenefitData[] = [
         // --- FIX: Updated Benefit Card Titles ---
-        { value: `${formatValue(data?.evidence?.metrics?.actual_emissions)} MT`, title: (<>Annual Emissions<br />(YTD + Projected)</>), description: <><b>+{formatValue(data?.evidence?.metrics?.actual_yoy_pct, 'percent')}</b> YoY<br/>Over by: <b>{formatValue(data?.evidence?.metrics?.over_by)} MT</b><br/>Est. Penalty: <b>{formatValue(data?.evidence?.metrics?.estimated_penalty_cost_usd_per_year, 'currency')}/yr</b></>, watermark: '🔥' },
+        { value: `${formatValue(data?.evidence?.metrics?.full_year_projection)} MT`, title: (<>Annual Emissions<br />(YTD + Projected)</>), description: <>YTD: <b>{formatValue(data?.evidence?.metrics?.actual_emissions)} MT</b><br />Projected: <b>{formatValue(data?.evidence?.metrics?.projected_emissions)} MT</b><br/><b>+{formatValue(data?.evidence?.metrics?.actual_yoy_pct, 'percent')}</b> YoY | Over by: <b>{formatValue(data?.evidence?.metrics?.over_by)} MT</b><br/></>, watermark: '🔥' },
         { value: `${formatValue(data?.evidence?.metrics?.compliance_target)} MT`, title: (<>Compliance Target<br />by 2030</>), description: <>State: <b>{data?.evidence?.metrics?.compliance_jurisdiction}</b><br/>Required by law<br/><b>{formatValue(data?.evidence?.metrics?.required_reduction_pct, 'percent')}</b> reduction</>, watermark: '⚖️' },
-        { value: `${formatValue(data?.evidence?.metrics?.bradley_solution)} MT`, title: 'Emission Compliance Energy Supply Configuration', description: <><b>-{formatValue(data?.evidence?.metrics?.bradley_reduction_pct, 'percent')}</b> Reduction<br/>Saves: <b>{formatValue(data?.evidence?.metrics?.bradley_savings, 'currency')}/yr</b><br/>ROI: <b>{formatValue(data?.evidence?.metrics?.bradley_roi_years)} years</b></>, watermark: '💡' },
+        { value: `${formatValue(data?.evidence?.metrics?.bradley_solution)} MT`, title: 'Emission Compliance Energy Supply Configuration', description: <><b>{formatValue(data?.evidence?.metrics?.bradley_reduction_pct, 'percent')}</b> Reduction<br/>Saves: <b>{formatValue(data?.evidence?.metrics?.bradley_savings, 'currency')}/yr</b><br/>ROI: <b>{formatValue(data?.evidence?.metrics?.bradley_roi_years)} years</b></>, watermark: '💡' },
     ];
 
     const renderModalContent = () => {
@@ -347,17 +347,58 @@ const EmissionsDashboard: React.FC<EmissionsDashboardProps> = ({
         );
     };
 
-    const isCompliant = data?.verdict?.compliance_status === 'COMPLIANT';
-    const complianceBannerBg = isCompliant ? '#e8f5e9' : '#fff3e0'; 
-    const complianceBannerBorder = isCompliant ? '#4caf50' : '#ff9800'; 
-    const complianceBannerColor = isCompliant ? '#1b5e20' : '#e65100'; 
-    const complianceIcon = isCompliant ? '✅' : '⚠️'; 
-
     const utilizationPct = data?.verdict?.limit_utilization_pct ?? 0;
-    const progressBarColor = isCompliant ? '#388E3C' : '#ff3b30'; 
-    
-    const statusColor = isCompliant ? '#388E3C' : '#d32f2f'; 
-    const statusIcon = isCompliant ? '🟢' : '🔴'; 
+    const severity = data?.verdict?.severity || 'INFO';
+    let complianceBannerBg: string;
+    let complianceBannerBorder: string;
+    let complianceBannerColor: string;
+    let complianceIcon: string;
+    let progressBarColor: string;
+    let statusColor: string;
+    let statusIcon: string;
+
+    switch (severity) {
+        case 'INFO':
+            complianceBannerBg = '#e8f5e9'; // Light Green
+            complianceBannerBorder = '#4caf50'; // Green
+            complianceBannerColor = '#1b5e20'; // Dark Green
+            complianceIcon = '✅';
+            progressBarColor = '#388E3C'; // Strong Green
+            statusColor = '#388E3C';
+            statusIcon = '🟢';
+            break;
+        
+        case 'WARNING':
+            complianceBannerBg = '#fffde7'; // Light Yellow
+            complianceBannerBorder = '#fdd835'; // Yellow
+            complianceBannerColor = '#f57f17'; // Dark Yellow
+            complianceIcon = '⚠️';
+            progressBarColor = '#fdd835'; // Yellow
+            statusColor = '#f57f17';
+            statusIcon = '🟡';
+            break;
+
+        case 'CRITICAL':
+            complianceBannerBg = '#fff3e0'; // Light Orange
+            complianceBannerBorder = '#ff9800'; // Orange
+            complianceBannerColor = '#e65100'; // Dark Orange
+            complianceIcon = '❗';
+            progressBarColor = '#ff9800'; // Orange
+            statusColor = '#e65100';
+            statusIcon = '🟠';
+            break;
+
+        case 'OVERLOAD':
+        default:
+            complianceBannerBg = '#ffebee'; // Light Red
+            complianceBannerBorder = '#d32f2f'; // Red
+            complianceBannerColor = '#b71c1c'; // Dark Red
+            complianceIcon = '☠️';
+            progressBarColor = '#d32f2f'; // Red
+            statusColor = '#d32f2f';
+            statusIcon = '🔴';
+            break;
+    } 
 
 
     return (
