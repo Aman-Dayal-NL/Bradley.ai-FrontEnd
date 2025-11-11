@@ -239,6 +239,9 @@ const EmissionsDashboard: React.FC<EmissionsDashboardProps> = ({
     const [modalOpen, setModalOpen] = useState(false);
     const [modalContentId, setModalContentId] = useState<number | null>(null);
 
+    const [frozenDerInsights, setFrozenDerInsights] = useState<string[] | undefined>(undefined);
+    const [frozenActionInsights, setFrozenActionInsights] = useState<string[] | undefined>(undefined);
+
     const [quickFixModalOpen, setQuickFixModalOpen] = useState(false);
     const [/* selectedCreditAmount */, setSelectedCreditAmount] = useState(0);
 
@@ -260,6 +263,12 @@ const EmissionsDashboard: React.FC<EmissionsDashboardProps> = ({
     const data = useMemo(() => {
         return allData?.find(d => d.location === selectedLocation && d.source === selectedSource);
     }, [allData, selectedLocation, selectedSource]);
+
+    useEffect(() => {
+        setFrozenDerInsights(data?.der_control_panel?.insights);
+        setFrozenActionInsights(data?.action_center?.insights);
+    }, [selectedLocation, selectedSource]);
+
     
     const initialState = useMemo(() => {
         const current = data?.der_control_panel?.current_mix_pct;
@@ -420,17 +429,18 @@ const EmissionsDashboard: React.FC<EmissionsDashboardProps> = ({
                 </Typography>
                 <Paper variant="outlined" sx={{ p: 2, backgroundColor: '#f9f9f9' }}>
                     <Typography variant="body1"><strong>Key Insights:</strong></Typography>
-                    {data?.der_control_panel?.insights && data.der_control_panel.insights.length > 0 ? (
-                         <ul style={{ margin: '8px 0 0 0', paddingLeft: '20px', fontSize: '0.9rem' }}>
-                             {data.der_control_panel.insights.map((insight, index) => (
-                                 <li key={index} style={{ marginTop: '4px' }}>{insight}</li>
-                             ))}
-                         </ul>
-                    ) : (
-                        <Typography variant="body2" sx={{ fontStyle: 'italic', mt: 1 }}>
-                            No specific insights available for this configuration.
-                        </Typography>
-                    )}
+                    {frozenDerInsights && frozenDerInsights.length > 0 ? (
+  <ul style={{ margin: '8px 0 0 0', paddingLeft: '20px', fontSize: '0.9rem' }}>
+    {frozenDerInsights.map((insight, index) => (
+      <li key={index} style={{ marginTop: '4px' }}>{insight}</li>
+    ))}
+  </ul>
+) : (
+  <Typography variant="body2" sx={{ fontStyle: 'italic', mt: 1 }}>
+    No specific insights available for this configuration.
+  </Typography>
+)}
+
                 </Paper>
             </>
         );
@@ -462,17 +472,18 @@ const EmissionsDashboard: React.FC<EmissionsDashboardProps> = ({
                 </Typography>
                 <Paper variant="outlined" sx={{ p: 2, backgroundColor: '#f9f9f9' }}>
                     <Typography variant="body1"><strong>Key Insights:</strong></Typography>
-                     {data?.action_center?.insights && data.action_center.insights.length > 0 ? (
-                         <ul style={{ margin: '8px 0 0 0', paddingLeft: '20px', fontSize: '0.9rem' }}>
-                             {data.action_center.insights.map((insight, index) => (
-                                 <li key={index} style={{ marginTop: '4px' }}>{insight}</li>
-                             ))}
-                         </ul>
-                    ) : (
-                        <Typography variant="body2" sx={{ fontStyle: 'italic', mt: 1 }}>
-                            No specific insights available for this action plan.
-                        </Typography>
-                    )}
+                     {frozenActionInsights && frozenActionInsights.length > 0 ? (
+  <ul style={{ margin: '8px 0 0 0', paddingLeft: '20px', fontSize: '0.9rem' }}>
+    {frozenActionInsights.map((insight, index) => (
+      <li key={index} style={{ marginTop: '4px' }}>{insight}</li>
+    ))}
+  </ul>
+) : (
+  <Typography variant="body2" sx={{ fontStyle: 'italic', mt: 1 }}>
+    No specific insights available for this action plan.
+  </Typography>
+)}
+
                 </Paper>
             </>
         );
@@ -1353,19 +1364,31 @@ const EmissionsDashboard: React.FC<EmissionsDashboardProps> = ({
                                                     }}>
                                                         ALTERNATIVE OPTIONS
                                                     </Typography>
-                                                    <Stack spacing={2}>
+                                                    <Stack spacing={2}
+                                                    sx={{
+                                                          '--card-h': '112px',                            
+                                                          maxHeight: 'calc(var(--card-h) * 2 + 16px)',    
+                                                          overflowY: 'auto',
+                                                          pr: 1,                                          
+                                                          scrollbarWidth: 'none',                         
+                                                          msOverflowStyle: 'none',                        
+                                                          '&::-webkit-scrollbar': { width: 0, height: 0 }
+                                                        }}
+                                                    >
                                                         {data?.action_center?.alternatives?.map((alt, idx) => (
                                                             <Zoom in timeout={600 + idx * 200} key={alt.title}>
                                                                 <Card 
                                                                     variant="outlined"
                                                                     sx={{
-                                                                        transition: 'all 0.3s ease',
-                                                                        '&:hover': {
+                                                                          transition: 'all 0.3s ease',
+                                                                          minHeight: '147px',
+                                                                          background: 'linear-gradient(135deg, #e0e7ff 0%, #ede9fe 100%)',
+                                                                          '&:hover': {
                                                                             boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
                                                                             transform: 'scale(1.03)',
                                                                             borderColor: '#1976d2'
-                                                                        }
-                                                                    }}
+                                                                          }
+                                                                        }}
                                                                 >
                                                                     <CardContent sx={{py: 1.5, '&:last-child': { pb: 1.5 }}}>
                                                                         <Typography sx={{ 
