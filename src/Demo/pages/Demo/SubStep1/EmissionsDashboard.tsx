@@ -6,89 +6,92 @@ import {
     Zoom,
     Grow
 } from '@mui/material';
-import { 
-    HelpOutline, Close, 
-    // Icons for polish
-    TrendingUp, TrendingDown, CheckCircle, Warning, Error 
+import {
+    HelpOutline, Close,
+    TrendingUp, TrendingDown, CheckCircle, Warning, Error
 } from '@mui/icons-material';
-// Import keyframes for animations
 import { keyframes } from '@mui/system';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine, Legend, Cell } from 'recharts';
-// --- Import SRECMetrics type ---
-import { SRECMetrics } from '../../../../Context/DashboardDataContext';
+// Removed unused Cell import
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine, Legend } from 'recharts';
+import { SRECMetrics, DashboardDataObject } from '../../../../Context/DashboardDataContext';
 
 // --- TYPE DEFINITIONS ---
-interface DashboardDataObject {
-    file_id: string;
-    source: string;
-    location: string;
-    area_sq_ft: number;
-    energy_usage_intensity: number | null;
-    verdict: { /* compliance_status: string; */ status_banner: string; severity: string; penalty_risk_usd: number; time_left_months: number; limit_utilization_pct: number; };
-    evidence: { metrics: { actual_emissions: number; projected_emissions: number; full_year_projection: number; actual_yoy_pct: number | string; compliance_target: number; compliance_jurisdiction: string; required_reduction_pct: number; bradley_solution?: number; bradley_reduction_pct?: number; over_by: number; bradley_savings?: number; bradley_roi_years?: number; } };
-    emission_reduction_projects: {
-        [key: string]: number;
-    };
-    srec_metrics: SRECMetrics; // Use imported type
-    der_control_panel: {
-        current_mix_pct: { [key: string]: number };
-        recommended_mix_pct: { [key: string]: number };
-        impact_by_der: { [key: string]: number };
-        insights?: string[];
-    };
-    monthly_tracking: { target_per_month: number | string | null; with_bradley_der_per_month: number | string | null; monthly_emissions: { month: string | number; year: number | string; actual: number | null; projected: number | null; }[]; };
-    action_center: {
-        recommended_solution: { title: string; components: { type: string; size: string; }[]; investment_usd: number; payback_years: number; eliminates_penalties: boolean; };
-        alternatives?: { title: string; investment_usd: number; reduction_pct: number; estimated_penalties_remaining_usd_per_year?: number; carbon_negative_by_year?: number; }[];
-        insights?: string[];
-    };
-}
+// interface DashboardDataObject {
+//     // file_id: string;
+//     _id: string;
+//     // source: string;
+//     location: string;
+//     area_sq_ft: number;
+//     energy_usage_intensity: number | null;
+//     verdict: { status_banner: string; severity: string; penalty_risk_usd: number; time_left_months: number; limit_utilization_pct: number; };
+//     evidence: { metrics: { actual_emissions: number; projected_emissions: number; full_year_projection: number; actual_yoy_pct: number | string; compliance_target: number; compliance_jurisdiction: string; required_reduction_pct: number; bradley_solution?: number; bradley_reduction_pct?: number; over_by: number; bradley_savings?: number; bradley_roi_years?: number; } };
+//     emission_reduction_projects: {
+//         [key: string]: number;
+//     };
+//     srec_metrics: SRECMetrics;
+//     der_control_panel: {
+//         current_mix_pct: { [key: string]: number };
+//         recommended_mix_pct: { [key: string]: number };
+//         impact_by_der: { [key: string]: number };
+//         insights?: string[];
+//     };
+//     monthly_tracking: { target_per_month: number | string | null; with_bradley_der_per_month: number | string | null; monthly_emissions: { month: string | number; year: number | string; electric_actual: number | null; electric_projected: number | null; gas_actual: number | null; gas_projected: number | null; actual: number | null; projected: number | null; }[]; };
+//     action_center: {
+//         recommended_solution: { title: string; components: { type: string; size: string; }[]; investment_usd: number; payback_years: number; eliminates_penalties: boolean; };
+//         alternatives?: { title: string; investment_usd: number; reduction_pct: number; estimated_penalties_remaining_usd_per_year?: number; carbon_negative_by_year?: number; }[];
+//         insights?: string[];
+//     };
+// }
 
-// --- IMPROVED COLOR PALETTE FOR CHART ---
+// --- COLOR PALETTES ---
 const colorPalette = {
-    actual: '#424242',      // Dark Grey
-    projected: '#BDBDBD',    // Light Grey
-    target: '#d32f2f',      // Strong Red
+    target: '#d32f2f',       // Strong Red
     withBradley: '#388E3C', // Clear Green
+    
+    // Electric (Grid) Colors
+    electricActual: '#264653',    // Deep Teal
+    electricProjected: '#86A3B3', // Light Teal
+    
+    // Gas (Natural Gas) Colors
+    gasActual: '#8D6E63',     // Warm Brown
+    gasProjected: '#D7C1B9',  // Light Sand
+    
+    // Fallbacks / Defaults
+    defaultActual: '#424242',
+    defaultProjected: '#BDBDBD',
+
+    // Legacy keys needed for Modal & Fallback consistency
+    actual: '#424242',       
+    projected: '#BDBDBD',    
 };
 
-// --- STABLE CSS KEYFRAME ANIMATIONS ---
-const fadeIn = keyframes`
-  from { opacity: 0; }
-  to { opacity: 1; }
-`;
+// const sourceColorPalette: { [key: string]: string } = {
+//     'electric_actual': colorPalette.electricActual,
+//     'electric_projected': colorPalette.electricProjected,
+//     'gas_actual': colorPalette.gasActual,
+//     'gas_projected': colorPalette.gasProjected,
+// };
 
-const fadeInDown = keyframes`
-  from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
-`;
+// Fallback color generator
+const getColorForSource = (source: string, type: 'actual' | 'projected') => {
+    const name = source.toLowerCase();
+    
+    if (name.includes('grid') || name.includes('electric') || name.includes('solar')) {
+        return type === 'actual' ? colorPalette.electricActual : colorPalette.electricProjected;
+    }
+    if (name.includes('gas') || name.includes('diesel') || name.includes('fuel')) {
+        return type === 'actual' ? colorPalette.gasActual : colorPalette.gasProjected;
+    }
+    return type === 'actual' ? colorPalette.defaultActual : colorPalette.defaultProjected;
+};
 
-const slideInFromLeft = keyframes`
-  from { opacity: 0; transform: translateX(-20px); }
-  to { opacity: 1; transform: translateX(0); }
-`;
-
-const zoomIn = keyframes`
-  from { opacity: 0; transform: translate(-50%, -50%) scale(0.95); }
-  to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-`;
-
-// const progressFill = keyframes`
-//   from { width: 0; }
-// `;
-
-const pulseWarning = keyframes`
-  0% { box-shadow: 0 0 0 0 rgba(211, 47, 47, 0.4); }
-  70% { box-shadow: 0 0 0 10px rgba(211, 47, 47, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(211, 47, 47, 0); }
-`;
-
-const pulseCritical = keyframes`
-  0% { box-shadow: 0 0 0 0 rgba(255, 152, 0, 0.4); }
-  70% { box-shadow: 0 0 0 10px rgba(255, 152, 0, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(255, 152, 0, 0); }
-`;
-
+// --- KEYFRAMES ---
+const fadeIn = keyframes` from { opacity: 0; } to { opacity: 1; } `;
+const fadeInDown = keyframes` from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } `;
+const slideInFromLeft = keyframes` from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } `;
+const zoomIn = keyframes` from { opacity: 0; transform: translate(-50%, -50%) scale(0.95); } to { opacity: 1; transform: translate(-50%, -50%) scale(1); } `;
+const pulseCritical = keyframes` 0% { box-shadow: 0 0 0 0 rgba(255, 152, 0, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(255, 152, 0, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 152, 0, 0); } `;
+const pulseWarning = keyframes` 0% { box-shadow: 0 0 0 0 rgba(211, 47, 47, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(211, 47, 47, 0); } 100% { box-shadow: 0 0 0 0 rgba(211, 47, 47, 0); } `;
 
 // --- STYLED COMPONENTS ---
 const StyledTitle = styled(Typography)(({ theme }) => ({
@@ -122,8 +125,6 @@ const WatermarkIcon = styled('div')({
     transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
 });
 
-// --- CHANGE 4 ---
-// Removed hardcoded color
 const AbsoluteValue = styled(Typography)({
     fontFamily: 'Nunito Sans, sans-serif', fontWeight: '900', fontSize: '1.2rem',
     position: 'relative', zIndex: 2, lineHeight: 2.2,
@@ -134,7 +135,6 @@ const BenefitDescription = styled(Typography)(({ theme }) => ({
     position: 'relative', zIndex: 2, lineHeight: 1.5,
 }));
 
-// Modal box now animates with CSS
 const ModalBox = styled(Box)(({ theme }) => ({
     position: 'absolute', top: '50%', left: '50%',
     transform: 'translate(-50%, -50%)',
@@ -146,7 +146,6 @@ const ModalBox = styled(Box)(({ theme }) => ({
     animation: `${zoomIn} 0.3s cubic-bezier(0.4, 0, 0.2, 1)`,
 }));
 
-// Apply animation to the tab panel's content box
 const StyledTabPanelBox = styled(Box)(({ theme }) => ({ 
     position: 'relative', 
     padding: theme.spacing(2), 
@@ -155,7 +154,6 @@ const StyledTabPanelBox = styled(Box)(({ theme }) => ({
     animation: `${fadeIn} 0.5s ease-in-out`
 }));
 
-// Original, stable TabPanel component
 interface TabPanelProps { children?: React.ReactNode; index: number; value: number; }
 const TabPanel: React.FC<TabPanelProps> = ({ children, value, index }) => ( 
     <div role="tabpanel" hidden={value !== index}>
@@ -163,7 +161,6 @@ const TabPanel: React.FC<TabPanelProps> = ({ children, value, index }) => (
     </div> 
 );
 
-// Animated Table Row
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
     transition: 'background-color 0.2s ease-out',
     '&.animated-row': {
@@ -176,7 +173,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 
-// --- HELPER FUNCTIONS & DATA ---
+// --- HELPER FUNCTIONS ---
 const formatValue = (value?: number | string | null, type: 'number' | 'currency' | 'percent' = 'number'): string => { if (value === null || value === undefined || value === "") return 'N/A'; const num = typeof value === 'string' ? parseFloat(value) : value; if (isNaN(num)) return 'N/A'; const options: Intl.NumberFormatOptions = { maximumFractionDigits: 2 }; if (type === 'currency') { options.style = 'currency'; options.currency = 'USD'; options.minimumFractionDigits = 2; } if (type === 'percent') { return `${num.toFixed(1)}%`; } return new Intl.NumberFormat('en-US', options).format(num); };
 const derOrder = ['Solar PV', 'Battery Storage', 'CHP', 'Fuel Cells', 'Simple Turbines', 'Linear Generation', 'GRID'];
 const derNameMapping: {[key: string]: string} = { solar_pv: 'Solar PV', battery_storage: 'Battery Storage', chp: 'CHP', fuel_cells: 'Fuel Cells', simple_turbines: 'Simple Turbines', linear_generation: 'Linear Generation', grid: 'GRID', efficiency_retrofit: 'Efficiency Retrofit' };
@@ -184,20 +181,16 @@ const derNameMapping: {[key: string]: string} = { solar_pv: 'Solar PV', battery_
 // --- CHILD COMPONENTS ---
 interface BenefitData { value: string; title: ReactNode; description: ReactNode; watermark: string; }
 
-// --- CHANGE 4 ---
-// Added optional valueColor prop
 interface EnhancedBenefitCardProps {
     benefit: BenefitData;
     onClick: () => void;
-    valueColor?: string; // Optional color prop
+    valueColor?: string; 
 }
 const EnhancedBenefitCard: React.FC<EnhancedBenefitCardProps> = ({ benefit, onClick, valueColor }) => (
     <StyledBenefitCard onClick={onClick}>
         <WatermarkIcon className="watermark-icon">{benefit.watermark}</WatermarkIcon>
         <CardContent sx={{ position: 'relative', zIndex: 2, py: 0.1, display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%' }}>
             <Typography sx={{ fontFamily: 'Nunito Sans, sans-serif', fontWeight: 600, fontSize: '1rem', mb: 0.5 }}>{benefit.title}</Typography>
-            {/* --- CHANGE 4 --- */}
-            {/* Apply dynamic color, fallback to default */}
             <AbsoluteValue sx={{ color: valueColor ?? '#333' }}>{benefit.value}</AbsoluteValue>
             <BenefitDescription>{benefit.description}</BenefitDescription>
         </CardContent>
@@ -207,15 +200,15 @@ const EnhancedBenefitCard: React.FC<EnhancedBenefitCardProps> = ({ benefit, onCl
 // --- MAIN DASHBOARD COMPONENT ---
 interface EmissionsDashboardProps {
     allData: DashboardDataObject[];
-    onConfirmChanges: (userMix: {[key:string]: number}, location: string, source: string) => void;
+    onConfirmChanges: (userMix: {[key:string]: number}, _id: string/* , source: string */) => void;
     hasUnsavedChanges: boolean;
     setHasUnsavedChanges: (changed: boolean) => void;
     selectedLocation: string;
     onLocationChange: (location: string) => void;
     selectedLocations: string[];
     onLocationsChange: (locations: string[]) => void;
-    selectedSource: string;
-    onSourceChange: (source: string) => void;
+    // selectedSource: string;
+    // onSourceChange: (source: string) => void;
     selectedYear: number | string;
     onYearChange: (year: number | string) => void;
     
@@ -223,13 +216,15 @@ interface EmissionsDashboardProps {
     onProjectSelectChange: (key: string) => void;
     srecPercentage: number;
     onSrecPercentageChange: (value: number) => void;
-    onSrecChangeCommitted: (value: number) => void;
+    onSrecChangeCommitted: (value: number, targetData?: DashboardDataObject | null) => void;
     calculatedSrecMetrics: SRECMetrics | null;
 }
+
 const EmissionsDashboard: React.FC<EmissionsDashboardProps> = ({
     allData, onConfirmChanges, setHasUnsavedChanges,
     selectedLocation, /* onLocationChange, */
-    selectedSource, onSourceChange,
+    // selectedSource, 
+    // onSourceChange, // Removed unused import to clear warning
     selectedYear, onYearChange,
     projectSelections,
     onProjectSelectChange,
@@ -247,7 +242,10 @@ const EmissionsDashboard: React.FC<EmissionsDashboardProps> = ({
     const [frozenActionInsights, setFrozenActionInsights] = useState<string[] | undefined>(undefined);
 
     const [quickFixModalOpen, setQuickFixModalOpen] = useState(false);
-    // const [/* selectedCreditAmount */, setSelectedCreditAmount] = useState(0);
+    const [selectedLocations, setSelectedLocations] = useState<string[]>([]);
+    
+    // NEW: State for Multi-Source Graph
+    const [graphSources, setGraphSources] = useState<string[]>([]);
 
     const handleOpenModal = (id: number) => { setModalContentId(id); setModalOpen(true); };
     const handleCloseModal = () => { setModalOpen(false); setModalContentId(null); };
@@ -257,36 +255,128 @@ const EmissionsDashboard: React.FC<EmissionsDashboardProps> = ({
         return Array.from(new Set(allData.map(d => d.location)));
     }, [allData]);
 
-    const availableSources = useMemo(() => {
-        if (!allData || !selectedLocation) return [];
-        return Array.from(new Set(
-            allData.filter(d => d.location === selectedLocation).map(d => d.source)
-        ));
-    }, [allData, selectedLocation]);
-
-    const [selectedLocations, setSelectedLocations] = useState<string[]>([]);
-
     const filteredDataByLocations = useMemo(() => {
-    if (!allData) return [];
-    return allData.filter(d => 
-        selectedLocations.includes(d.location)
-        // && d.source === selectedSource
-    );
-}, [allData, selectedLocations/* , selectedSource */]);
+        if (!allData) return [];
+        return allData.filter(d => selectedLocations.includes(d.location));
+    }, [allData, selectedLocations]);
 
+    const aggregatedMetrics = useMemo(() => {
+        if (filteredDataByLocations.length === 0) return null;
+
+        const acc = {
+            actual_emissions: 0,
+            projected_emissions: 0,
+            full_year_projection: 0,
+            compliance_target: 0,
+            bradley_solution: 0,
+            over_by: 0,
+            bradley_savings: 0,
+            // Weighted avg helpers
+            total_roi_investment: 0, // For ROI approx
+        };
+
+        filteredDataByLocations.forEach(d => {
+            const m = d.evidence?.metrics;
+            if (!m) return;
+            acc.actual_emissions += m.actual_emissions || 0;
+            acc.projected_emissions += m.projected_emissions || 0;
+            acc.full_year_projection += m.full_year_projection || 0;
+            acc.compliance_target += m.compliance_target || 0;
+            acc.bradley_solution += m.bradley_solution || 0;
+            acc.over_by += m.over_by || 0;
+            acc.bradley_savings += m.bradley_savings || 0;
+            acc.total_roi_investment += (m.bradley_savings || 0) * (m.bradley_roi_years || 0);
+        });
+
+        // Recalculate percentages based on new totals
+        const required_reduction_pct = acc.full_year_projection > 0
+            ? ((acc.full_year_projection - acc.compliance_target) / acc.full_year_projection) * 100
+            : 0;
+
+        const bradley_reduction_pct = acc.full_year_projection > 0
+             ? ((acc.full_year_projection - acc.bradley_solution) / acc.full_year_projection) * 100
+             : 0;
+        
+        // Approximate average ROI
+        const bradley_roi_years = acc.bradley_savings > 0 
+            ? acc.total_roi_investment / acc.bradley_savings 
+            : 0;
+
+        return {
+            ...acc,
+            required_reduction_pct,
+            bradley_reduction_pct,
+            bradley_roi_years,
+            // For strings like jurisdiction, check if unique, else say 'Multiple'
+            compliance_jurisdiction: new Set(filteredDataByLocations.map(d => d.evidence?.metrics?.compliance_jurisdiction)).size > 1 
+                ? 'Multiple Jurisdictions' 
+                : filteredDataByLocations[0]?.evidence?.metrics?.compliance_jurisdiction,
+            actual_yoy_pct: '—' // YOY is difficult to sum without raw previous year data
+        };
+    }, [filteredDataByLocations]);
+
+    // "Active" data for single-source logic (Tabs 1, 3, 4)
     const data = useMemo(() => {
         if (filteredDataByLocations.length === 1) {
-        return filteredDataByLocations[0];
-    }
-        return allData?.find(d => d.location === selectedLocation && d.source === selectedSource);
-}, [filteredDataByLocations, allData, selectedLocation, selectedSource]);
+            return filteredDataByLocations[0];
+        }
+        return allData?.find(d => d.location === selectedLocation);
+    }, [filteredDataByLocations, allData, selectedLocation]);
+
+    // NEW: Aggregated Data for Stacked Chart (Tab 2)
+    const stackedChartData = useMemo(() => {
+    // Only proceed if we have valid data and a selected year
+    if (!data || !selectedYear || !data.monthly_tracking?.monthly_emissions) return [];
+    
+    const monthOrder = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+    // Filter by selected year
+    const yearlyData = data.monthly_tracking.monthly_emissions.filter(em => em.year == selectedYear);
+
+    // Map to chart format (ensure months are strings for XAxis)
+    return yearlyData.map(em => {
+        let monthName = String(em.month);
+        const monthIndex = Number(em.month) - 1;
+        if (!isNaN(monthIndex) && monthIndex >= 0 && monthIndex < 12) {
+            monthName = monthOrder[monthIndex];
+        }
+
+        return {
+            ...em, // This includes electric_actual, gas_projected, etc.
+            month: monthName
+        };
+    }).sort((a, b) => monthOrder.indexOf(a.month) - monthOrder.indexOf(b.month));
+}, [data, selectedYear]);
+
+    // Calculate Y-Axis Max for Stacked Chart
+    const yAxisMaxStacked = useMemo(() => {
+    if (stackedChartData.length === 0) return 'auto';
+    
+    let maxTotal = 0;
+    stackedChartData.forEach((row: any) => {
+        let rowSum = 0;
+        // Sum up selected sources dynamically
+        if (graphSources.includes('Electric')) {
+            rowSum += (row.electric_actual || 0) + (row.electric_projected || 0);
+        }
+        if (graphSources.includes('Gas')) {
+            rowSum += (row.gas_actual || 0) + (row.gas_projected || 0);
+        }
+        if (rowSum > maxTotal) maxTotal = rowSum;
+    });
+
+    const target = Number(data?.monthly_tracking?.target_per_month || 0);
+    const absoluteMax = Math.max(maxTotal, target);
+    
+    if (absoluteMax === 0) return 100;
+    return Math.ceil((absoluteMax * 1.1) / 10) * 10;
+}, [stackedChartData, graphSources, data]);
 
     useEffect(() => {
         setFrozenDerInsights(data?.der_control_panel?.insights);
         setFrozenActionInsights(data?.action_center?.insights);
-    }, [selectedLocation, selectedSource]);
+    }, [selectedLocation/* , selectedSource */]);
 
-    
     const initialState = useMemo(() => {
         const current = data?.der_control_panel?.current_mix_pct;
         return {
@@ -303,13 +393,6 @@ const EmissionsDashboard: React.FC<EmissionsDashboardProps> = ({
 
     const isChanged = useMemo(() => JSON.stringify(userDerAllocation) !== JSON.stringify(initialState), [userDerAllocation, initialState]);
 
-    // const handleOpenQuickFix = () => setQuickFixModalOpen(true);
-    // const handleCloseQuickFix = () => setQuickFixModalOpen(false);
-
-    // const handleCreditSelection = (amount: number) => {
-    //     setSelectedCreditAmount(amount);
-    // };
-    
     const handleTabChange = (_: React.SyntheticEvent, newValue: number) => setTabValue(newValue);
     
     const handleSliderChange = (name: string, value: number) => {
@@ -337,7 +420,10 @@ const EmissionsDashboard: React.FC<EmissionsDashboardProps> = ({
             fuel_cells: (userDerAllocation as any)['Fuel Cells'] ?? 0, simple_turbines: (userDerAllocation as any)['Simple Turbines'] ?? 0,
             linear_generation: (userDerAllocation as any)['Linear Generation'] ?? 0,
         };
-        onConfirmChanges(payloadMix, selectedLocation, selectedSource);
+        if (data && data._id) {
+            onConfirmChanges(payloadMix, data._id);
+        }
+        // onConfirmChanges(payloadMix, selectedLocation/* , selectedSource */);
     };
     
     const availableYears = useMemo(() => {
@@ -365,49 +451,54 @@ const EmissionsDashboard: React.FC<EmissionsDashboardProps> = ({
             return sum;
         }, 0);
     }, [projectSelections, data?.emission_reduction_projects]);
-    
-    const filteredAndSortedChartData = useMemo(() => {
-        if (!data || !selectedYear) return [];
-        const monthOrder = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-        const filtered = data.monthly_tracking.monthly_emissions.filter(em => em.year == selectedYear);
-        
-        const processed = filtered.map(em => {
-            const monthIndex = Number(em.month) - 1;
-            const monthName = (typeof em.month === 'number' && monthIndex >= 0 && monthIndex < 12)
-                ? monthOrder[monthIndex]
-                : String(em.month);
-            return {
-                ...em,
-                month: monthName,
-                emissions: em.actual ?? em.projected,
-                fill: em.actual !== null ? colorPalette.actual : colorPalette.projected
-            };
-        });
-        
-        return processed.sort((a, b) => monthOrder.indexOf(a.month) - monthOrder.indexOf(b.month));
-    }, [data, selectedYear]);
 
-    const yAxisMax = useMemo(() => {
-        if (!data || !filteredAndSortedChartData || filteredAndSortedChartData.length === 0) {
-            return 'auto';
-        }
-        const maxBarValue = Math.max(...filteredAndSortedChartData.map(entry => entry.emissions ?? 0));
+    const availableSources = useMemo(() => {
+        // We check the first active location's data to see what columns exist
+        const activeData = allData.find(d => d.location === selectedLocation);
+        if (!activeData || !activeData.monthly_tracking?.monthly_emissions) return [];
         
-        const targetValue = (data.monthly_tracking?.target_per_month !== null &&
-                                     data.monthly_tracking?.target_per_month !== undefined &&
-                                     isFinite(Number(data.monthly_tracking.target_per_month)))
-                                     ? Number(data.monthly_tracking.target_per_month)
-                                     : 0;
-        const dataMax = Math.max(maxBarValue, targetValue);
-        if (dataMax === 0) return 100;
-        return Math.ceil((dataMax * 1.1) / 10) * 10;
+        const sources = new Set<string>();
+        const emissions = activeData.monthly_tracking.monthly_emissions;
+
+        // Check if ANY entry has non-null electric values
+        const hasElectric = emissions.some(e => e.electric_actual !== null || e.electric_projected !== null);
+        if (hasElectric) sources.add('Electric');
+
+        // Check if ANY entry has non-null gas values
+        const hasGas = emissions.some(e => e.gas_actual !== null || e.gas_projected !== null);
+        if (hasGas) sources.add('Gas');
+
+        return Array.from(sources);
+    }, [allData, selectedLocation]);
     
-    }, [data, filteredAndSortedChartData]);
+    // Update graph sources when location changes to select all by default
+    useEffect(() => {
+        if (availableSources.length > 0) {
+            setGraphSources(availableSources);
+        } else {
+            setGraphSources([]);
+        }
+    }, [availableSources]);
 
     const evidenceCards: BenefitData[] = [
-        { value: `${formatValue(data?.evidence?.metrics?.full_year_projection)} MT`, title: (<>Annual Emissions<br />(YTD + Projected)</>), description: <>YTD: <b>{formatValue(data?.evidence?.metrics?.actual_emissions)} MT</b><br />Projected: <b>{formatValue(data?.evidence?.metrics?.projected_emissions)} MT</b><br/><b>{formatValue(data?.evidence?.metrics?.actual_yoy_pct, 'percent')}</b> YoY | Over by: <b>{formatValue(data?.evidence?.metrics?.over_by)} MT</b><br/></>, watermark: '🔥' },
-        { value: `${formatValue(data?.evidence?.metrics?.compliance_target)} MT`, title: (<>Compliance Target<br />by 2030</>), description: <>State: <b>{data?.evidence?.metrics?.compliance_jurisdiction}</b><br/>Required by law<br/><b>{formatValue(data?.evidence?.metrics?.required_reduction_pct, 'percent')}</b> reduction</>, watermark: '⚖️' },
-        { value: `${formatValue(data?.evidence?.metrics?.bradley_solution)} MT`, title: 'Emission Compliance Energy Supply Configuration', description: <><b>{formatValue(data?.evidence?.metrics?.bradley_reduction_pct, 'percent')}</b> Reduction<br/>Saves: <b>{formatValue(data?.evidence?.metrics?.bradley_savings, 'currency')}/yr</b><br/>ROI: <b>{formatValue(data?.evidence?.metrics?.bradley_roi_years)} years</b></>, watermark: '💡' },
+        { 
+            value: `${formatValue(aggregatedMetrics?.full_year_projection)} MT`, 
+            title: (<>Annual Emissions<br />(YTD + Projected)</>), 
+            description: <>YTD: <b>{formatValue(aggregatedMetrics?.actual_emissions)} MT</b><br />Projected: <b>{formatValue(aggregatedMetrics?.projected_emissions)} MT</b><br/><b>{aggregatedMetrics?.actual_yoy_pct === '—' ? '—' : formatValue(aggregatedMetrics?.actual_yoy_pct, 'percent')}</b> YoY | Over by: <b>{formatValue(aggregatedMetrics?.over_by)} MT</b><br/></>, 
+            watermark: '🔥' 
+        },
+        { 
+            value: `${formatValue(aggregatedMetrics?.compliance_target)} MT`, 
+            title: (<>Compliance Target<br />by 2030</>), 
+            description: <>State: <b>{aggregatedMetrics?.compliance_jurisdiction}</b><br/>Required by law<br/><b>{formatValue(aggregatedMetrics?.required_reduction_pct, 'percent')}</b> reduction</>, 
+            watermark: '⚖️' 
+        },
+        { 
+            value: `${formatValue(aggregatedMetrics?.bradley_solution)} MT`, 
+            title: 'Emission Compliance Energy Supply Configuration', 
+            description: <><b>{formatValue(aggregatedMetrics?.bradley_reduction_pct, 'percent')}</b> Reduction<br/>Saves: <b>{formatValue(aggregatedMetrics?.bradley_savings, 'currency')}/yr</b><br/>ROI: <b>{formatValue(aggregatedMetrics?.bradley_roi_years)} years</b></>, 
+            watermark: '💡' 
+        },
     ];
     
     const HelpButton = ({ onClick }: { onClick: () => void }) => (
@@ -474,7 +565,7 @@ const EmissionsDashboard: React.FC<EmissionsDashboardProps> = ({
                         <li><b><span style={{ color: colorPalette.actual }}>Dark Grey bars</span></b> show your recorded historical emissions.</li>
                         <li style={{ marginTop: '8px' }}><b><span style={{ color: colorPalette.projected }}>Light Grey bars</span></b> are our AI-powered forecasts for the upcoming months.</li>
                         <li style={{ marginTop: '8px' }}>The <b style={{ color: colorPalette.target }}>Red Target Line</b> represents your monthly compliance limit. Staying below this is key to avoiding penalties.</li>
-                        <li style={{ marginTop: '8px' }}>The <b style={{ color: colorPalette.withBradley }}>Green CarbonCheckIQ+ Line</b> shows your projected emissions if you adopt our recommended solution, keeping you safely under target.</li>
+                        <li style={{ marginTop: '8px' }}>The <b style={{ color: colorPalette.withBradley }}>Green EmissionCheckIQ+ Line</b> shows your projected emissions if you adopt our recommended solution, keeping you safely under target.</li>
                     </ul>
                 </Paper>
             </>
@@ -590,7 +681,7 @@ const EmissionsDashboard: React.FC<EmissionsDashboardProps> = ({
         content.body = (
             <>
                 <Typography sx={{ mt: 1.5, mb: 2, color: '#555' }}>
-                    This card outlines the high-level benefits of adopting the CarbonCheckIQ+ recommended energy configuration.
+                    This card outlines the high-level benefits of adopting the EmissionCheckIQ+ recommended energy configuration.
                 </Typography>
                 <Paper variant="outlined" sx={{ p: 2, backgroundColor: '#f9f9f9' }}>
                     <ul style={{ margin: 0, paddingLeft: '20px', fontSize: '0.9rem' }}>
@@ -817,6 +908,50 @@ const handleOpenQuickFix = (rowData: DashboardDataObject) => {
     //     );
     // };
 
+     const aggregateLocationData = useMemo(() => {
+        if (selectedLocations.length === 0 || !allData || !selectedYear) return [];
+
+        return selectedLocations.map(loc => {
+            const locData = allData.find(d => d.location === loc);
+            const m = locData?.evidence?.metrics;
+            if (!locData) return null;
+
+            // Calculate Granular Totals based on Selected Year
+            let electric_actual = 0;
+            let electric_projected = 0;
+            let gas_actual = 0;
+            let gas_projected = 0;
+
+            const monthlyData = locData.monthly_tracking?.monthly_emissions?.filter(em => em.year == selectedYear) || [];
+
+            monthlyData.forEach(em => {
+                electric_actual += em.electric_actual || 0;
+                electric_projected += em.electric_projected || 0;
+                gas_actual += em.gas_actual || 0;
+                gas_projected += em.gas_projected || 0;
+            });
+
+            // Calculate total for sorting
+            const currentTotal = electric_actual + electric_projected + gas_actual + gas_projected;
+
+            return {
+                location: loc.length > 15 ? loc.substring(0, 15) + '...' : loc,
+                fullName: loc,
+                // Granular values for stacking
+                electric_actual,
+                electric_projected,
+                gas_actual,
+                gas_projected,
+                // Totals for comparison
+                current: currentTotal,
+                target: m?.compliance_target || 0,
+                solution: m?.bradley_solution || 0
+            };
+        })
+        .filter(Boolean)
+        .sort((a: any, b: any) => b.current - a.current);
+    }, [allData, selectedLocations, selectedYear]);
+
     return (
         <Box sx={{ display: 'flex', flexDirection: 'column', fontFamily: 'Nunito Sans, sans-serif', fontSize: '0.75rem', p: 1, maxWidth: '1200px', margin: '0 auto', width: '100%' }}>
             <style>{`
@@ -978,7 +1113,7 @@ const handleOpenQuickFix = (rowData: DashboardDataObject) => {
             <TableHead>
                 <TableRow>
                     <TableCell><strong>Location</strong></TableCell>
-                    <TableCell><strong>Source</strong></TableCell>
+                    {/* <TableCell><strong>Source</strong></TableCell> */}
                     <TableCell><strong>Status</strong></TableCell>
                     <TableCell><strong>Utilization</strong></TableCell>
                     <TableCell><strong>Area (sq ft)</strong></TableCell>
@@ -1004,7 +1139,8 @@ const handleOpenQuickFix = (rowData: DashboardDataObject) => {
         
         return (
             <TableRow 
-                key={locationData.file_id || `${locationData.location}-${locationData.source}`}
+                // key={locationData.file_id || `${locationData.location}-${locationData.source}`}
+                key={locationData._id}
                 sx={{
                     // Light background for the specific row based on its status
                     backgroundColor: locationSeverity === 'INFO' ? 'rgba(56, 142, 60, 0.05)' :
@@ -1025,11 +1161,11 @@ const handleOpenQuickFix = (rowData: DashboardDataObject) => {
                             : locationData.location}
                     </Typography>
                 </TableCell>
-                <TableCell>
+                {/* <TableCell>
                     <Typography variant="caption">
                         {locationData.source}
                     </Typography>
-                </TableCell>
+                </TableCell> */}
                 <TableCell>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, color: rowColors.statusColor }}>
                         {rowColors.statusIcon}
@@ -1203,7 +1339,7 @@ const handleOpenQuickFix = (rowData: DashboardDataObject) => {
                                 <Slider
                                     value={srecPercentage}
                                     onChange={(_, newValue) => onSrecPercentageChange(newValue as number)}
-                                    onChangeCommitted={(_, newValue) => onSrecChangeCommitted(newValue as number)}
+                                    onChangeCommitted={(_, newValue) => onSrecChangeCommitted(newValue as number, quickFixData || data)}
                                     sx={{ 
                                         flex: 1,
                                         color: activeColors.progressBar, // Dynamic slider color
@@ -1222,7 +1358,7 @@ const handleOpenQuickFix = (rowData: DashboardDataObject) => {
                                     onClick={() => {
                                         const percentage = activeMetrics?.percentage_needed || 0;
                                         onSrecPercentageChange(percentage);
-                                        onSrecChangeCommitted(percentage);
+                                        onSrecChangeCommitted(percentage, quickFixData || data);
                                     }}
                                     sx={{
                                         fontFamily: 'Nunito Sans, sans-serif',
@@ -1484,142 +1620,158 @@ const handleOpenQuickFix = (rowData: DashboardDataObject) => {
                         <TabPanel value={isMultiLocation ? 1 : tabValue} index={1}>
                             <StyledTabPanelBox>
                                 <Box sx={{ position: 'relative', display: 'flex', justifyContent: 'center', alignItems: 'center', pb: 2 }}>
-
-  {/* Center Title */}
-  <Typography 
-    sx={{ 
-      fontFamily: 'Nunito Sans, sans-serif', 
-      textAlign: 'center', 
-      fontWeight: 'bold', 
-      fontSize: '0.9rem'
-    }}
-  >
-    MONTHLY PERFORMANCE & FORECASTING
-  </Typography>
-
-  {/* Help Button right beside title (still centered) */}
-  <HelpButton onClick={() => handleOpenModal(1)} />
-
-  {/* Right-side filters container */}
-  <Box
-    sx={{
-      position: 'absolute',
-      right: 19,
-      display: 'flex',
-      alignItems: 'center',
-      gap: 1
-    }}
-  >
-    <FormControl size="small">
-      <Select
-        value={selectedSource}
-        onChange={(e: SelectChangeEvent<string>) => onSourceChange(e.target.value)}
-        sx={{ fontSize: '0.8rem', fontFamily: 'Nunito Sans, sans-serif' }}
-      >
-        {availableSources.map(src => (
-          <MenuItem
-            key={src}
-            value={src}
-            sx={{ fontSize: '0.8rem', fontFamily: 'Nunito Sans, sans-serif' }}
-          >
-            {src.charAt(0).toUpperCase() + src.slice(1)}
-          </MenuItem>
-        ))}
-      </Select>
-    </FormControl>
-
-    <FormControl size="small">
-      <Select
-        value={selectedYear}
-        onChange={(e: SelectChangeEvent<string | number>) => onYearChange(e.target.value)}
-        sx={{ fontSize: '0.8rem', fontFamily: 'Nunito Sans, sans-serif' }}
-      >
-        {availableYears.map(year => (
-          <MenuItem
-            key={year}
-            value={year}
-            sx={{ fontSize: '0.8rem', fontFamily: 'Nunito Sans, sans-serif' }}
-          >
-            {year}
-          </MenuItem>
-        ))}
-      </Select>
-    </FormControl>
-  </Box>
-</Box>
-
-                                <Box sx={{ height: 350 }}>
-                                    <ResponsiveContainer width="100%" height="100%">
-                                        <BarChart data={filteredAndSortedChartData} margin={{ top: 5, right: 20, left: -10, bottom: 5 }}>
-                                            <CartesianGrid strokeDasharray="3 3" />
-                                            <XAxis dataKey="month" tick={{ fontFamily: 'Nunito Sans, sans-serif', fontSize: '0.75rem' }} />
-                                            <YAxis
-                                                tick={{ fontFamily: 'Nunito Sans, sans-serif', fontSize: '0.75rem' }}
-                                                domain={[0, yAxisMax]}
-                                            />
-                                            <Tooltip 
-                                                cursor={{fill: 'rgba(230, 230, 230, 0.4)'}} 
-                                                contentStyle={{ fontFamily: 'Nunito Sans, sans-serif', borderRadius: '8px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
-                                            />
-                                            <Legend
-                                                wrapperStyle={{ fontFamily: 'Nunito Sans, sans-serif', fontSize: '0.8rem' }}
-                                                payload={[
-                                                    { value: 'Actual', type: 'square', color: colorPalette.actual },
-                                                    { value: 'Projected', type: 'square', color: colorPalette.projected },
-                                                    { value: 'Target', type: 'line', color: colorPalette.target },
-                                                    { value: 'With CarbonCheckIQ+', type: 'line', color: colorPalette.withBradley },
-                                                ]}
-                                            />
-                                            <Bar dataKey="emissions" name="Emissions" animationDuration={800}>
-                                                {filteredAndSortedChartData.map((entry, index) => (
-                                                    <Cell key={`cell-${index}`} fill={entry.fill} />
+                                    <Typography sx={{ fontFamily: 'Nunito Sans, sans-serif', textAlign: 'center', fontWeight: 'bold', fontSize: '0.9rem' }}>MONTHLY PERFORMANCE & FORECASTING</Typography>
+                                    <HelpButton onClick={() => handleOpenModal(1)} />
+                                    
+                                    {/* Filters: ALWAYS Visible now */}
+                                    <Box sx={{ position: 'absolute', right: 19, display: 'flex', alignItems: 'center', gap: 1 }}>
+                                        {/* Multi-Select Source Filter */}
+                                        <FormControl size="small">
+                                            <Select
+                                                multiple
+                                                value={graphSources}
+                                                onChange={(e: SelectChangeEvent<string[]>) => {
+                                                    const value = e.target.value;
+                                                    if (typeof value === 'string') return;
+                                                    if (value.includes('SELECT_ALL')) {
+                                                        if (graphSources.length === availableSources.length) {
+                                                            setGraphSources([]);
+                                                        } else {
+                                                            setGraphSources(availableSources);
+                                                        }
+                                                    } else {
+                                                        setGraphSources(value);
+                                                    }
+                                                }}
+                                                renderValue={(selected) => 
+                                                    selected.length === availableSources.length 
+                                                        ? 'All Sources' 
+                                                        : selected.length === 1
+                                                        ? selected[0]
+                                                        : `${selected.length} Sources`
+                                                }
+                                                sx={{ fontSize: '0.8rem', fontFamily: 'Nunito Sans, sans-serif', minWidth: 140 }}
+                                                MenuProps={{ PaperProps: { sx: { '& .MuiMenuItem-root': { fontSize: '0.8rem', fontFamily: 'Nunito Sans, sans-serif', py: 0.5 } } } }}
+                                            >
+                                                <MenuItem value="SELECT_ALL" sx={{ fontSize: '0.8rem', fontFamily: 'Nunito Sans, sans-serif' }}>
+                                                    <Checkbox checked={graphSources.length === availableSources.length && availableSources.length > 0} indeterminate={graphSources.length > 0 && graphSources.length < availableSources.length} size="small" />
+                                                    <Typography sx={{ fontSize: '0.8rem', fontFamily: 'Nunito Sans, sans-serif' }}>Select All</Typography>
+                                                </MenuItem>
+                                                {availableSources.map(src => (
+                                                    <MenuItem key={src} value={src} sx={{ fontSize: '0.8rem', fontFamily: 'Nunito Sans, sans-serif' }}>
+                                                        <Checkbox checked={graphSources.indexOf(src) > -1} size="small" />
+                                                        <Typography sx={{ fontSize: '0.8rem', fontFamily: 'Nunito Sans, sans-serif' }}>{src}</Typography>
+                                                    </MenuItem>
                                                 ))}
-                                            </Bar>
-                                            { (data?.monthly_tracking?.target_per_month !== null &&
-                                               data?.monthly_tracking?.target_per_month !== undefined &&
-                                               data?.monthly_tracking?.target_per_month !== '' &&
-                                               isFinite(Number(data.monthly_tracking.target_per_month))) &&
-                                                <ReferenceLine
-                                                    ifOverflow="extendDomain"
-                                                    y={Number(data.monthly_tracking.target_per_month)}
-                                                    stroke={colorPalette.target}
-                                                    strokeDasharray="3 3"
-                                                    strokeWidth={1.5}
-                                                    label={{
-                                                        value: `Target: ${formatValue(data.monthly_tracking.target_per_month)}`,
-                                                        position: 'insideBottomRight',
-                                                        fill: colorPalette.target,
-                                                        fontFamily: 'Nunito Sans, sans-serif',
-                                                        fontSize: 12,
-                                                        fontWeight: 'bold'
-                                                    }}
-                                                    className="ref-line-target"
-                                                />
-                                            }
-                                            { (data?.monthly_tracking?.with_bradley_der_per_month !== null &&
-                                               data?.monthly_tracking?.with_bradley_der_per_month !== undefined &&
-                                               data?.monthly_tracking?.with_bradley_der_per_month !== '' &&
-                                               isFinite(Number(data.monthly_tracking.with_bradley_der_per_month))) &&
-                                                <ReferenceLine
-                                                    ifOverflow="extendDomain"
-                                                    y={Number(data.monthly_tracking.with_bradley_der_per_month)}
-                                                    stroke={colorPalette.withBradley}
-                                                    strokeDasharray="3 3"
-                                                    strokeWidth={1.5}
-                                                    label={{
-                                                        value: `With CarbonCheckIQ+: ${formatValue(data.monthly_tracking.with_bradley_der_per_month)}`,
-                                                        position: 'insideTopRight',
-                                                        fill: colorPalette.withBradley,
-                                                        fontFamily: 'Nunito Sans, sans-serif',
-                                                        fontSize: 12,
-                                                        fontWeight: 'bold'
-                                                    }}
-                                                    className="ref-line-bradley"
-                                                />
-                                            }
-                                        </BarChart>
-                                    </ResponsiveContainer>
+                                            </Select>
+                                        </FormControl>
+
+                                        <FormControl size="small">
+                                            <Select value={selectedYear} onChange={(e: SelectChangeEvent<string | number>) => onYearChange(e.target.value)} sx={{ fontSize: '0.8rem', fontFamily: 'Nunito Sans, sans-serif' }}>
+                                                {availableYears.map(year => <MenuItem key={year} value={year} sx={{ fontSize: '0.8rem', fontFamily: 'Nunito Sans, sans-serif' }}>{year}</MenuItem>)}
+                                            </Select>
+                                        </FormControl>
+                                    </Box>
                                 </Box>
+
+                                {selectedLocations.length !== 1 ? (
+                                    // MULTI-LOCATION VIEW: Horizontal Detailed Bar Chart
+                                    <Box sx={{ height: Math.max(400, selectedLocations.length * 60), width: '100%', mt: 1 }}>
+                                        {aggregateLocationData.length > 0 ? (
+                                            <ResponsiveContainer width="100%" height="100%">
+                                                <BarChart
+                                                    layout="vertical"
+                                                    data={aggregateLocationData}
+                                                    margin={{ top: 20, right: 30, left: 60, bottom: 5 }}
+                                                    barGap={4}
+                                                >
+                                                    <CartesianGrid strokeDasharray="3 3" horizontal={false} />
+                                                    <XAxis type="number" tick={{ fontFamily: 'Nunito Sans, sans-serif', fontSize: '0.75rem' }} />
+                                                    <YAxis 
+                                                        dataKey="location" 
+                                                        type="category" 
+                                                        tick={{ fontFamily: 'Nunito Sans, sans-serif', fontSize: '0.7rem', fontWeight: 600 }}
+                                                        width={120}
+                                                    />
+                                                    <Tooltip 
+                                                        cursor={{ fill: 'rgba(230, 230, 230, 0.4)' }}
+                                                        contentStyle={{ fontFamily: 'Nunito Sans, sans-serif', borderRadius: '8px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
+                                                        labelFormatter={(label, payload) => payload[0]?.payload?.fullName || label}
+                                                    />
+                                                    <Legend wrapperStyle={{ fontFamily: 'Nunito Sans, sans-serif', fontSize: '0.8rem' }} />
+                                                    
+                                                    {/* Stacked Current Emissions Bar (Projected+Actual for selected sources) */}
+                                                    {graphSources.map((source) => [
+                                                        <Bar 
+                                                            key={`${source}-actual-agg`} 
+                                                            dataKey={`${source.toLowerCase()}_actual`} 
+                                                            name={`${source} (Actual)`} 
+                                                            stackId="current" 
+                                                            fill={getColorForSource(source, 'actual')} 
+                                                            barSize={20}
+                                                            animationDuration={800} 
+                                                        />,
+                                                        <Bar 
+                                                            key={`${source}-projected-agg`} 
+                                                            dataKey={`${source.toLowerCase()}_projected`} 
+                                                            name={`${source} (Projected)`} 
+                                                            stackId="current" 
+                                                            fill={getColorForSource(source, 'projected')} 
+                                                            barSize={20}
+                                                            animationDuration={800} 
+                                                        />
+                                                    ])}
+
+                                                    {/* Comparison Bars (Unstacked) */}
+                                                    <Bar dataKey="target" name="Target" fill={colorPalette.target} barSize={20} radius={[0, 4, 4, 0]} animationDuration={800} />
+                                                    <Bar dataKey="solution" name="With EmissionCheckIQ+" fill={colorPalette.withBradley} barSize={20} radius={[0, 4, 4, 0]} animationDuration={800} />
+                                                </BarChart>
+                                            </ResponsiveContainer>
+                                        ) : (
+                                            <Box sx={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                                <Typography color="text.secondary">No data available for the selected year/filters.</Typography>
+                                            </Box>
+                                        )}
+                                    </Box>
+                                ) : (
+                                    // SINGLE LOCATION VIEW: Stacked Monthly Chart (Existing Code)
+                                    <Box sx={{ height: 350 }}>
+                                        {/* ... (Keep existing single location chart code) ... */}
+                                        <ResponsiveContainer width="100%" height="100%">
+                                            <BarChart data={stackedChartData} margin={{ top: 5, right: 20, left: -10, bottom: 5 }}>
+                                                <CartesianGrid strokeDasharray="3 3" />
+                                                <XAxis dataKey="month" tick={{ fontFamily: 'Nunito Sans, sans-serif', fontSize: '0.75rem' }} />
+                                                <YAxis tick={{ fontFamily: 'Nunito Sans, sans-serif', fontSize: '0.75rem' }} domain={[0, yAxisMaxStacked]} />
+                                                <Tooltip 
+                                                    cursor={{ fill: 'rgba(230, 230, 230, 0.4)' }} 
+                                                    contentStyle={{ fontFamily: 'Nunito Sans, sans-serif', borderRadius: '8px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
+                                                    formatter={(value: number, name: string) => [value, name.replace('_actual', ' (Actual)').replace('_projected', ' (Projected)')]}
+                                                />
+                                                <Legend 
+                                                    wrapperStyle={{ fontFamily: 'Nunito Sans, sans-serif', fontSize: '0.8rem' }}
+                                                    payload={[
+                                                        { value: 'Target', type: 'line', color: colorPalette.target },
+                                                        { value: 'With EmissionCheckIQ+', type: 'line', color: colorPalette.withBradley },
+                                                        { value: 'Actual Electric', type: 'square', color: colorPalette.electricActual },
+                                                        { value: 'Actual Gas', type: 'square', color: colorPalette.gasActual },
+                                                        { value: 'Projected Electric', type: 'square', color: colorPalette.electricProjected },
+                                                        { value: 'Projected Gas', type: 'square', color: colorPalette.gasProjected },
+                                                    ]}
+                                                />
+                                                {graphSources.map((source) => [
+                                                    <Bar key={`${source}-actual-${selectedYear}`} dataKey={`${source.toLowerCase()}_actual`} name={`${source} (Actual)`} stackId="a" fill={getColorForSource(source, 'actual')} animationDuration={800} />,
+                                                    <Bar key={`${source}-projected-${selectedYear}`} dataKey={`${source.toLowerCase()}_projected`} name={`${source} (Projected)`} stackId="a" fill={getColorForSource(source, 'projected')} animationDuration={800} />
+                                                ])}
+                                                { (data?.monthly_tracking?.target_per_month !== null && data?.monthly_tracking?.target_per_month !== undefined && isFinite(Number(data.monthly_tracking.target_per_month))) &&
+                                                    <ReferenceLine y={Number(data.monthly_tracking.target_per_month)} stroke={colorPalette.target} strokeDasharray="3 3" strokeWidth={1.5} label={{ value: `Target: ${formatValue(data.monthly_tracking.target_per_month)} MT`, position: 'insideBottomRight', fill: colorPalette.target, fontFamily: 'Nunito Sans, sans-serif', fontSize: 12, fontWeight: 'bold' }} className="ref-line-target" />
+                                                }
+                                                { (data?.monthly_tracking?.with_bradley_der_per_month !== null && data?.monthly_tracking?.with_bradley_der_per_month !== undefined && isFinite(Number(data.monthly_tracking.with_bradley_der_per_month))) &&
+                                                    <ReferenceLine y={Number(data.monthly_tracking.with_bradley_der_per_month)} stroke={colorPalette.withBradley} strokeDasharray="3 3" strokeWidth={1.5} label={{ value: `With EmissionCheckIQ+: ${formatValue(data.monthly_tracking.with_bradley_der_per_month)} MT`, position: 'insideTopRight', fill: colorPalette.withBradley, fontFamily: 'Nunito Sans, sans-serif', fontSize: 12, fontWeight: 'bold' }} className="ref-line-bradley" />
+                                                }
+                                            </BarChart>
+                                        </ResponsiveContainer>
+                                    </Box>
+                                )}
                             </StyledTabPanelBox>
                         </TabPanel>
                         <TabPanel value={isMultiLocation ? 1 : tabValue} index={2}>
