@@ -39,6 +39,12 @@ export interface DERControlPanel {
 export interface MonthlyEmission {
     month: number; 
     year: number | string;
+
+    electric_actual?: number | null;
+    electric_projected?: number | null;
+    gas_actual?: number | null;
+    gas_projected?: number | null;
+
     actual: number | null;
     projected: number | null;
     TOTALS: number | null;
@@ -69,23 +75,23 @@ export interface ActionCenter {
     insights?: string[];
 }
 
-export interface RegulatoryContext {
-    targets_2030: {
-        location: {
-            county: string;
-            state: string;
-            corp: number;
-        };
-        penalty_rule: {
-            county: string;
-            state: string;
-            corp: string;
-        };
-    };
-    penalty_details: {
-        expected_annual_penalty_usd: number;
-    };
-}
+// export interface RegulatoryContext {
+//     targets_2030: {
+//         location: {
+//             county: string;
+//             state: string;
+//             corp: number;
+//         };
+//         penalty_rule: {
+//             county: string;
+//             state: string;
+//             corp: string;
+//         };
+//     };
+//     penalty_details: {
+//         expected_annual_penalty_usd: number;
+//     };
+// }
 
 export interface EmissionReductionProjects {
     Lighting: number;
@@ -107,8 +113,9 @@ export interface SRECMetrics {
 }
 
 export interface DashboardDataObject {
-    file_id: string;
-    source: string;
+    // file_id: string;
+    _id: string;
+    // source: string;
     zipcode: string;
     location: string;
     area_sq_ft: number;
@@ -120,7 +127,7 @@ export interface DashboardDataObject {
     der_control_panel: DERControlPanel;
     monthly_tracking: MonthlyTracking;
     action_center: ActionCenter;
-    regulatory_context: RegulatoryContext;
+    // regulatory_context: RegulatoryContext;
 }
 
 export type DashboardData = DashboardDataObject[];

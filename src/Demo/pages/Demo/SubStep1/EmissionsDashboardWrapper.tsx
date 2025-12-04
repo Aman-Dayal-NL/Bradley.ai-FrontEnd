@@ -22,23 +22,20 @@ const EmissionsDashboardWrapper: React.FC = () => {
     const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
     const [selectedLocation, setSelectedLocation] = useState<string>('');
-    const [selectedSource, setSelectedSource] = useState<string>('');
+    // const [selectedSource, setSelectedSource] = useState<string>('');
     const [selectedYear, setSelectedYear] = useState<number | string>('');
 
     const [activeData, setActiveData] = useState<DashboardDataObject | null>(null);
 
     // --- State for Tab 4 now lives in the wrapper and is stored in maps ---
-    // This ensures state is persistent when switching between locations/sources
     const [projectSelections, setProjectSelections] = useState<{ [locationSourceKey: string]: { [key: string]: boolean } }>({});
     const [srecPercentages, setSrecPercentages] = useState<{ [locationSourceKey: string]: number }>({});
     const [srecMetricsMap, setSrecMetricsMap] = useState<{ [locationSourceKey: string]: SRECMetrics | null }>({});
     
-    // Create a stable key for the current view
     const currentDataKey = useMemo(() => {
-        if (!selectedLocation || !selectedSource) return 'default';
-        return `${selectedLocation}-${selectedSource}`;
-    }, [selectedLocation, selectedSource]);
-    // --- End State Updates ---
+        if (!activeData) return 'default';
+        return activeData._id; 
+    }, [activeData]);
 
 
     const uniqueLocations = useMemo(() => {
@@ -46,17 +43,17 @@ const EmissionsDashboardWrapper: React.FC = () => {
         return Array.from(new Set(dashboardData.map(d => d.location)));
     }, [dashboardData]);
 
-    const availableSources = useMemo(() => {
-        if (!dashboardData || !selectedLocation) return [];
-        return Array.from(new Set(
-            dashboardData.filter(d => d.location === selectedLocation).map(d => d.source)
-        ));
-    }, [dashboardData, selectedLocation]);
+    // const availableSources = useMemo(() => {
+    //     if (!dashboardData || !selectedLocation) return [];
+    //     return Array.from(new Set(
+    //         dashboardData.filter(d => d.location === selectedLocation).map(d => d.source)
+    //     ));
+    // }, [dashboardData, selectedLocation]);
 
     const nextData = useMemo(() => {
-        if (!dashboardData || !selectedLocation || !selectedSource) return null;
-        return dashboardData.find(d => d.location === selectedLocation && d.source === selectedSource) || null;
-    }, [dashboardData, selectedLocation, selectedSource]);
+        if (!dashboardData || !selectedLocation) return null;
+        return dashboardData.find(d => d.location === selectedLocation) || null;
+    }, [dashboardData, selectedLocation]);
 
 
     const availableYears = useMemo(() => {
@@ -65,28 +62,24 @@ const EmissionsDashboardWrapper: React.FC = () => {
         return Array.from(years).sort((a, b) => b - a);
     }, [nextData]);
 
-    // Effect 1: Set initial location
     useEffect(() => {
         if (uniqueLocations.length > 0 && !selectedLocation) {
             setSelectedLocation(uniqueLocations[0]);
         }
     }, [uniqueLocations, selectedLocation]);
 
-    // Effect 2: Set source based on location
-    useEffect(() => {
-        if (selectedLocation) {
-            setIsFiltering(true); 
-            if (availableSources.length > 0) {
-                if (!availableSources.includes(selectedSource)) {
-                    setSelectedSource(availableSources[0]);
-                }
-            } else {
-                setSelectedSource('');
-            }
-        }
-    }, [selectedLocation, availableSources, selectedSource]);
+    // useEffect(() => {
+    //     if (selectedLocation) {
+    //         if (availableSources.length > 0) {
+    //             if (!availableSources.includes(selectedSource)) {
+    //                 setSelectedSource(availableSources[0]);
+    //             }
+    //         } else {
+    //             setSelectedSource('');
+    //         }
+    //     }
+    // }, [selectedLocation, availableSources, selectedSource]);
 
-    // Effect 3: Set year and Active Data. This now *initializes* state for new keys, it doesn't reset existing ones.
     useEffect(() => {
         if (availableYears.length > 0 && !availableYears.includes(Number(selectedYear))) {
             setSelectedYear(availableYears[0]);
@@ -96,28 +89,26 @@ const EmissionsDashboardWrapper: React.FC = () => {
         
         if (nextData) {
             setActiveData(nextData);
-            const key = `${nextData.location}-${nextData.source}`;
+            // const key = `${nextData.location}-${nextData.source}`;
+            const key = nextData._id; 
 
-            // Initialize state for this key *only if it doesn't exist*
             setProjectSelections(prev => ({
                 ...prev,
-                [key]: prev[key] || {} // Keep existing selections or set to empty object
+                [key]: prev[key] || {} 
             }));
             setSrecPercentages(prev => ({
                 ...prev,
-                [key]: prev[key] || 0 // Keep existing percentage or set to 0
+                [key]: prev[key] || 0 
             }));
             setSrecMetricsMap(prev => ({
                 ...prev,
-                [key]: prev[key] || nextData.srec_metrics // Keep existing metrics or set to base
+                [key]: prev[key] || nextData.srec_metrics 
             }));
             
             setIsFiltering(false); 
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [availableYears, selectedYear, nextData]); // Intentionally omitting maps from deps
+    }, [availableYears, selectedYear, nextData]); 
 
-    // Effect 4: WebSocket connection
     useEffect(() => {
         let connectAttempts = 0;
         const maxConnectAttempts = 4;
@@ -126,7 +117,6 @@ const EmissionsDashboardWrapper: React.FC = () => {
         const connect = () => {
             if (socketRef.current || connectAttempts >= maxConnectAttempts) return;
 
-            // Use the environment variable for the WebSocket URL
             const socketURL = import.meta.env.VITE_WS_URL || 'ws://localhost:8000/ws';
             const socketInstance = new WebSocket(socketURL);
             socketRef.current = socketInstance;
@@ -146,57 +136,65 @@ const EmissionsDashboardWrapper: React.FC = () => {
                         return;
                     }
 
-                    if (receivedData.type && activeData) {
-                        // Determine which key this update belongs to. Assume it's the active one.
-                        const key = `${activeData.location}-${activeData.source}`;
-                        let updatedObject: DashboardDataObject | null = null;
+                    // if (receivedData.type && activeData) {
+                    //     const key = activeData._id;
+                    //     let updatedObject: DashboardDataObject | null = null;
 
-                        switch (receivedData.type) {
-                            case "pid_result":
-                                console.log(`WS: Received 'pid_result' for file_id: ${activeData.file_id}`);
-                                updatedObject = {
-                                    ...activeData,
-                                    der_control_panel: receivedData.payload.der_control_panel
-                                };
-                                break;
+                    //     switch (receivedData.type) {
+                    //         case "pid_result":
+                    //             updatedObject = {
+                    //                 ...activeData,
+                    //                 der_control_panel: receivedData.payload.der_control_panel
+                    //             };
+                    //             break;
                             
-                            case "srec_result":
-                                console.log(`WS: Received 'srec_result' for file_id: ${activeData.file_id}`);
-                                const newSrecMetrics = receivedData.payload as SRECMetrics;
-                                
-                                // Update the srecMetricsMap with the new calculated values
-                                setSrecMetricsMap(prev => ({
-                                    ...prev,
-                                    [key]: newSrecMetrics
-                                }));
-                                
-                                // Create the updated main data object
-                                updatedObject = {
-                                    ...activeData,
-                                    // IMPORTANT: We only update the map, not the *base* srec_metrics in activeData
-                                    // This allows resetting the slider to 0 to show the base values again.
-                                    // However, if you want the *base* data to reflect the last calculation,
-                                    // you would uncomment the line below:
-                                    // srec_metrics: newSrecMetrics 
-                                };
-                                break;
+                    //         case "srec_result":
+                    //             const newSrecMetrics = receivedData.payload as SRECMetrics;
+                    //             setSrecMetricsMap(prev => ({
+                    //                 ...prev,
+                    //                 [key]: newSrecMetrics
+                    //             }));
+                    //             updatedObject = { ...activeData };
+                    //             break;
                             
-                            default:
-                                console.warn("Received unknown WS data type:", receivedData.type);
-                                return;
-                        }
+                    //         default:
+                    //             return;
+                    //     }
 
-                        if (updatedObject) {
-                            setActiveData(updatedObject); // Update active view
+                    //     if (updatedObject) {
+                    //         setActiveData(updatedObject); 
+                    //         setDashboardData((prevDashboardData) => {
+                    //             if (!prevDashboardData) return null;
+                    //             return prevDashboardData.map(item => 
+                    //                 // String(item.file_id) === String(activeData.file_id) ? updatedObject! : item
+                    //                 String(item._id) === String(activeData._id) ? updatedObject! : item
+                    //             );
+                    //         });
+                    //     }
+                    // }
+
+                    if (receivedData.type) {
+                        const payloadId = receivedData.payload?.file_id || receivedData.payload?._id;
+                        
+                        setDashboardData((prevDashboardData) => {
+                            if (!prevDashboardData) return null;
                             
-                            // Update the master list in context
-                            setDashboardData((prevDashboardData) => {
-                                if (!prevDashboardData) return null;
-                                return prevDashboardData.map(item => 
-                                    String(item.file_id) === String(activeData.file_id) ? updatedObject! : item
-                                );
-                            });
-                        }
+                            const index = prevDashboardData.findIndex(item => String(item._id) === String(payloadId));
+                            if (index === -1) return prevDashboardData;
+
+                            const newItem = { ...prevDashboardData[index] };
+
+                            if (receivedData.type === "pid_result") {
+                                newItem.der_control_panel = receivedData.payload.der_control_panel;
+                            } else if (receivedData.type === "srec_result") {
+                                setSrecMetricsMap(prev => ({ ...prev, [newItem._id]: receivedData.payload }));
+                                // newItem.srec_metrics = receivedData.payload;
+                            }
+                            
+                            const newList = [...prevDashboardData];
+                            newList[index] = newItem;
+                            return newList;
+                        });
                     }
 
                 } catch (error) {
@@ -207,12 +205,8 @@ const EmissionsDashboardWrapper: React.FC = () => {
             socketInstance.onclose = () => {
                 socketRef.current = null;
                 if (connectAttempts < maxConnectAttempts) {
-                    const delay = retryDelays[connectAttempts];
-                    console.warn(`WebSocket closed. Retrying in ${delay / 1000}s...`);
-                    retryTimeoutRef.current = setTimeout(connect, delay);
+                    retryTimeoutRef.current = setTimeout(connect, retryDelays[connectAttempts]);
                     connectAttempts++;
-                } else {
-                    console.error("WebSocket connection failed after multiple retries.");
                 }
             };
 
@@ -225,18 +219,15 @@ const EmissionsDashboardWrapper: React.FC = () => {
         connect();
 
         return () => {
-            if (retryTimeoutRef.current) {
-                clearTimeout(retryTimeoutRef.current);
-            }
+            if (retryTimeoutRef.current) clearTimeout(retryTimeoutRef.current);
             if (socketRef.current) {
                 socketRef.current.onclose = null;
                 socketRef.current.close();
                 socketRef.current = null;
             }
         };
-    }, [setDashboardData, activeData]); // Depends on activeData to have file_id
+    }, [setDashboardData/* , activeData */]);
 
-    // Effect 5: Loading message spinner
     useEffect(() => {
         if (isUpdating || isFiltering) { 
             const timer = setInterval(() => {
@@ -246,65 +237,55 @@ const EmissionsDashboardWrapper: React.FC = () => {
         }
     }, [isUpdating, isFiltering]);
 
-    // DER Panel "Confirm Changes" Handler
-    const handleConfirmChanges = (newUserMix: { [key: string]: number }, location: string, source: string) => {
-        const dataForPayload = dashboardData?.find(d => d.location === location && d.source === source);
+    const handleConfirmChanges = (newUserMix: { [key: string]: number }, targetId: string) => {
+        const dataForPayload = dashboardData?.find(d => String(d._id) === String(targetId));
+        
         if (socketRef.current?.readyState === WebSocket.OPEN && dataForPayload) {
-            
             const requestPayload = {
                 type: "pid_request", 
-                source: dataForPayload.source,
-                zipcode: (dataForPayload as any).zipcode, 
+                // source: dataForPayload.source,
+                zipcode: dataForPayload.zipcode, 
                 location: dataForPayload.location,
-                file_id: String(dataForPayload.file_id),
+                _id: String(dataForPayload._id),
                 current_mix_pct: newUserMix
             };
-
+            console.log("Sending PID request payload:", requestPayload);
             socketRef.current.send(JSON.stringify(requestPayload));
             setIsUpdating(true);
             setHasUnsavedChanges(false);
-        } else {
-            console.error('Socket not connected or active data is missing.');
         }
     };
 
-    // Handler for Source Change
-    const handleSourceChange = (newSource: string) => {
-        if (newSource !== selectedSource) {
-            setIsFiltering(true); // Show loader
-            setSelectedSource(newSource);
-            // State initialization for the new source will be handled by Effect 3
-        }
-    };
+    // const handleSourceChange = (newSource: string) => {
+    //     if (newSource !== selectedSource) {
+    //         setSelectedSource(newSource);
+    //     }
+    // };
 
-    // SREC Slider "On Release" Handler
-    const handleSrecChangeCommitted = (percentage: number) => {
-        if (socketRef.current?.readyState === WebSocket.OPEN && activeData) {
-            // If slider is moved back to 0, reset to base metrics without a WS call
+    const handleSrecChangeCommitted = (percentage: number, targetData?: DashboardDataObject | null) => {
+        const dataContext = targetData || activeData;
+        if (socketRef.current?.readyState === WebSocket.OPEN && dataContext) {
             if (percentage === 0) {
                 setSrecMetricsMap(prev => ({
                     ...prev,
-                    [currentDataKey]: activeData.srec_metrics
+                    [dataContext._id]: dataContext.srec_metrics
                 }));
-                return; // Don't send a WS call for 0%
+                return; 
             }
-
             const requestPayload = {
                 type: "srec_calc",
-                source: activeData.source,
-                zipcode: (activeData as any).zipcode,
-                location: activeData.location,
-                file_id: String(activeData.file_id),
+                // source: activeData.source,
+                zipcode: dataContext?.zipcode,
+                location: dataContext?.location,
+                _id: String(dataContext?._id),
                 percentage_selected: percentage
             };
+            console.log("Sending SREC calculation request:", requestPayload);
             socketRef.current.send(JSON.stringify(requestPayload));
-            setIsUpdating(true); // Show loading backdrop
-        } else {
-            console.error('Socket not connected or active data is missing for SREC update.');
+            setIsUpdating(true); 
         }
     };
 
-    // SREC Slider "On Change" (Visual) Handler
     const handleSrecPercentageChange = (value: number) => {
         setSrecPercentages(prev => ({
             ...prev,
@@ -312,7 +293,6 @@ const EmissionsDashboardWrapper: React.FC = () => {
         }));
     };
 
-    // Project Checkbox Handler
     const handleProjectSelectChange = (formattedKey: string) => {
         setProjectSelections(prev => {
             const currentSelections = prev[currentDataKey] || {};
@@ -320,74 +300,24 @@ const EmissionsDashboardWrapper: React.FC = () => {
                 ...prev,
                 [currentDataKey]: {
                     ...currentSelections,
-                    [formattedKey]: !currentSelections[formattedKey], // Toggle
+                    [formattedKey]: !currentSelections[formattedKey], 
                 }
             };
         });
     };
 
-    // --- RENDER LOGIC ---
+    if (isInitialLoading) return <Box display="flex" justifyContent="center" alignItems="center" height="80vh"><CircularProgress /></Box>;
+    if (!dashboardData || dashboardData.length === 0) return <Box display="flex" justifyContent="center" alignItems="center" height="80vh" flexDirection="column"><Typography variant="h6" color="textSecondary">No dashboard data available.</Typography></Box>;
+    if (!activeData) return <Box display="flex" justifyContent="center" alignItems="center" height="80vh" flexDirection="column" gap={2}><CircularProgress /><Typography variant="h6" color="textSecondary">Loading dashboard...</Typography></Box>;
 
-    if (isInitialLoading) {
-        return (
-            <Box display="flex" justifyContent="center" alignItems="center" height="80vh">
-                <CircularProgress />
-            </Box>
-        );
-    }
-
-    if (!dashboardData || dashboardData.length === 0) {
-        return (
-            <Box
-                display="flex"
-                justifyContent="center"
-                alignItems="center"
-                height="80vh"
-                flexDirection="column"
-            >
-                <Typography variant="h6" color="textSecondary">
-                    No dashboard data available.
-                </Typography>
-                <Typography variant="body2" color="textSecondary">
-                    Please ensure that you have uploaded the necessary data files.
-                </Typography>
-            </Box>
-        );
-    }
-
-    // Main loading gate. Waits for filters to be set and data to be found.
-    if (!activeData) { 
-        return (
-            <Box display="flex" justifyContent="center" alignItems="center" height="80vh" flexDirection="column" gap={2}>
-                <CircularProgress />
-                <Typography variant="h6" color="textSecondary">
-                    Loading dashboard...
-                </Typography>
-            </Box>
-        );
-    }
-
-    // Get the correct SREC metrics to display
-    // Fallback to the base metrics from activeData if the map doesn't have an entry
     const currentSrecMetrics = srecMetricsMap[currentDataKey] || activeData.srec_metrics;
 
     return (
         <Box>
-            <Backdrop
-                sx={{
-                    color: '#fff',
-                    zIndex: (theme) => theme.zIndex.modal + 1,
-                    backdropFilter: 'blur(3px)',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: 2
-                }}
-                open={isUpdating || isFiltering}
-            >
+            <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.modal + 1, backdropFilter: 'blur(3px)', display: 'flex', flexDirection: 'column', gap: 2 }} open={isUpdating || isFiltering}>
                 <CircularProgress color="inherit" />
                 <Typography variant="h6">{loadingMessages[loadingMessageIndex]}</Typography>
             </Backdrop>
-            
             <EmissionsDashboard
                 allData={dashboardData} 
                 onConfirmChanges={handleConfirmChanges}
@@ -397,20 +327,16 @@ const EmissionsDashboardWrapper: React.FC = () => {
                 onLocationChange={setSelectedLocation}
                 selectedLocations={uniqueLocations}
                 onLocationsChange={(locations: string[]) => {
-                    // If the current selected location is not in the new list, reset it
                     if (!locations.includes(selectedLocation)) {
                         setSelectedLocation(locations[0] || '');
                     }
                 }}
-                selectedSource={selectedSource}
-                onSourceChange={handleSourceChange}
+                // selectedSource={selectedSource}
+                // onSourceChange={handleSourceChange}
                 selectedYear={selectedYear}
                 onYearChange={setSelectedYear}
-                
-                // --- Pass down state specific to the current data key ---
                 projectSelections={projectSelections[currentDataKey] || {}}
                 onProjectSelectChange={handleProjectSelectChange}
-                
                 srecPercentage={srecPercentages[currentDataKey] || 0}
                 onSrecPercentageChange={handleSrecPercentageChange} 
                 onSrecChangeCommitted={handleSrecChangeCommitted} 
@@ -421,4 +347,3 @@ const EmissionsDashboardWrapper: React.FC = () => {
 };
 
 export default EmissionsDashboardWrapper;
-
