@@ -427,9 +427,23 @@ const EmissionsDashboard: React.FC<EmissionsDashboardProps> = ({
     };
     
     const availableYears = useMemo(() => {
-        const years = new Set(data?.monthly_tracking?.monthly_emissions?.map(em => em.year as number));
+        const years = new Set<number>();
+        
+        if (filteredDataByLocations.length > 0) {
+            filteredDataByLocations.forEach(d => {
+                d.monthly_tracking?.monthly_emissions?.forEach(em => {
+                    if (em.year) years.add(Number(em.year));
+                });
+            });
+        } 
+        else if (data) {
+            data.monthly_tracking?.monthly_emissions?.forEach(em => {
+                if (em.year) years.add(Number(em.year));
+            });
+        }
+
         return Array.from(years).sort((a, b) => b - a);
-    }, [data]);
+    }, [filteredDataByLocations, data]);
 
     const staticProjectKeys: { [key: string]: string } = {
         'Lighting': 'Lighting',
@@ -1669,6 +1683,7 @@ const handleOpenQuickFix = (rowData: DashboardDataObject) => {
                                         <FormControl size="small">
                                             <Select value={selectedYear} onChange={(e: SelectChangeEvent<string | number>) => onYearChange(e.target.value)} sx={{ fontSize: '0.8rem', fontFamily: 'Nunito Sans, sans-serif' }}>
                                                 {availableYears.map(year => <MenuItem key={year} value={year} sx={{ fontSize: '0.8rem', fontFamily: 'Nunito Sans, sans-serif' }}>{year}</MenuItem>)}
+                                                <>{console.log(availableYears)}</>
                                             </Select>
                                         </FormControl>
                                     </Box>

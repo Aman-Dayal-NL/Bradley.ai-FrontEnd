@@ -57,10 +57,16 @@ const EmissionsDashboardWrapper: React.FC = () => {
 
 
     const availableYears = useMemo(() => {
-        if (!nextData) return []; 
-        const years = new Set(nextData.monthly_tracking.monthly_emissions.map(em => em.year as number));
+        if (!dashboardData) return []; 
+        // CHANGE: Aggregate years from ALL data files to allow year selection across disparate datasets
+        const years = new Set<number>();
+        dashboardData.forEach(d => {
+            d.monthly_tracking?.monthly_emissions?.forEach(em => {
+                years.add(Number(em.year));
+            });
+        });
         return Array.from(years).sort((a, b) => b - a);
-    }, [nextData]);
+    }, [dashboardData]);
 
     useEffect(() => {
         if (uniqueLocations.length > 0 && !selectedLocation) {
@@ -83,7 +89,7 @@ const EmissionsDashboardWrapper: React.FC = () => {
     useEffect(() => {
         if (availableYears.length > 0 && !availableYears.includes(Number(selectedYear))) {
             setSelectedYear(availableYears[0]);
-        } else if (availableYears.length === 0) {
+        } else if (availableYears.length === 0 && selectedYear !== '') {
             setSelectedYear('');
         }
         
