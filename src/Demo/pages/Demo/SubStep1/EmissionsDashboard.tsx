@@ -175,8 +175,8 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 // --- HELPER FUNCTIONS ---
 const formatValue = (value?: number | string | null, type: 'number' | 'currency' | 'percent' = 'number'): string => { if (value === null || value === undefined || value === "") return 'N/A'; const num = typeof value === 'string' ? parseFloat(value) : value; if (isNaN(num)) return 'N/A'; const options: Intl.NumberFormatOptions = { maximumFractionDigits: 2 }; if (type === 'currency') { options.style = 'currency'; options.currency = 'USD'; options.minimumFractionDigits = 2; } if (type === 'percent') { return `${num.toFixed(1)}%`; } return new Intl.NumberFormat('en-US', options).format(num); };
-const derOrder = ['Solar PV', 'Battery Storage', 'CHP', 'Fuel Cells', 'Simple Turbines', 'Linear Generation', 'GRID'];
-const derNameMapping: {[key: string]: string} = { solar_pv: 'Solar PV', battery_storage: 'Battery Storage', chp: 'CHP', fuel_cells: 'Fuel Cells', simple_turbines: 'Simple Turbines', linear_generation: 'Linear Generation', grid: 'GRID', efficiency_retrofit: 'Efficiency Retrofit' };
+const derOrder = ['Solar PV', 'Battery Storage', 'CHP', 'Fuel Cells', 'Simple Turbines', 'Linear Generation', 'GRID', 'NATURAL GAS'];
+const derNameMapping: {[key: string]: string} = { solar_pv: 'Solar PV', battery_storage: 'Battery Storage', chp: 'CHP', fuel_cells: 'Fuel Cells', simple_turbines: 'Simple Turbines', linear_generation: 'Linear Generation', grid: 'GRID', gas: 'NATURAL GAS', efficiency_retrofit: 'Efficiency Retrofit' };
 
 // --- CHILD COMPONENTS ---
 interface BenefitData { value: string; title: ReactNode; description: ReactNode; watermark: string; }
@@ -382,7 +382,7 @@ const EmissionsDashboard: React.FC<EmissionsDashboardProps> = ({
         return {
             'Solar PV': current?.solar_pv ?? 0, 'Battery Storage': current?.battery_storage ?? 0, 'CHP': current?.chp ?? 0,
             'Fuel Cells': current?.fuel_cells ?? 0, 'Simple Turbines': current?.simple_turbines ?? 0,
-            'Linear Generation': current?.linear_generation ?? 0, 'GRID': current?.grid ?? 100,
+            'Linear Generation': current?.linear_generation ?? 0, 'GRID': current?.grid ?? 100, 'NATURAL GAS': current?.gas ?? 0,
         };
     }, [data]);
 
@@ -410,7 +410,7 @@ const EmissionsDashboard: React.FC<EmissionsDashboardProps> = ({
         setUserDerAllocation({
             'Solar PV': recommended.solar_pv ?? 0, 'Battery Storage': recommended.battery_storage ?? 0, 'CHP': recommended.chp ?? 0,
             'Fuel Cells': recommended.fuel_cells ?? 0, 'Simple Turbines': recommended.simple_turbines ?? 0,
-            'Linear Generation': recommended.linear_generation ?? 0, 'GRID': recommended.grid ?? 0,
+            'Linear Generation': recommended.linear_generation ?? 0, 'GRID': recommended.grid ?? 0, 'NATURAL GAS': recommended.gas ?? 0,
         });
     };
     const handleConfirm = () => {
@@ -418,7 +418,7 @@ const EmissionsDashboard: React.FC<EmissionsDashboardProps> = ({
             grid: (userDerAllocation as any)['GRID'] ?? 0, solar_pv: (userDerAllocation as any)['Solar PV'] ?? 0,
             battery_storage: (userDerAllocation as any)['Battery Storage'] ?? 0, chp: (userDerAllocation as any)['CHP'] ?? 0,
             fuel_cells: (userDerAllocation as any)['Fuel Cells'] ?? 0, simple_turbines: (userDerAllocation as any)['Simple Turbines'] ?? 0,
-            linear_generation: (userDerAllocation as any)['Linear Generation'] ?? 0,
+            linear_generation: (userDerAllocation as any)['Linear Generation'] ?? 0, gas: (userDerAllocation as any)['NATURAL GAS'] ?? 0,
         };
         if (data && data._id) {
             onConfirmChanges(payloadMix, data._id);
