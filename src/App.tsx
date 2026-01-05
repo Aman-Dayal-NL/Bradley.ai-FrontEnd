@@ -2,8 +2,8 @@ import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate, useLocation } from 'react-router-dom';
 import Login from './Auth/Login';
 import Signup from './Auth/Signup';
-import ClientApp from './Client/ClientApp';
-import AnalystApp from './Analyst/AnalystApp';
+// import ClientApp from './Client/ClientApp';
+// import AnalystApp from './Analyst/AnalystApp';
 import DemoApp from './Demo/DemoApp';
 import { useAppContext } from './Context/AppContext';
 
@@ -13,7 +13,7 @@ const TitleUpdater: React.FC = () => {
   useEffect(() => {
     if (location.pathname === '/client') {
       document.title = 'Bradley.ai';
-    } else if (location.pathname === '/demo') {
+    } else if (location.pathname.startsWith("/emissioncheckiq")) {
       document.title = 'EmissionCheckIQ+';
     } else {
       document.title = 'Bradley.ai';
@@ -24,24 +24,50 @@ const TitleUpdater: React.FC = () => {
 };
 
 const App: React.FC = () => {
-  const appContext = useAppContext();
+  const { user, authReady } = useAppContext();
+
+  if (!authReady) {
+    return null;
+  }
 
   return (
     <Router>
       <TitleUpdater />
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/client" element={appContext.user && appContext.user.role === 'client' ? <ClientApp /> : <Navigate to="/login" />} />
-        <Route path="/analyst" element={appContext.user && appContext.user.role === 'analyst' ? <AnalystApp /> : <Navigate to="/login" />} />
-        <Route path="/demo" element={appContext.user && appContext.user.role === 'demo' ? <DemoApp /> : <Navigate to="/login" />} />
-        <Route
-          path="/"
-          element={appContext.user ? (appContext.user.role === 'analyst' ? <Navigate to="/analyst" /> : <Navigate to="/client" />) : <Navigate to="/login" />}
-        />
-      </Routes>
+        <Routes>
+          <Route
+            path="/login/*"
+            element={
+              user?.product === "emissioncheckiq"
+                ? <Navigate to="/emissioncheckiq" replace />
+                : <Login />
+            }
+          />
+
+          <Route
+            path="/signup"
+            element={
+              user?.product === "emissioncheckiq"
+                ? <Navigate to="/emissioncheckiq" replace />
+                : <Signup />
+            }
+          />
+
+          <Route
+            path="/emissioncheckiq/*"
+            element={
+              user?.product === "emissioncheckiq"
+                ? <DemoApp />
+                : <Navigate to="/login?product=emissioncheckiq" replace />
+            }
+          />
+
+          <Route
+            path="/"
+            element={<Navigate to={user ? "/emissioncheckiq" : "/login?product=emissioncheckiq"} replace />}
+          />
+        </Routes>
     </Router>
-  );
-};
+      );
+    };
 
 export default App;

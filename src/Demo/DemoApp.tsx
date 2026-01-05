@@ -41,7 +41,7 @@ const AppContent: React.FC = () => {
         currentFurtherSubStep, setCurrentFurtherSubStep,
         visitedSteps, setVisitedSteps,
         completedSubSteps, setCompletedSubSteps,
-        logout,
+        logout, bootstrap,
     } = useAppContext();
 
     const { dashboardData, setDashboardData, isLoading, setIsLoading } = useDashboardData();
@@ -62,29 +62,73 @@ const AppContent: React.FC = () => {
     const navigate = useNavigate();
     const [organizationId, setOrganizationId] = useState<string | null>(null);
     const [addressUuidMap, setAddressUuidMap] = useState<{ [key: string]: string }>({});
+    const [hasHydratedFromBootstrap, setHasHydratedFromBootstrap] = useState(false);
 
-    // Error Modal
-    const [errorModalOpen, setErrorModalOpen] = useState(false);
-    const [errorTitle, setErrorTitle] = useState('Error');
-    const [errorMsg, setErrorMsg] = useState('');
-
-    const markVisited = (step: number, subStep: number) => {
+    const markVisited = React.useCallback((step: number, subStep: number) => {
         setVisitedSteps((prev) => {
             const newVisited = [...prev];
             if (!newVisited[step]) newVisited[step] = [];
             newVisited[step][subStep] = true;
             return newVisited;
         });
-    };
+    }, [setVisitedSteps]);
 
-    const markCompleted = (step: number, subStep: number) => {
+    const markCompleted = React.useCallback((step: number, subStep: number) => {
         setCompletedSubSteps((prev) => {
             const newCompleted = [...prev];
             if (!newCompleted[step]) newCompleted[step] = [];
             newCompleted[step][subStep] = true;
             return newCompleted;
         });
-    };
+    }, [setCompletedSubSteps]);
+
+    useEffect(() => {
+        if (!bootstrap || hasHydratedFromBootstrap) return;
+
+        try {
+            const hasEmissions = Array.isArray(bootstrap.emissions) && bootstrap.emissions.length > 0;
+            const hasOrgId = Boolean(bootstrap.organization?.id);
+
+            if (hasEmissions) {
+                setDashboardData(bootstrap.emissions.map((emission: any) => emission.emissions_json));
+                markVisited(0, 1);
+                markCompleted(0, 0);
+                setCurrentStep(0);
+                setCurrentSubStep(1);
+                setCurrentFurtherSubStep(0);
+            }
+
+            if (hasOrgId) {
+                setOrganizationId(String(bootstrap.organization.id));
+            }
+
+            if (hasEmissions || hasOrgId) {
+                setHasHydratedFromBootstrap(true);
+            }
+        } catch (error) {
+            console.error('Failed to hydrate dashboard from bootstrap:', error);
+        }
+    }, [
+        bootstrap,
+        hasHydratedFromBootstrap,
+        markCompleted,
+        markVisited,
+        setCurrentStep,
+        setCurrentSubStep,
+        setCurrentFurtherSubStep,
+        setDashboardData
+    ]);
+
+    useEffect(() => {
+        if (hasHydratedFromBootstrap) {
+            setIsLoading(false);
+        }
+    }, [hasHydratedFromBootstrap, setIsLoading]);
+
+    // Error Modal
+    const [errorModalOpen, setErrorModalOpen] = useState(false);
+    const [errorTitle, setErrorTitle] = useState('Error');
+    const [errorMsg, setErrorMsg] = useState('');
 
     const handleStepChange = (step: number) => {
         if (visitedSteps[step]?.[0]) {
@@ -536,8 +580,10 @@ const AppContent: React.FC = () => {
 };
 
 const DemoApp: React.FC = () => {
+    const { bootstrap } = useAppContext();
+
     return (
-        <AppProvider steps={steps} appPrefix="demo">
+        <AppProvider steps={steps} appPrefix="emissioncheckiq" initialBootstrap={bootstrap}>
             <ApiPrePinger />
             <DashboardDataProvider>
                 <OrganizationDetailsProvider>
@@ -551,7 +597,7 @@ const DemoApp: React.FC = () => {
                                                 <ThermalEnergyNeedsIIIProvider>
                                                     <ThermalEnergyNeedsIVProvider>
                                                         <BoilerCogenerationProvider>
-                                                            <BillAddressProvider appPrefix="demo">
+                                                            <BillAddressProvider appPrefix="emissioncheckiq">
                                                                 <AppContent />
                                                             </BillAddressProvider>
                                                         </BoilerCogenerationProvider>

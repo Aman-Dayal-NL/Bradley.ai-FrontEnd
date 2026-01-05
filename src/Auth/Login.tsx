@@ -1,37 +1,52 @@
-import React, { useState } from 'react';
-import { Box, Typography, Button, Grid, Paper } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import React, { useMemo, useState } from 'react';
+import { Box, Typography, Button, Grid, Paper, Backdrop, CircularProgress } from '@mui/material';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { IoIosLogIn } from 'react-icons/io';
 import { useAppContext } from '../Context/AppContext';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { FaPlay } from 'react-icons/fa';
 
+
+
 const Login: React.FC = () => {
-  const { setUser, credentials } = useAppContext();
+  // const { setUser } = useAppContext();
+  const { loginForProduct } = useAppContext();
+  const location = useLocation();
   const navigate = useNavigate();
+
+  const product = useMemo(() => {
+  const params = new URLSearchParams(location.search);
+  return params.get("product") || "bradley";
+  }, [location.search]);
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleLogin = () => {
-    const clientCredentials = credentials.client;
-    const analystCredentials = credentials.analyst;
+  const handleLogin = async () => {
+    setIsSubmitting(true);
+    try {
+      const u = await loginForProduct(product, email, password);
 
-    if (email === clientCredentials.email && password === clientCredentials.password) {
-      setUser({ email, role: 'client' });
-      navigate('/client');
-    } else if (email === analystCredentials.email && password === analystCredentials.password) {
-      setUser({ email, role: 'analyst' });
-      navigate('/analyst');
-    } else {
-      toast.error('Invalid email or password', {
-        position: 'top-center',
-        autoClose: 1000,
+      // route by product (not by role for non-bradley)
+      if (product === "bradley") {
+        navigate(u.role === "analyst" ? "/analyst" : "/client", { replace: true });
+      } else {
+        navigate(`/${product}`, { replace: true });
+      }
+    } catch (e: any) {
+      setIsSubmitting(false);
+      toast.error(e?.message || "Login failed", {
+        position: "top-center",
+        autoClose: 1200,
         hideProgressBar: true,
-        style: { fontSize: '14px', padding: '8px 16px', fontFamily: '"Nunito Sans", sans-serif' },
+        style: { fontSize: "14px", padding: "8px 16px", fontFamily: '"Nunito Sans", sans-serif' },
       });
     }
+  };
+  const handleSwitchProduct = () => {
+    navigate(product === "emissioncheckiq" ? "/login?product=bradley" : "/login?product=emissioncheckiq");
   };
 
   return (
@@ -176,7 +191,7 @@ const Login: React.FC = () => {
               fontFamily: '"Nunito Sans", sans-serif',
             }}
           >
-            <h3 style={{ fontFamily: '"Nunito Sans", sans-serif' }}>Sign in to {/* EmissionCheckIQ+ */}your account</h3>
+            <h3 style={{ fontFamily: '"Nunito Sans", sans-serif' }}>{product === "emissioncheckiq" ? "Sign in to EmissionCheckIQ+" : "Sign in to your account"}</h3>
           </Typography>
 
           <Box sx={{ width: '90%', marginBottom: 2 }}>
@@ -258,6 +273,7 @@ const Login: React.FC = () => {
                   fontFamily: '"Nunito Sans", sans-serif',
                 }}
                 onClick={handleLogin}
+                disabled={isSubmitting}
               >
                 <IoIosLogIn size={20} style={{ marginRight: 8 }} />
                 LOG IN
@@ -275,12 +291,11 @@ const Login: React.FC = () => {
                   fontFamily: '"Nunito Sans", sans-serif',
                 }}
                 onClick={() => {
-                  setUser({ email: '', role: 'demo' });
-                  navigate('/demo');
+                  handleSwitchProduct();
                 }}
               >
                 <FaPlay size={14} style={{ marginRight: 8 }} />
-                TRY EmissionCheckIQ+
+                {product === "emissioncheckiq" ? "Switch to Bradley.ai" : "Switch to EmissionCheckIQ+"}
               </Button>
             </Box>
 
@@ -305,6 +320,22 @@ const Login: React.FC = () => {
           </Box>
         </Box>
       </Box>
+      <Backdrop
+        open={isSubmitting}
+        sx={{
+          color: '#fff',
+          zIndex: (theme) => theme.zIndex.modal + 1,
+          backdropFilter: 'blur(2px)',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 2,
+        }}
+      >
+        <CircularProgress color="inherit" />
+        <Typography variant="body2" sx={{ fontFamily: '"Nunito Sans", sans-serif' }}>
+          Signing you in...
+        </Typography>
+      </Backdrop>
     </Box>
   );
 };

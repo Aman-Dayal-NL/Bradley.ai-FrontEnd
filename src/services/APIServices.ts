@@ -172,6 +172,7 @@ const response = await fetch(ORGANIZATION_DATA, {
 method: 'POST',
 headers: { 'Content-Type': 'application/json' },
 body: JSON.stringify(data),
+credentials: "include",
 });
 if (!response.ok) {
 // Throw custom error with status
@@ -200,6 +201,7 @@ const response = await fetch(ADDRESS_DATA, {
 method: 'POST',
 headers: { 'Content-Type': 'application/json' },
 body: JSON.stringify(data),
+credentials: "include",
 });
 if (!response.ok) {
 // Throw custom error with status
@@ -235,6 +237,7 @@ formData.append('uuids', uuid);
 const response = await fetch(ENERGY_INTERVAL_DATA, {
 method: 'POST',
 body: formData,
+credentials: "include",
 });
 
 if (!response.ok) {
