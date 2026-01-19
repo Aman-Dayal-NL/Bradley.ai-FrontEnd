@@ -13,7 +13,7 @@ interface Address {
   operationalStart: string;
   operationalEnd: string;
   placeId: string;
-  billType: ('electric' | 'natural_gas')[];
+  billType: ('electric' | 'natural_gas' | 'water')[];
 }
 
 interface AddressData {
@@ -27,7 +27,7 @@ interface AddressData {
   operationalStart: string;
   operationalEnd: string;
   placeId: string;
-  billType: ('electric' | 'natural_gas')[];
+  billType: ('electric' | 'natural_gas' | 'water')[];
   position: L.LatLng;
 }
 
