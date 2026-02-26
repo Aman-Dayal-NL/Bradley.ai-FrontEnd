@@ -280,7 +280,7 @@ const FacilityAddressSelector: React.FC = () => {
                   {address.houseNumber && (
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.3 }}>
                       <Typography sx={{ fontFamily: 'Nunito Sans, sans-serif', fontSize: '0.65rem', color: '#95a5a6', fontWeight: 600, textTransform: 'uppercase', letterSpacing: 0.5 }}>
-                        House #
+                        Building #
                       </Typography>
                       <Typography sx={{ fontFamily: 'Nunito Sans, sans-serif', fontSize: '0.8rem', color: '#2c3e50', fontWeight: 700 }}>
                         {address.houseNumber}
