@@ -75,8 +75,8 @@ const Login: React.FC = () => {
         <Box
           sx={{
             width: '40%',
-            backgroundColor: '#0e0c22',
-            color: 'white',
+            backgroundColor: '#e0e0e0',
+            color: '#1E3A5F',
             padding: 3,
             display: 'flex',
             flexDirection: 'column',
@@ -87,9 +87,9 @@ const Login: React.FC = () => {
           <Box>
             <Box sx={{ mb: 1 }}>
               <img
-                src="/bradley_dynamic_horizontal.svg"
+                src="/Bradley.AI_navbar_logo.png"
                 alt="Logo"
-                style={{ height: '70px', marginLeft: '30px', scale: '1.3' }}
+                style={{ height: '53px', marginLeft: '10px', scale: '1.0', mixBlendMode: 'multiply' }}
               />
             </Box>
 
@@ -145,7 +145,7 @@ const Login: React.FC = () => {
                     <Typography
                       variant="caption"
                       sx={{
-                        color: '#ccc',
+                        color: '#aaa',
                         fontFamily: '"Nunito Sans", sans-serif',
                         fontSize: '0.7rem',
                         lineHeight: 1.2,
@@ -168,6 +168,7 @@ const Login: React.FC = () => {
         <Box
           sx={{
             width: '60%',
+            backgroundColor: '#ebebeb',
             padding: 3.5,
             display: 'flex',
             flexDirection: 'column',
