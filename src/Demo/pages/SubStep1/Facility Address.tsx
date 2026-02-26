@@ -307,7 +307,7 @@ const SubStep2 = () => {
                     </Box>
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
                     {[
-                        { label: "House Number:", key: "houseNumber", placeholder: "Enter house number" },
+                        { label: "Building Number:", key: "buildingNumber", placeholder: "Enter building number" },
                         { label: "Road:", key: "road", placeholder: "Enter road name" },
                         { label: "City:", key: "city", placeholder: "Enter city name" },
                         { label: "State:", key: "state", placeholder: "Enter state" },
