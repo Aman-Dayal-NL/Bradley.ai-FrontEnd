@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Typography } from '@mui/material';
+import { useOrganizationDetails } from '../../../Context/Organizational Profile/SubStep2/Organization Details Context';
 
 const SubStep1: React.FC = () => {
   // State to hold the username (can later be replaced with Redux or backend data)
   const [username, setUsername] = useState<string | null>(null);
+  const { organizationDetailsState } = useOrganizationDetails();
+  const { userName } = organizationDetailsState;
 
   useEffect(() => {
     // Simulate fetching the username (replace this with Redux or API call later)
     const fetchUsername = () => {
       setTimeout(() => {
-        setUsername('Brad'); // Mock username, replace with dynamic fetch later
+        setUsername(userName); // Mock username, replace with dynamic fetch later
       }, 1000); // Simulate network delay
     };
     fetchUsername();
@@ -63,7 +66,7 @@ const SubStep1: React.FC = () => {
             lineHeight: '1.5',
           }}
         >
-          <b>Welcome, {username || 'Loading...'}!</b>
+          <b>Welcome{userName ? `, ${userName}` : ' '}!</b>
         </Typography>
         <Typography
           sx={{
@@ -82,7 +85,7 @@ const SubStep1: React.FC = () => {
           }}
         >
           Provide details about your facility's energy consumption and usage patterns. <br />
-          This information will help {window.location.pathname === '/emissioncheckiq' ? 'EmissionCheckIQ+' : 'Bradley.ai'} create the most accurate and effective DER concepts for you.
+          This information will help {window.location.pathname === '/emissioncheckiq' ? 'EmissionCheckIQ+' : 'DERLabsIQ'} create the most accurate and effective DER concepts for you.
         </Typography>
         <Typography
           sx={{

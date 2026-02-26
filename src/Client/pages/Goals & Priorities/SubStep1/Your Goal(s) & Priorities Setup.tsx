@@ -1,15 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Typography } from '@mui/material';
 
+import { useOrganizationDetails } from '../../../Context/Organizational Profile/SubStep2/Organization Details Context';
+
 const SubStep1: React.FC = () => {
   // State to hold the username (can later be replaced with Redux or backend data)
   const [username, setUsername] = useState<string | null>(null);
+
+  const { organizationDetailsState } = useOrganizationDetails();
+  const { userName } = organizationDetailsState;
 
   useEffect(() => {
     // Simulate fetching the username (replace this with Redux or API call later)
     const fetchUsername = () => {
       setTimeout(() => {
-        setUsername('Brad'); // Mock username, replace with dynamic fetch later
+        setUsername(userName); // Mock username, replace with dynamic fetch later
       }, 1000); // Simulate network delay
     };
     fetchUsername();
@@ -61,7 +66,7 @@ const SubStep1: React.FC = () => {
             fontSize: '0.75rem',
           }}
         >
-          <b>Welcome, {username || 'Loading...'}!</b>
+          <b>Welcome{userName ? `, ${userName}` : ' '}!</b>
         </Typography>
         <Typography
           sx={{
@@ -77,7 +82,7 @@ const SubStep1: React.FC = () => {
             fontSize: '0.75rem',
           }}
         >
-          Provide me with details about your resiliency, emission and cost goals that you want to achieve from your customized DER System, including your financial requirements. This information will help {window.location.pathname === '/demo' ? 'EmissionCheckIQ+' : 'Bradley.ai'} create the most accurate and effective DER conceptualization based on your priorities.
+          Provide me with details about your resiliency, emission and cost goals that you want to achieve from your customized DER System, including your financial requirements. This information will help {window.location.pathname === '/demo' ? 'EmissionCheckIQ+' : 'DERLabsIQ'} create the most accurate and effective DER conceptualization based on your priorities.
         </Typography>
         <Typography
           sx={{
@@ -85,7 +90,7 @@ const SubStep1: React.FC = () => {
             fontSize: '0.75rem',
           }}
         >
-          This will take about 10 minutes. The more details you provide, the better {window.location.pathname === '/demo' ? 'EmissionCheckIQ+' : 'Bradley.ai'} will perform.
+          This will take about 10 minutes. The more details you provide, the better {window.location.pathname === '/demo' ? 'EmissionCheckIQ+' : 'DERLabsIQ'} will perform.
         </Typography>
         <Typography
           sx={{
@@ -104,7 +109,7 @@ const SubStep1: React.FC = () => {
           }}
         >
           <b>Priorities (Decarbonize, Increase Resiliency, Maximize Cost Reductions)</b> <br />
-          Define your priorities for DER implementation and set specific targets for your goals. {window.location.pathname === '/demo' ? 'EmissionCheckIQ+' : 'Bradley.ai'} creates the DER solution based on your priorities.
+          Define your priorities for DER implementation and set specific targets for your goals. {window.location.pathname === '/demo' ? 'EmissionCheckIQ+' : 'DERLabsIQ'} creates the DER solution based on your priorities.
         </Typography>
         <Typography
           component="li"
@@ -115,7 +120,7 @@ const SubStep1: React.FC = () => {
           }}
         >
           <b>Financial Goals & Targets (IRR, ROI, Simple Payback)</b> <br />
-          Outline your financial objectives and investment preferences. {window.location.pathname === '/demo' ? 'EmissionCheckIQ+' : 'Bradley.ai'} can adjust how DER projects allocate cash, future budget(s), Utility rebates, and State and/or Federal grants in the financial proforma, as well as adjust depreciation based on your tax position.
+          Outline your financial objectives and investment preferences. {window.location.pathname === '/demo' ? 'EmissionCheckIQ+' : 'DERLabsIQ'} can adjust how DER projects allocate cash, future budget(s), Utility rebates, and State and/or Federal grants in the financial proforma, as well as adjust depreciation based on your tax position.
         </Typography>
       </Box>
     </Box>

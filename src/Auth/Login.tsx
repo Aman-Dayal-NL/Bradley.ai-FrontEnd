@@ -188,7 +188,7 @@ const Login: React.FC = () => {
               fontFamily: '"Nunito Sans", sans-serif',
             }}
           >
-            <h3 style={{ fontFamily: '"Nunito Sans", sans-serif' }}>{product === "emissioncheckiq" ? "Sign in to EmissionCheckIQ+" : "Sign in to Bradley.ai"}</h3>
+            <h3 style={{ fontFamily: '"Nunito Sans", sans-serif' }}>{product === "emissioncheckiq" ? "Sign in to EmissionCheckIQ+" : "Sign in to DERLabsIQ"}</h3>
           </Typography>
 
           <Box sx={{ width: '90%', marginBottom: 2 }}>
@@ -302,7 +302,7 @@ const Login: React.FC = () => {
               }}
             >
               <FaPlay size={14} style={{ marginRight: 8 }} />
-              {product === "emissioncheckiq" ? "Switch to Bradley.ai" : "Switch to EmissionCheckIQ+"}
+              {product === "emissioncheckiq" ? "Switch to DERLabsIQ" : "Switch to EmissionCheckIQ+"}
             </Button>
           </Box>
 

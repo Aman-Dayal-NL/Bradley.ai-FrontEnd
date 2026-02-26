@@ -57,7 +57,7 @@ const Navbar: React.FC<NavbarProps> = ({ OrganizationDetailsComponent, FacilityA
         <Toolbar>
           <Box sx={{ flexGrow: 1, display: 'inline-flex', alignItems: 'center' }}>
             <img 
-              src={window.location.pathname === '/emissioncheckiq' ? '/EmissionCheckIQ+_navbar_logo.png' : '/Bradley.AI_navbar_logo.png'} 
+              src={window.location.pathname === '/emissioncheckiq' ? '/EmissionCheckIQ+_navbar_logo.png' : '/Bradley.AI_navbar_logo.png'}
               alt="Logo" 
               style={{ height: '50px', marginRight: '4px', marginLeft: '-11.5px' }} 
             />
