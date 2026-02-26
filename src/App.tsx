@@ -13,14 +13,14 @@ const TitleUpdater: React.FC = () => {
   const location = useLocation();
 
   useEffect(() => {
-    if (location.pathname.includes('/bradley')) {
-      document.title = 'Bradley.ai';
+    if (location.pathname.includes('/derlabsiq')) {
+      document.title = 'DERLabsIQ';
     } else if (location.pathname.includes('/emissioncheckiq')) {
       document.title = 'EmissionCheckIQ+';
     } else if (location.pathname.includes('/analyst')) {
-      document.title = 'Bradley.ai Analyst';
+      document.title = 'DERLabsIQ Analyst';
     } else {
-      document.title = 'Bradley.ai';
+      document.title = 'DERLabsIQ';
     }
   }, [location.pathname]);
 
@@ -35,7 +35,7 @@ const App: React.FC = () => {
   }
 
   const getRedirectPath = () => {
-    if (!user) return "/login/bradley";
+    if (!user) return "/login/derlabsiq";
     
     if (user.product === "emissioncheckiq") {
       return "/emissioncheckiq";
@@ -44,9 +44,9 @@ const App: React.FC = () => {
     //   return "/analyst";
     // }
     if (user.role === 'client') {
-      return "/bradley";
+      return "/derlabsiq";
     }
-    return "/bradley";
+    return "/derlabsiq";
   };
 
   const redirectPath = getRedirectPath();
@@ -85,11 +85,11 @@ const App: React.FC = () => {
             }
           />
           <Route 
-            path="/bradley/*" 
+            path="/derlabsiq/*" 
             element={
               user?.role === 'client' 
                 ? <ClientApp /> 
-                : <Navigate to="/login/bradley" replace />
+                : <Navigate to="/login/derlabsiq" replace />
             } 
           />
           {/* <Route 

@@ -47,7 +47,7 @@ const Navbar: React.FC<NavbarProps> = ({ OrganizationDetailsComponent, FacilityA
 
   const handleLogout = () => {
     const isEmissionCheckIQ = window.location.pathname.startsWith('/emissioncheckiq');
-    logoutForProduct(isEmissionCheckIQ ? "emissioncheckiq" : "bradley");
+    logoutForProduct(isEmissionCheckIQ ? "emissioncheckiq" : "derlabsiq");
     handleMenuClose();
   };
 

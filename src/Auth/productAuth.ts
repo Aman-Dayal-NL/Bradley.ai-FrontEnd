@@ -1,6 +1,6 @@
 import { BASE_URL } from "../services/Constants";
 
-export type ProductKey = "bradley" | "emissioncheckiq" | string;
+export type ProductKey = "derlabsiq" | "emissioncheckiq" | string;
 
 export type SessionUser = {
   email: string;
@@ -30,9 +30,9 @@ export const PRODUCT_AUTH: Record<ProductKey, ProductAuthConfig> = {
     cookieAuth: true,
   },
 
-  // Bradley remains your current local credential auth for now
-  bradley: {
-    key: "bradley",
+  // derlabsiq remains your current local credential auth for now
+  derlabsiq: {
+    key: "derlabsiq",
     baseUrl: "",
     endpoints: {
       login: "", // not used
