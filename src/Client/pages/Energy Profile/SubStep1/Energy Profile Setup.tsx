@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from 'react';
 import { Box, Typography } from '@mui/material';
 import { useOrganizationDetails } from '../../../Context/Organizational Profile/SubStep2/Organization Details Context';
 
