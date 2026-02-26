@@ -23,8 +23,8 @@ const SubStep1: React.FC = () => {
   const { userName, organizationName } = organizationDetailsState;
 
   const recommendationTitle = (userName && organizationName) 
-    ? `CarbonCheckIQ's Recommendation For ${userName}, ${organizationName}` 
-    : `CarbonCheckIQ's Recommendation For ${userName || organizationName || 'Your Facility'}`;
+    ? `DERLabsIQ's Recommendation For ${userName}, ${organizationName}` 
+    : `DERLabsIQ's Recommendation For ${userName || organizationName || 'Your Facility'}`;
 
   const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
@@ -61,7 +61,7 @@ const SubStep1: React.FC = () => {
 
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, pt: '10px', pb: '10px', px: { xs: '20px', md: '80px' } }}>
         <StyledRecommendation>
-          <b>{window.location.pathname === '/demo' ? 'EmissionCheckIQ+' : 'Bradley.ai'}</b> recommends a hybrid system for {userName}, {organizationName}.<br /><br />This system combines solar panels, battery storage, and a natural gas generator to optimize energy costs, reduce emissions, and provide reliable backup power.
+          <b>{window.location.pathname === '/demo' ? 'EmissionCheckIQ+' : 'DERLabsIQ'}</b> recommends a hybrid system for {userName}, {organizationName}.<br /><br />This system combines solar panels, battery storage, and a natural gas generator to optimize energy costs, reduce emissions, and provide reliable backup power.
         </StyledRecommendation>
 
         <StyledKeyBenefitsTitle variant="h1">
@@ -276,7 +276,7 @@ const SubStep1: React.FC = () => {
                 </StyledExpandButton>
                 <Box sx={{ pt: 2, px: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <Typography sx={{ fontSize: '0.9rem', fontWeight: 'bold', color: '#777', fontFamily: 'Nunito Sans, sans-serif' }}>
-                  {window.location.pathname === '/demo' ? 'EmissionCheckIQ+' : 'Bradley.ai'} uses the following AI methods to perfect the design and estimation for your DER project.
+                  {window.location.pathname === '/demo' ? 'EmissionCheckIQ+' : 'DERLabsIQ'} uses the following AI methods to perfect the design and estimation for your DER project.
                 </Typography></Box>
                 <Box sx={{ px: 1, height: 'calc(100% - 50px)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <Resources size="small" />

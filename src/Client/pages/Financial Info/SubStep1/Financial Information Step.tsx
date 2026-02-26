@@ -1,19 +1,10 @@
-import React, { useEffect, useState } from 'react';
 import { Box, Typography } from '@mui/material';
+import { useOrganizationDetails } from '../../../Context/Organizational Profile/SubStep2/Organization Details Context';
 
 const SubStep1: React.FC = () => {
   // State for username
-  const [username, setUsername] = useState<string | null>(null);
-
-  useEffect(() => {
-    // Simulating a fetch call for the username
-    const fetchUsername = () => {
-      setTimeout(() => {
-        setUsername('Brad'); // Replace with real data fetch logic
-      }, 1000); // Simulate a delay for fetching
-    };
-    fetchUsername();
-  }, []);
+  const { organizationDetailsState } = useOrganizationDetails();
+  const { userName } = organizationDetailsState;
 
   return (
     <Box
@@ -61,7 +52,7 @@ const SubStep1: React.FC = () => {
             fontSize: '0.75rem',
           }}
         >
-          <b>Welcome, {username || 'Loading...'}!</b>
+          <b>Welcome{userName ? `, ${userName}` : ' '}!</b>
         </Typography>
         <Typography
           sx={{
@@ -77,7 +68,7 @@ const SubStep1: React.FC = () => {
             fontSize: '0.75rem',
           }}
         >
-          Completing this section enables {window.location.pathname === '/demo' ? 'EmissionCheckIQ+' : 'Bradley.ai'} to accurately calculate a “balance sheet” estimate of your optimized DER recommended solution; providing IRR, NOI, Simple Payback, NPV and cost reductions if you want to own the system. Correctly completing these inputs enables empirically accurate financial projections for the DER concept(s) over their expected lifetime.
+          Completing this section enables {window.location.pathname === '/demo' ? 'EmissionCheckIQ+' : 'DERLabsIQ'} to accurately calculate a “balance sheet” estimate of your optimized DER recommended solution; providing IRR, NOI, Simple Payback, NPV and cost reductions if you want to own the system. Correctly completing these inputs enables empirically accurate financial projections for the DER concept(s) over their expected lifetime.
         </Typography>
         <Typography
           sx={{

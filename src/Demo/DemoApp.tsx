@@ -580,7 +580,7 @@ const AppContent: React.FC = () => {
 
     const handleLogout = () => {
         const isEmissionCheckIQ = window.location.pathname.startsWith('/emissioncheckiq');
-        logoutForProduct(isEmissionCheckIQ ? "emissioncheckiq" : "bradley");
+        logoutForProduct(isEmissionCheckIQ ? "emissioncheckiq" : "derlabsiq");
     };
 
     const handleSaveAndContinueLater = () => {

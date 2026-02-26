@@ -56,14 +56,14 @@ const SubStep1: React.FC = () => {
                 @keyframes spin { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); } }
             `}</style>
             <Typography variant="h6" sx={{ mb: 1, fontFamily: 'Nunito Sans, sans-serif', fontSize: '0.85rem', fontWeight: 'bold', textAlign: 'center' }}>
-                <h2>DER Analysis By {window.location.pathname === '/demo' ? 'EmissionCheckIQ+' : 'Bradley.ai'} Is Underway!</h2><br />
+                <h2>DER Analysis By {window.location.pathname === '/demo' ? 'EmissionCheckIQ+' : 'DERLabsIQ'} Is Underway!</h2><br />
             </Typography>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, pt: '10px', pb: '10px', px: '160px' }}>
                 
                 <Paper elevation={3} sx={{ p: '12px 16px', borderRadius: '12px', background: '#f0f4f8' }}>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', color: '#01579b' }}>
                         <Typography sx={{ fontSize: '1rem', fontWeight: 'bold' }}>Estimated Completion Time:</Typography>
-                        <Typography sx={{ fontSize: '1rem', fontWeight: 'bold' }}>2 - 3 Business Days</Typography>
+                        <Typography sx={{ fontSize: '1rem', fontWeight: 'bold' }}>6 minutes</Typography>
                     </Box>
                 </Paper>
 
@@ -100,7 +100,7 @@ const SubStep1: React.FC = () => {
                     <h2>What's Next?</h2>
                 </Typography>
                 <Typography sx={{ fontFamily :'Nunito Sans,sans-serif' ,fontSize :'0.8rem' ,textAlign :'center', color: 'text.secondary' }}>
-                    {window.location.pathname === '/demo' ? 'EmissionCheckIQ+' : 'Bradley.ai'} will review your information and perform a detailed energy, design and financial analysis. A comprehensive DER conceptual design with pricing build-up will be completed.
+                    {window.location.pathname === '/demo' ? 'EmissionCheckIQ+' : 'DERLabsIQ'} will review your information and perform a detailed energy, design and financial analysis. A comprehensive DER conceptual design with pricing build-up will be completed.
                 </Typography>
                 <Grid container spacing={2.5} sx={{ mt: 1 }}>
                     {whatsNextData.map((item, idx) => (

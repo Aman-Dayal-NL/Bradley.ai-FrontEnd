@@ -64,7 +64,7 @@ const SubStep2: React.FC = () => {
 
       <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 0 }}>
         <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 2, pt: '10px', pb: '10px', pl: '160px', pr: '160px' }}>
-          <Typography sx={{ fontSize: '0.75rem', fontFamily: 'Nunito Sans, sans-serif', mb: 0, textAlign: 'center' }}><b>{window.location.pathname === '/demo' ? 'EmissionCheckIQ+' : 'Bradley.ai'} will extract the data needed to compute the site specific GHG emissions from your utility bills and properly size alternate sources of power.</b></Typography>
+          <Typography sx={{ fontSize: '0.75rem', fontFamily: 'Nunito Sans, sans-serif', mb: 0, textAlign: 'center' }}><b>{window.location.pathname === '/demo' ? 'EmissionCheckIQ+' : 'DERLabsIQ'} will extract the data needed to compute the site specific GHG emissions from your utility bills and properly size alternate sources of power.</b></Typography>
           <input
             type="file"
             multiple
@@ -246,7 +246,7 @@ const SubStep2: React.FC = () => {
               </List>
             </Paper>
           )}
-          <Typography sx={{ mt: 0, fontFamily: 'Nunito Sans, sans-serif', fontSize: '0.75rem', minWidth: '200px', flex: 1 }}><i><b>*</b><b>{window.location.pathname === '/demo' ? 'EmissionCheckIQ+' : 'Bradley.ai'}</b> prefers to gain direct access to the Utility profile usage of your utility meter. The <b>LOA</b> enables <b>{window.location.pathname === '/demo' ? 'EmissionCheckIQ+' : 'Bradley.ai'}</b> to pull data directly from the utility to instantly update your <b>GHG</b> emission profile.</i></Typography>
+          <Typography sx={{ mt: 0, fontFamily: 'Nunito Sans, sans-serif', fontSize: '0.75rem', minWidth: '200px', flex: 1 }}><i><b>*</b><b>{window.location.pathname === '/demo' ? 'EmissionCheckIQ+' : 'DERLabsIQ'}</b> prefers to gain direct access to the Utility profile usage of your utility meter. The <b>LOA</b> enables <b>{window.location.pathname === '/demo' ? 'EmissionCheckIQ+' : 'DERLabsIQ'}</b> to pull data directly from the utility to instantly update your <b>GHG</b> emission profile.</i></Typography>
         </Box>
       </Box>
     </Box>

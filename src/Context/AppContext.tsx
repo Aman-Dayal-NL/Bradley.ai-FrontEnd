@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 
 import { emissioncheckiqLogin, emissioncheckiqLogout, emissioncheckiqSessionCheck, emissioncheckiqBootstrap } from "../Demo/components/Auth";
 
-type ProductKey = "bradley" | "emissioncheckiq" | string;
+type ProductKey = "derlabsiq" | "emissioncheckiq" | string;
 
 interface User {
   role: 'client' | 'analyst' | 'demo' | string;
@@ -145,22 +145,22 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children, steps, appPr
     if (appPrefix === 'emissioncheckiq') {
       window.location.href = '/login/emissioncheckiq';
     } else {
-      window.location.href = '/login/bradley';
+      window.location.href = '/login/derlabsiq';
     }
   };
 
   const loginForProduct = React.useCallback(async (product: ProductKey, email: string, password: string): Promise<User> => {
-    if (product === "bradley") {
+    if (product === "derlabsiq") {
       const client = defaultCredentials.client;
       // const analyst = defaultCredentials.analyst;
 
       if (email === client.email && password === client.password) {
-        const u = { email, role: "client", product: "bradley" as const };
+        const u = { email, role: "client", product: "derlabsiq" as const };
         setUser(u);
         return u;
       }
       // if (email === analyst.email && password === analyst.password) {
-      //   const u = { email, role: "analyst", product: "bradley" as const };
+      //   const u = { email, role: "analyst", product: "derlabsiq" as const };
       //   setUser(u);
       //   return u;
       // }
@@ -199,9 +199,9 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children, steps, appPr
       };
     };
 
-    if (product === "bradley") {
-      console.log("Checking session for Bradley");
-      return user?.product === "bradley" ? user : null;
+    if (product === "derlabsiq") {
+      console.log("Checking session for derlabsiq");
+      return user?.product === "derlabsiq" ? user : null;
     };
 
     return user;
@@ -216,7 +216,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children, steps, appPr
     if (product === "emissioncheckiq") {
       window.location.href = "/login/emissioncheckiq";
     } else {
-      window.location.href = "/login/bradley";
+      window.location.href = "/login/derlabsiq";
     }
   }, [user]);
 

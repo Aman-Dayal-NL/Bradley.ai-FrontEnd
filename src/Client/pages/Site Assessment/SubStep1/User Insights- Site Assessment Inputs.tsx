@@ -1,19 +1,10 @@
-import React, { useEffect, useState } from 'react';
 import { Box, Typography } from '@mui/material';
+import { useOrganizationDetails } from '../../../Context/Organizational Profile/SubStep2/Organization Details Context';
 
 const SubStep1: React.FC = () => {
   // State to manage the user's name
-  const [username, setUsername] = useState<string | null>(null);
-
-  useEffect(() => {
-    // Simulate an asynchronous username fetch
-    const fetchUsername = () => {
-      setTimeout(() => {
-        setUsername('Brad'); // Placeholder for dynamic data fetch
-      }, 1000); // Simulating network delay
-    };
-    fetchUsername();
-  }, []);
+  const { organizationDetailsState } = useOrganizationDetails();
+  const { userName } = organizationDetailsState;
 
   return (
     <Box
@@ -61,7 +52,7 @@ const SubStep1: React.FC = () => {
             fontSize: '0.75rem',
           }}
         >
-          <b>Welcome, {username || 'Loading...'}!</b>
+        <b>Welcome{userName ? `, ${userName}` : ' '}!</b>
         </Typography>
         <Typography
           sx={{
@@ -77,7 +68,7 @@ const SubStep1: React.FC = () => {
             fontSize: '0.75rem',
           }}
         >
-          In this step, you will provide more granular details about your use of energy across various systems. {window.location.pathname === '/demo' ? 'EmissionCheckIQ+' : 'Bradley.ai'} will analyze your inputs to determine its suitability for alternate Distributed Energy Resources system arrangements. This part of the assessment will consider factors such as solar potential, wind resources, geothermal feasibility, grid connection, space constraints, interconnect limitations, and local regulations.
+          In this step, you will provide more granular details about your use of energy across various systems. {window.location.pathname === '/demo' ? 'EmissionCheckIQ+' : 'DERLabsIQ'} will analyze your inputs to determine its suitability for alternate Distributed Energy Resources system arrangements. This part of the assessment will consider factors such as solar potential, wind resources, geothermal feasibility, grid connection, space constraints, interconnect limitations, and local regulations.
         </Typography>
         <Typography
           sx={{

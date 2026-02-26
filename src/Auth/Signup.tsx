@@ -24,8 +24,8 @@ const Signup: React.FC = () => {
       });
       return;
     }
-    setUser({ email, role, product: 'bradley' });
-    navigate(role === 'client' ? '/bradley' : '/analyst');
+    setUser({ email, role, product: 'derlabsiq' });
+    navigate(role === 'client' ? '/derlabsiq' : '/analyst');
   };
 
   return (
