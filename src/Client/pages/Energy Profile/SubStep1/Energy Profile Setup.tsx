@@ -4,19 +4,8 @@ import { useOrganizationDetails } from '../../../Context/Organizational Profile/
 
 const SubStep1: React.FC = () => {
   // State to hold the username (can later be replaced with Redux or backend data)
-  const [username, setUsername] = useState<string | null>(null);
   const { organizationDetailsState } = useOrganizationDetails();
   const { userName } = organizationDetailsState;
-
-  useEffect(() => {
-    // Simulate fetching the username (replace this with Redux or API call later)
-    const fetchUsername = () => {
-      setTimeout(() => {
-        setUsername(userName); // Mock username, replace with dynamic fetch later
-      }, 1000); // Simulate network delay
-    };
-    fetchUsername();
-  }, []);
 
   return (
     <Box

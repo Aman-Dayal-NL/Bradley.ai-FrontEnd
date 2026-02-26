@@ -1,22 +1,10 @@
-import React, { useEffect, useState } from 'react';
 import { Box, Typography } from '@mui/material';
 import { useOrganizationDetails } from '../../../Context/Organizational Profile/SubStep2/Organization Details Context';
 
 const SubStep1: React.FC = () => {
   // State for username
-  const [username, setUsername] = useState<string | null>(null);
   const { organizationDetailsState } = useOrganizationDetails();
   const { userName } = organizationDetailsState;
-
-  useEffect(() => {
-    // Simulating a fetch call for the username
-    const fetchUsername = () => {
-      setTimeout(() => {
-        setUsername(userName); // Replace with real data fetch logic
-      }, 1000); // Simulate a delay for fetching
-    };
-    fetchUsername();
-  }, []);
 
   return (
     <Box
